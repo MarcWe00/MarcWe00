@@ -1,0 +1,811 @@
+%9998.3@2(Ablauf Werkzeugwechsel Vgrind 160)
+VAR
+[temp]
+[temp1]
+[temp2]
+[M99x] = 998 - [.BM997] + [.BM999]
+
+(******************************************************************************************)
+[PosX1] = 400  (Parkposition X1-Achse)
+[PosY1] = 130 (Parkposition Y1-Achse)
+[PosZ1Sp1] = 0 (Parkposition Z1-Achse)
+[PosZ1Sp2] = -200 (Parkposition Z1-Achse)
+[PosZ1HF] = -200  
+[PosC1] = 0 (Parkposition C1-Achse)
+[Sp_Akt] (= 40036) (Parameternummer Spindelnummer aktuell)
+[Sch_Akt]
+[Durchl]
+[Sp_TNext] = 30010 (Parameternummer naechstes Werkzeug)
+[Sp_Next] = 30012 (Parameternummer Spindelnummer naechstes Werkzeug)
+[Y1_Nocke] = E40210		(237.5) (Warteposition Werkzeugwechselarm einschwenken auf Nocke)
+[Y1_Rueck] = E40211		(244) (Startposition Werkzeugwechselarm rueckschwenken)
+[Y1_Rille] = E40212		(256.2) (Position Eingriff Werkzeugrille)
+[Y1_Geloe] = E40213		(275) (Position Werkzeug gelost)
+[Y1_BlaA] = E40215		(280) (Position Blasen Aus)
+[Y1_Ende] = E40214		(309)	(Position vollstaendig ausgefuttert)
+
+[Y1_NoHF] = E40210		(237.5) (Warteposition Werkzeugwechselarm einschwenken auf Nocke)
+[Y1_RueHF] = E40211		(244) (Startposition Werkzeugwechselarm rueckschwenken)
+[Y1_RiHF] = E40212		(256.2) (Position Eingriff Werkzeugrille)
+[Y1_GelHF] = E40213		(275) (Position Werkzeug gelost)
+[Y1_BlHF] = E40215		(280) (Position Blasen Aus)
+[Y1_EnHF] = E40214		(309)	(Position vollstaendig ausgefuttert)
+
+[Best_SP1] = 80061 (Parameternummer aktuelle Bestuckung Spindel1)
+[Best_SP2] = 80062 (Parameternummer aktuelle Bestuckung Spindel2)
+[Wkz_Takt] = 30200 (Werkzeugnummer an SPS zum takten)
+[Speed_1] = 8000 (Geschwindigkeit 1)
+[Speed_2] = 8000 (Geschwindigkeit 2)
+[Speed_3] =8000 (Geschwindigkeit 3)
+[Speed_4] =1000 (Geschwindigkeit 4)
+[Speed_5] =20000 (Geschwindigkeit 5)
+[Zust_SP1] = 40101 (Spannzustand Spindel 1, 0=ohne Wkz 1=mit Wkz)
+[Zust_SP2] = 40102 (Spannzustand Spindel 2, 0=ohne Wkz 1=mit Wkz)
+[CNC_Pl1] = 30208 (Parameternummer Belegung Magazinplatz 1, 0=ohne 1=mit)
+[CNC_Pl2] = 30209 (Parameternummer Belegung Magazinplatz 2, 0=ohne 1=mit)
+[CNC_Pl3] = 30210 (Parameternummer Belegung Magazinplatz 3, 0=ohne 1=mit)
+[CNC_Pl4] = 30211 (Parameternummer Belegung Magazinplatz 4, 0=ohne 1=mit)
+[CNC_Pl5] = 30212 (Parameternummer Belegung Magazinplatz 5, 0=ohne 1=mit)
+[CNC_Pl6] = 30213 (Parameternummer Belegung Magazinplatz 6, 0=ohne 1=mit)
+[CNC_Pl7] = 30214 (Parameternummer Belegung Magazinplatz 7, 0=ohne 1=mit)
+[CNC_Pl8] = 30215 (Parameternummer Belegung Magazinplatz 8, 0=ohne 1=mit)
+[SPS_Pl1] = 40108 (Parameternummer SPS Belegung Magazinplatz 1, 0=ohne 1=mit)
+[SPS_Pl2] = 40109 (Parameternummer SPS Belegung Magazinplatz 2, 0=ohne 1=mit)
+[SPS_Pl3] = 40110 (Parameternummer SPS Belegung Magazinplatz 3, 0=ohne 1=mit)
+[SPS_Pl4] = 40111 (Parameternummer SPS Belegung Magazinplatz 4, 0=ohne 1=mit)
+[SPS_Pl5] = 40112 (Parameternummer SPS Belegung Magazinplatz 5, 0=ohne 1=mit)
+[SPS_Pl6] = 40113 (Parameternummer SPS Belegung Magazinplatz 6, 0=ohne 1=mit)
+[SPS_Pl7] = 40114 (Parameternummer SPS Belegung Magazinplatz 7, 0=ohne 1=mit)
+[SPS_Pl8] = 40115 (Parameternummer SPS Belegung Magazinplatz 8, 0=ohne 1=mit)
+[Flag_SPS] = 40117 (Referenzflag von der SPS)
+[T_Wait] = 0.2	(Wartezeit) 
+[Vorw_HF] = E40103
+[NR_Akt]
+ENDV
+M997
+G997
+N100
+(**************************************************)
+	WHILE E84900<>3 DO
+   		G4 F0.1
+	ENDW
+
+	E71005=1
+(**************************************************)
+
+
+G71		(metrisch)
+IF E40217=0 THEN
+G79 N10000
+ENDI
+E30224=1
+
+(Magazin referenzieren)
+E30217 = 0
+M255	
+
+(****************************************************************************************)
+IF E40036<>0 AND E40037<>0 THEN
+	[NR_Akt]=0
+	[Sp_Akt]=E40036
+	[Sch_Akt]=E40037
+	[Durchl]=0
+	G79 N1200
+ENDI
+N1000
+IF E80107<>0 OR E80108<>0 THEN
+	[NR_Akt]=1
+ELSE
+	G79 N9999
+ENDI
+
+IF [NR_Akt]=1 THEN
+	IF E80107<>0 AND E80108<>0 THEN
+		[Durchl]=1
+		[Sp_Akt]=1
+		[Sch_Akt]=E80107
+	ENDI
+	IF E80107<>0 AND E80108=0 THEN
+		[Durchl]=0
+		[Sp_Akt]=1
+		[Sch_Akt]=E80107
+	ENDI
+	IF E80107=0 AND E80108=0 THEN
+		G79 N9999
+	ENDI
+	IF E80107=0 AND E80108<>0 THEN
+		[Durchl]=0
+		[Sp_Akt]=2
+		[Sch_Akt]=E80108
+	ENDI
+ENDI
+N1200
+(****************************************************************************************)
+
+IF E40117 =1 THEN	(Bestueckung Magazin einlesen nach dem Referenzieren)
+E30208 = E40108
+E30209 = E40109
+E30210 = E40110
+E30211 = E40111
+E30212 = E40112
+E30213 = E40113
+E30214 = E40114
+E30215 = E40115
+E30217 = 1
+ENDI	
+L170 = E[Best_SP1]
+L171 = E[Best_SP2]
+[temp1] = L170 + 30207
+[temp2] = L171 + 30207	
+IF L170 <> 0 THEN
+IF E[temp1] = 1 THEN
+G79 N8800
+ENDI
+ENDI	
+IF L171 <>0 THEN
+IF E[temp2] = 1 THEN
+G79 N8800
+ENDI
+ENDI  	  
+G79 [Sp_Akt] = 1 N2000 (Sprung bei Wechsel Spindel 1)
+G79 [Sp_Akt] = 2 N4000 (Sprung bei Wechsel Spindel 2)
+(*************************************************************************************)
+N2000 (Spindel 1 Wechselablauf)
+G79 E[Best_SP1] = [Sch_Akt] N9999 (Akt. Bestuckung = Neues Werkzeug Sprung an Ende)
+M358(M258)	(Loesekurve nach unten)		
+M354(M254)	(Hubeinheit nach unten)
+IF [Vorw_HF]<>3 THEN
+G79 [Sch_Akt] = 0 N2150
+ELSE
+G79 [Sch_Akt] = 0 N6150
+ENDI
+G79 E[Best_SP1] = 0 N2020 (Sprung zu Werkzeug bringen)
+IF [Vorw_HF]<>3 THEN
+G77 N2200 N2500	(Sprung zu Werkzeug holen Spindel 1)
+ELSE
+G77 N6200 N6500	(Sprung zu Werkzeug holen Spindel 1 HF)
+ENDI
+N2020
+IF [Vorw_HF]<>3 THEN
+G77 N3000 N3500 (Sprung zu Werkzeug bringen Spindel 1) 
+ELSE
+G77 N7000 N7500 (Sprung zu Werkzeug bringen Spindel 1 HF)
+ENDI
+N2100
+G79 N9998
+(*************************************************************************************)
+N2150 (Werkzeug aktuell entladen bei T0 Spindel 1)
+G79 E[Best_SP1] = 0 N9999
+[temp] = E[Best_SP1]+30207 
+G79 E[temp]=1 N8300
+G79 E[Zust_SP1] = 1 N8500 (Fehler Bestueckung Spindel 1)
+
+IF E40103=2 THEN
+	M62:1 M271
+ENDI
+
+E[Wkz_Takt] = E[Best_SP1] (Werkzeugnummer an SPS)	
+M356(M256) (Auf E30200 takten)	
+M359(M259) (Beladetuere oeffnen)
+
+G0 G90	(Achsen auf Parkposition)
+(G0 G90  Y[Y1_Nocke]) (Mit Y1 auf Position Nocke fahren)
+G01 G90 F[Speed_5] Y[Y1_Nocke] 	
+E[Wkz_Takt] = E[Best_SP1] (Werkzeugnummer an SPS)
+(Positionen prufen)
+M258	(Loesekurve unten)
+M254	(Hubeinheit unten)		
+M256 	(Auf E30200 takten)	
+M259 	(Beladetuere oeffnen)
+
+M252 (Werkzeugarm auf Nocken ausschwenken)	
+G01 G90 F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+(M400)
+F[Speed_2] Y[Y1_Geloe]	(Mit Y1 auf Position geloest)
+M400
+F[Speed_4] Y[Y1_BlaA]
+F[Speed_3] Y[Y1_Ende]	(Mit Y1 auf Position ganz ausgefuttert)
+M401
+M251 (Werkzeugarm einschwenken)
+(M401)
+IF [Durchl]=0 THEN
+	M360(M260) (Beladetuere zu)
+ENDI
+
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF E[Best_SP1] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF E[Best_SP1] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF E[Best_SP1] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF E[Best_SP1] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF E[Best_SP1] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF E[Best_SP1] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+IF E[Best_SP1] = 7 THEN E[CNC_Pl7] = 1
+ENDI
+IF E[Best_SP1] = 8 THEN E[CNC_Pl8] = 1
+ENDI
+(E30217=0)
+IF E[Zust_SP1] = 0 THEN 
+E[Best_SP1] = 0		
+ELSE 
+G79 N8900 (Fehler Wkz nicht abgenommen)
+ENDI
+E[Best_SP1] = 0	(Aktuelle Bestueckung Spindel 1 auf 0)
+G79 N9998
+(*************************************************************************************)	
+N2200 (Werkzeug holen Spindel 1)
+G79 E[Zust_SP1] = 1 N8500 (Fehler Bestueckung Spindel 1)
+G79 E[Best_SP2] = [Sch_Akt] N8500
+
+IF E40103=2 THEN
+	M62:1 M271
+ENDI
+
+E[Wkz_Takt] = E[Best_SP1] (Werkzeugnummer an SPS)
+M356(M256) (Auf E30200 takten)
+M359(M259) (Beladetuere oeffnen)
+G0 G90	(Achsen auf Parkposition)
+(G0 G90  Y[Y1_Nocke]) (Mit Y1 auf Position Nocke fahren)	
+G01 G90 F[Speed_5] Y[Y1_Nocke]
+
+M258	(Loesekurve unten)
+M254	(Hubeinheit unten)
+M256 (Auf E30200 takten)	
+M259 (Beladetuere oeffnen)	
+
+M252 (Werkzeugarm auf Nocken ausschwenken)	
+G01 G90 F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+(M400)
+F[Speed_2] Y[Y1_Geloe]	(Mit Y1 auf Position geloest)
+M400
+F[Speed_4] Y[Y1_BlaA] 
+(M401)
+F[Speed_3] Y[Y1_Ende]	(Mit Y1 auf Position ganz ausgefuttert)
+M401
+M251 (Werkzeugarm einschwenken)
+(M401)
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF E[Best_SP1] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF E[Best_SP1] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF E[Best_SP1] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF E[Best_SP1] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF E[Best_SP1] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF E[Best_SP1] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+IF E[Best_SP1] = 7 THEN E[CNC_Pl7] = 1
+ENDI
+IF E[Best_SP1] = 8 THEN E[CNC_Pl8] = 1
+ENDI
+(E30217=0)
+IF E[Zust_SP1] = 0 THEN 
+E[Best_SP1] = 0		
+ELSE 
+G79 N8900 (Fehler Wkz nicht abgenommen)
+ENDI
+E[Best_SP1] = 0	(Aktuelle Bestueckung Spindel 1 auf 0)
+N2500
+(*************************************************************************************)
+N3000 (Werkzeug bringen auf Spindel 1)
+[temp] = [Sch_Akt]+30207 
+G79 E[temp]=0 N8400
+G79 E[Zust_SP1] = 2 N8600 (Fehler Bestueckung Spindel 1)
+
+E[Wkz_Takt] = [Sch_Akt] (Werkzeugnummer an SPS)
+M356(M256) (Auf E30200 takten)				 
+M359(M259) (Beladetuere oeffnen)
+G01 G90 F[Speed_1] Y[Y1_Ende] (Mit Y1 auf Position ganz ausgefuttert)    
+
+M258	(Loesekurve unten)
+M254	(Hubeinheit unten)
+M256 (Auf E30200 takten)				 
+M259 (Beladetuere oeffnen)	
+
+M250 (M400) (Werkzeugarm ausschwenken)
+M400
+G01 G90 F[Speed_2] Y[Y1_BlaA] (Mit Y1 auf Position blasen aus)
+M401
+G01 G90 F[Speed_4] Y[Y1_Geloe] (Mit Y1 auf Position geloest)
+F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+F[Speed_3] Y[Y1_Rueck]	(Mit Y1 auf Position Nocken)
+M251 (Werkzeugarm einschwenken)
+
+IF [Durchl]=0 THEN
+	M360(M260) (Beladetuere zu)
+ENDI
+
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF [Sch_Akt] = 1 THEN E[CNC_Pl1] = 0
+ENDI
+IF [Sch_Akt] = 2 THEN E[CNC_Pl2] = 0
+ENDI
+IF [Sch_Akt] = 3 THEN E[CNC_Pl3] = 0
+ENDI
+IF [Sch_Akt] = 4 THEN E[CNC_Pl4] = 0
+ENDI
+IF [Sch_Akt] = 5 THEN E[CNC_Pl5] = 0
+ENDI
+IF [Sch_Akt] = 6 THEN E[CNC_Pl6] = 0
+ENDI
+IF [Sch_Akt] = 7 THEN E[CNC_Pl7] = 0
+ENDI
+IF [Sch_Akt] = 8 THEN E[CNC_Pl8] = 0
+ENDI
+(E30217=0)
+IF E[Zust_SP1] = 2 THEN
+E[Best_SP1] = [Sch_Akt]		
+ELSE
+G79 N8700 (Fehler Wkz nicht aufgenommen)
+ENDI
+N3500	
+(*************************************************************************************)
+N4000 (Spindel 2 Wechselablauf)
+G79 E[Best_SP2] = [Sch_Akt] N9999 (Akt. Bestuckung = Neues Werkzeug Sprung an Ende)
+IF E71003=3500000 THEN
+G01 G90 F[Speed_5] Y220
+ELSE
+G01 G90 F[Speed_5] Y220
+ENDI	
+M357(M257)	(Loesekurve nach oben)		
+M353(M253)	(Hubeinheit nach oben)
+G79 [Sch_Akt] = 0 N4150
+G79 E[Best_SP2] = 0 N4020 (Sprung zu Werkzeug bringen)
+G77 N4200 N4500	(Sprung zu Werkzeug holen Spindel 2)
+N4020
+G77 N5000 N5500 (Sprung zu Werkzeug bringen Spindel 2) 
+N4100
+G79 N9998
+(*************************************************************************************)	
+N4150 (Werkzeug aktuell entladen bei T0 Spindel 2)
+G79 E[Best_SP2] = 0 N9999
+[temp] = E[Best_SP2]+30207 
+G79 E[temp]=1 N8300
+G79 E[Zust_SP2] = 1 N9500 (Fehler Bestueckung Spindel 2)
+
+IF E40103=1 OR E40103=2 OR E40103=3 THEN
+	M62:2 M271
+ENDI
+
+E[Wkz_Takt] = E[Best_SP2] (Werkzeugnummer an SPS)	
+M356(M256) (Auf E30200 takten)	
+M359(M259) (Beladetuere oeffnen)
+
+G0 G90	(Achsen auf Parkposition)
+(G0 G90  Y[Y1_Nocke]) (Mit Y1 auf Position Nocke fahren)	
+G01 G90 F[Speed_5] Y[Y1_Nocke]
+(Positionen prufen)	
+M257	(Loesekurve oben)		
+M253	(Hubeinheit oben)
+M256 	(Auf E30200 takten)	
+M259 	(Beladetuere oeffnen)	
+
+M252 (Werkzeugarm auf Nocken ausschwenken)	
+G01 G90 F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+(M400)
+F[Speed_2] Y[Y1_Geloe]	(Mit Y1 auf Position geloest)
+M400
+F[Speed_4] Y[Y1_BlaA]
+F[Speed_3] Y[Y1_Ende]	(Mit Y1 auf Position ganz ausgefuttert)
+M401
+M251 (Werkzeugarm einschwenken)
+(M401)
+
+IF [Durchl]=0 THEN
+	M360(M260) (Beladetuere zu)
+ENDI
+
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF E[Best_SP2] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF E[Best_SP2] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF E[Best_SP2] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF E[Best_SP2] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF E[Best_SP2] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF E[Best_SP2] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+IF E[Best_SP2] = 7 THEN E[CNC_Pl7] = 1
+ENDI
+IF E[Best_SP2] = 8 THEN E[CNC_Pl8] = 1
+ENDI
+(E30217=0)
+IF E[Zust_SP2] = 0 THEN 
+E[Best_SP2] = 0		
+ELSE 
+G79 N8900 (Fehler Wkz nicht abgenommen)
+ENDI
+E[Best_SP2] = 0	(Aktuelle Bestueckung Spindel 2 auf 0)
+G79 N9998
+(*************************************************************************************)	
+N4200 (Werkzeug holen Spindel 2)
+G79 E[Zust_SP2] = 1 N9500 (Fehler Bestueckung Spindel 2)
+G79 E[Best_SP1] = [Sch_Akt] N9500
+
+(IF E40103=1 OR E40103=2 OR E40103=3 THEN)
+	(M62:2 M271)
+(ENDI)
+
+E[Wkz_Takt] = E[Best_SP2] (Werkzeugnummer an SPS)	
+M356(M256) (Auf E30200 takten)	
+M359(M259) (Beladetuere oeffnen)
+
+G0 G90	(Achsen auf Parkposition)
+(G0 G90  Y[Y1_Nocke]) (Mit Y1 auf Position Nocke fahren)	
+G01 G90 F[Speed_5] Y[Y1_Nocke]
+
+M257	(Loesekurve oben)		
+M253	(Hubeinheit oben)
+M256 (Auf E30200 takten)	
+M259 (Beladetuere oeffnen)	
+
+M252 (Werkzeugarm auf Nocken ausschwenken)	
+G01 G90 F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+(M400)
+F[Speed_2] Y[Y1_Geloe]	(Mit Y1 auf Position geloest)
+M400
+F[Speed_4] Y[Y1_BlaA]
+(M401)
+F[Speed_3] Y[Y1_Ende]	(Mit Y1 auf Position ganz ausgefuttert)
+M401
+M251 (Werkzeugarm einschwenken)
+(M401)
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF E[Best_SP2] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF E[Best_SP2] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF E[Best_SP2] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF E[Best_SP2] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF E[Best_SP2] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF E[Best_SP2] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+IF E[Best_SP2] = 7 THEN E[CNC_Pl7] = 1
+ENDI
+IF E[Best_SP2] = 8 THEN E[CNC_Pl8] = 1
+ENDI
+(E30217=0)
+IF E[Zust_SP2] = 0 THEN 
+E[Best_SP2] = 0		
+ELSE 
+G79 N9900 (Fehler Wkz nicht abgenommen)
+ENDI
+E[Best_SP2] = 0	(Aktuelle Bestueckung Spindel 1 auf 0)
+N4500
+(*************************************************************************************)
+N5000 (Werkzeug bringen auf Spindel 2)
+[temp] = [Sch_Akt]+30207 
+G79 E[temp]=0 N8400
+G79 E[Zust_SP2] = 2 N9600 (Fehler Bestueckung Spindel 2)
+
+E[Wkz_Takt] = [Sch_Akt] (Werkzeugnummer an SPS)
+M356(M256) (Auf E30200 takten)    					 
+M359(M259) (Beladetuere oeffnen)	
+
+G0 G90	(Achsen auf Parkposition)
+G01 G90 F[Speed_1] Y[Y1_Ende] (Mit Y1 auf Position ganz ausgefuttert)   
+
+M257	(Loesekurve oben)		
+M253	(Hubeinheit oben)
+M256 (Auf E30200 takten)    					 
+M259 (Beladetuere oeffnen)	
+
+M250 (M400) (Werkzeugarm ausschwenken)
+M400
+G01 G90 F[Speed_2] Y[Y1_BlaA] (Mit Y1 auf Position blasen aus)
+M401
+G01 G90 F[Speed_4] Y[Y1_Geloe] (Mit Y1 auf Position geloest)
+F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+F[Speed_3] Y[Y1_Rueck]	(Mit Y1 auf Position Nocken)
+M251 (Werkzeugarm einschwenken)
+M360(M260) (Beladetuere zu)
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF [Sch_Akt] = 1 THEN E[CNC_Pl1] = 0
+ENDI
+IF [Sch_Akt] = 2 THEN E[CNC_Pl2] = 0
+ENDI
+IF [Sch_Akt] = 3 THEN E[CNC_Pl3] = 0
+ENDI
+IF [Sch_Akt] = 4 THEN E[CNC_Pl4] = 0
+ENDI
+IF [Sch_Akt] = 5 THEN E[CNC_Pl5] = 0
+ENDI
+IF [Sch_Akt] = 6 THEN E[CNC_Pl6] = 0
+ENDI
+IF [Sch_Akt] = 7 THEN E[CNC_Pl7] = 0
+ENDI
+IF [Sch_Akt] = 8 THEN E[CNC_Pl8] = 0
+ENDI
+(E30217=0)
+IF E[Zust_SP2] = 2 THEN
+E[Best_SP2] = [Sch_Akt]		
+ELSE
+G79 N9700 (Fehler Wkz nicht aufgenommen)
+ENDI
+N5500	
+
+
+(+++++++++++++++++++HF++++++++++++++++++++++++++++++++++++++++++++)
+N6150 (Werkzeug aktuell entladen bei T0 Spindel 1)
+G79 E[Best_SP1] < 2 N9999
+[temp] = E[Best_SP1]+30207 
+G79 E[temp]=1 N8300
+G79 E[Zust_SP1] = 0 N8500 (Fehler Bestueckung Spindel 1)
+
+E[Wkz_Takt] = E[Best_SP1] (Werkzeugnummer an SPS)	
+M356(M256) (Auf E30200 takten)	
+M359(M259) (Beladetuere oeffnen)
+
+G0 G90	(Achsen auf Parkposition)
+(G0 G90  Y[Y1_NoHF]) (Mit Y1 auf Position Nocke fahren)	
+G01 G90 F[Speed_5] Y[Y1_NoHF]
+E[Wkz_Takt] = E[Best_SP1] (Werkzeugnummer an SPS)
+(Positionen prufen)
+M258	(Loesekurve unten)
+M254	(Hubeinheit unten)		
+M256 	(Auf E30200 takten)	
+M259 	(Beladetuere oeffnen)
+
+M252 (Werkzeugarm auf Nocken ausschwenken)	
+G01 G90 F[Speed_1] Y[Y1_RiHF]	(Mit Y1 auf Position Werkzeugrille)
+(M400)
+F[Speed_2] Y[Y1_GelHF]	(Mit Y1 auf Position geloest)
+M114
+G04 F0.5
+M402
+F[Speed_4] Y[Y1_BlHF]
+F[Speed_3] Y[Y1_EnHF]	(Mit Y1 auf Position ganz ausgefuttert)
+M251 (Werkzeugarm einschwenken)
+M403
+
+IF [Durchl]=0 THEN
+	M360(M260) (Beladetuere zu)
+ENDI
+
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF E[Best_SP1] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF E[Best_SP1] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF E[Best_SP1] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF E[Best_SP1] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF E[Best_SP1] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF E[Best_SP1] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+IF E[Best_SP1] = 7 THEN E[CNC_Pl7] = 1
+ENDI
+IF E[Best_SP1] = 8 THEN E[CNC_Pl8] = 1
+ENDI
+(E30217=0)
+IF E[Zust_SP1] = 0 THEN 
+E[Best_SP1] = 0		
+ELSE 
+G79 N8900 (Fehler Wkz nicht abgenommen)
+ENDI
+E[Best_SP1] = 0	(Aktuelle Bestueckung Spindel 1 auf 0)
+M115
+G79 N9998
+(*************************************************************************************)	
+N6200 (Werkzeug holen Spindel 1)
+G79 E[Zust_SP1] =0 N8500 (Fehler Bestueckung Spindel 1)
+G79 E[Best_SP2] = [Sch_Akt] N8500
+
+E[Wkz_Takt] = E[Best_SP1] (Werkzeugnummer an SPS)
+M356(M256) (Auf E30200 takten)
+M359(M259) (Beladetuere oeffnen)	
+
+G0 G90	(Achsen auf Parkposition)
+(G0 G90  Y[Y1_NoHF]) (Mit Y1 auf Position Nocke fahren)	
+G01 G90 F[Speed_5] Y[Y1_NoHF]
+
+M258	(Loesekurve unten)
+M254	(Hubeinheit unten)
+M256 (Auf E30200 takten)	
+M259 (Beladetuere oeffnen)	
+
+M252 (Werkzeugarm auf Nocken ausschwenken)	
+G01 G90 F[Speed_1] Y[Y1_RiHF]	(Mit Y1 auf Position Werkzeugrille)
+(M400)
+F[Speed_2] Y[Y1_GelHF]	(Mit Y1 auf Position geloest)
+M114
+G04 F0.5
+M402
+F[Speed_4] Y[Y1_BlHF] 
+F[Speed_3] Y[Y1_EnHF]	(Mit Y1 auf Position ganz ausgefuttert)
+M251 (Werkzeugarm einschwenken)
+M403
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF E[Best_SP1] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF E[Best_SP1] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF E[Best_SP1] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF E[Best_SP1] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF E[Best_SP1] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF E[Best_SP1] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+IF E[Best_SP1] = 7 THEN E[CNC_Pl7] = 1
+ENDI
+IF E[Best_SP1] = 8 THEN E[CNC_Pl8] = 1
+ENDI
+(E30217=0)
+IF E[Zust_SP1] = 0 THEN 
+E[Best_SP1] = 0		
+ELSE 
+G79 N8900 (Fehler Wkz nicht abgenommen)
+ENDI
+E[Best_SP1] = 0	(Aktuelle Bestueckung Spindel 1 auf 0)
+M115
+G04F0.5
+N6500
+(*************************************************************************************)
+N7000 (Werkzeug bringen auf Spindel 1)
+[temp] = [Sch_Akt]+30207 
+G79 E[temp]=0 N8400
+G79 E[Zust_SP1] = 2 N8600 (Fehler Bestueckung Spindel 1)
+
+E[Wkz_Takt] = [Sch_Akt] (Werkzeugnummer an SPS)
+M356(M256) (Auf E30200 takten)				 
+M359(M259) (Beladetuere oeffnen)
+
+G0 G90	(Achsen auf Parkposition)
+G01 G90 F[Speed_1] Y[Y1_EnHF] (Mit Y1 auf Position ganz ausgefuttert)    
+M114
+
+M258	(Loesekurve unten)
+M254	(Hubeinheit unten)
+M256 (Auf E30200 takten)				 
+M259 (Beladetuere oeffnen)	
+
+M250 M402 (Werkzeugarm ausschwenken)
+G01 G90 F[Speed_2] Y[Y1_BlHF] (Mit Y1 auf Position blasen aus)
+(M403)
+G01 G90 F[Speed_4] Y[Y1_GelHF] (Mit Y1 auf Position geloest)
+M115
+G04 F0.5
+F[Speed_1] Y[Y1_RiHF]	(Mit Y1 auf Position Werkzeugrille)
+F[Speed_3] Y[Y1_RueHF]	(Mit Y1 auf Position Nocken)
+M251 (Werkzeugarm einschwenken)
+
+IF [Durchl]=0 THEN
+	M360(M260) (Beladetuere zu)
+ENDI
+
+(Magazinbelegung aktualisieren)
+(E30217 = 0)
+IF [Sch_Akt] = 1 THEN E[CNC_Pl1] = 0
+ENDI
+IF [Sch_Akt] = 2 THEN E[CNC_Pl2] = 0
+ENDI
+IF [Sch_Akt] = 3 THEN E[CNC_Pl3] = 0
+ENDI
+IF [Sch_Akt] = 4 THEN E[CNC_Pl4] = 0
+ENDI
+IF [Sch_Akt] = 5 THEN E[CNC_Pl5] = 0
+ENDI
+IF [Sch_Akt] = 6 THEN E[CNC_Pl6] = 0
+ENDI
+IF [Sch_Akt] = 7 THEN E[CNC_Pl7] = 0
+ENDI
+IF E[Sch_Akt] = 8 THEN E[CNC_Pl8] = 0
+ENDI
+(E30217=0)
+IF E[Zust_SP1] = 2 THEN
+E[Best_SP1] = [Sch_Akt]		
+ELSE
+G79 N8700 (Fehler Wkz nicht aufgenommen)
+ENDI
+N7500	
+(+++++++++++++++++++HF++++++++++++++++++++++++++++++++++++++++++++)
+
+
+
+(*************************************************************************************)	
+N8300	
+(Magazinplatz belegt)
+G77 H9513.0 N8100 N9999
+G79 N9997
+N8400
+(Magazinplatz nicht bestueckt)
+G77 H9513.0 N8150 N9999
+G79 N9997															
+N8500
+(Fehler Bestueckung Spindel 1 holen)
+G77 H9513.0 N8350 N9999
+G79 N9997	
+N8600
+(Fehler Bestueckung Spindel 1 bringen)
+G77 H9513.0 N8400 N9999
+G79 N9997
+N8700
+(Fehler Wkz nicht aufgenommen Spindel 1)
+G77 H9513.0 N8450 N9999
+G79 N9997
+N8800
+(Fehler Bestuckung Magazin)
+G77 H9513.0 N8200 N9999
+G79 N9997
+N8900
+(Fehler Wkz nicht abgenommen Spindel 1)
+G77 H9513.0 N8500 N9999
+G79 N9997
+N9500
+(Fehler Bestueckung Spindel 2 holen)
+G77 H9513.0 N8650 N9999
+G79 N9997	
+N9600
+(Fehler Bestueckung Spindel 2 bringen)
+G77 H9513.0 N8700 N9999
+G79 N9997
+N9700
+(Fehler Wkz nicht aufgenommen Spindel 2)
+G77 H9513.0 N8750 N9999
+G79 N9997
+N9900
+(Fehler Wkz nicht abgenommen Spindel 2)
+G77 H9513.0 N8800 N9999
+G79 N9997
+N9997 (E30217 = 0) M2
+N9998
+IF E71003 = 3500000 THEN
+G0 G90 Y230
+ELSE
+G0 G90 Y230
+ENDI
+
+IF [Durchl]=1 THEN
+	[Durchl]=0
+	[Sp_Akt]=2
+	[Sch_Akt]=E80108
+	G79 N1200
+ENDI	
+
+N9999 M[M99x]
+(N9999  G0 G90 Y125)
+M260 (Beladetuere zu)
+E30224=0
+E71005=-1	(Y-Achse in Kanal 3 abmelden)
+E84900=1	(Meldung an Kanal 1 -> Achse wieder frei)
+G79N100
+N10000 
+
+
+
+
+
+
+
+
+
+
+
+   
+   

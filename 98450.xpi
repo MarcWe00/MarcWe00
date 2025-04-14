@@ -1,0 +1,42 @@
+%9845.0@1(HPR250)
+N1000
+[GrMWZ1]=40198			(Grundmesswert Z1 Greifer 0)
+[GrMWY2]=40199			(Grundmesswert Y2 Greifer 0)
+[MP1X1_0]=108.0				(Messposition X1 Greifer 0 in Z-Richtung)
+[MP1Z1_0]=-66				(Messposition Z1 Greifer 0 in Z-Richtung)
+[MP1Y2_0]=476				(Messposition Y2 Greifer 0 in Z-Richtung)			
+[MP2X1_0]=108				(Messposition X1 Greifer 0 in Y2-Richtung)
+[MP2Z1_0]=-56				(Messposition Z1 Greifer 0 in Y2-Richtung)
+[MP2Y2_0]=402			(Messposition Y2 Greifer 0 in Y2-Richtung)
+[KompZ1_0]=80190			(Kompensationswert in Z-Richtung Greifer 0)
+[KompY2_0]=80191			(Kompensationswert in Y2-Richtung Greifer 0)		
+[MValZ1_0]=30161			(Messwert Z-Richtung Greifer 0)
+[MValY2_0]=30162			(Messwert Y2-Richtung Greifer 0)
+[MP1X1_1]=101.9				(Messposition X1 Greifer 1 in Z-Richtung)
+[MP1Z1_1]=-60.4				(Messposition Z1 Greifer 1 in Z-Richtung)
+[MP1Y2_1]=475.278			(Messposition Y2 Greifer 1 in Z-Richtung)
+[MP2X1_1]=104				(Messposition X1 Greifer 0 in Y2-Richtung)
+[MP2Z1_1]=-83				(Messposition Z1 Greifer 1 in Y2-Richtung)
+[MP2Y2_1]=402			(Messposition Y2 Greifer 1 in Y2-Richtung)
+[KompZ1_1]=80192			(Kompensationswert in Z-Richtung Greifer 1)
+[KompY2_1]=80193			(Kompensationswert in Y2-Richtung Greifer 1)
+[MValZ1_1]=30163			(Messwert Z-Richtung Greifer 1)
+[MValY2_1]=30164			(Messwert Y2-Richtung Greifer 1)
+[KFreiX1]=250				(Freifahrweg X1-Achse vor Kompensation)
+[KFlag]=84100				(Schalter Kompensation 0=ja, 1=Nein)
+[MP1X1_2]=101.9				(Messposition X1 Greifer 2 in Z-Richtung)
+[MP1Z1_2]=-64				(Messposition Z1 Greifer 2 in Z-Richtung)
+[MP1Y2_2]=475				(Messposition Y2 Greifer 2 in Z-Richtung)			
+[MP2X1_2]=107				(Messposition X1 Greifer 2 in Y2-Richtung)
+[MP2Z1_2]=-83				(Messposition Z1 Greifer 2 in Y2-Richtung)
+[MP2Y2_2]=402			(Messposition Y2 Greifer 2 in Y2-Richtung)
+[KompZ1_2]=80196			(Kompensationswert in Z-Richtung Greifer 2)
+[KompY2_2]=80197			(Kompensationswert in Y2-Richtung Greifer 2)		
+[MValZ1_2]=30165			(Messwert Z-Richtung Greifer 2)
+[MValY2_2]=30166			(Messwert Y2-Richtung Greifer 2)
+N2000
+
+
+
+
+

@@ -1,0 +1,24 @@
+%21000.0@2(Meldungen)
+(CNC21000_de.xpi) (V1.0a/22.01.14/NUM/APL)
+
+(H21000 Meldungen CNC)
+N1000 $Aufruf G120: Parameter ELxx / EPxx nicht oder falsch programmiert
+N1001 $Aufruf G120: Parameter ELxx falsche Platznummer programmiert
+N1002 $Aufruf G120: Parameter EPxx falsche Platznummer programmiert
+N1003 $Aufruf G120: Parameter ESxx falsche Platznummer programmiert
+N1004 $Aufruf G120: Parameter EQxx falsche Greifernummer programmiert
+N1013 $G120: Unbekanntes Werkstueck in Greifer RT gespannt
+N1014 $G120: Unbekanntes Werkstueck in Greifer FT gespannt
+N1015 $G120: Unbekanntes Werkstueck in Spannzange gespannt
+N1016 $G120: Greifer RT und FT bestueckt
+N1017 $G120: Greifer RT kein Wkst vorhanden
+N1018 $G120: Greifer FT kein Wkst vorhanden
+N1020 $Wechsler Rohteil kann nicht abgelegt werden
+N1030 $Wechsler Rohteil nicht vorhanden
+N1100 $Wechsler Position: 
+N1102 $Automatischer Weckstueckwechsler
+N1103 $Werkstueck manuell wechseln
+N1104 $Lader: Werkstueck [
+N1105 $+] laden
+N1106 $+] entladen  
+N1107 $Wechsler Rohteil nicht vorhanden

@@ -1,0 +1,1185 @@
+%9999.0@2(SPS_Unterprogram )
+
+G79 NE40120
+
+(****Maschinenfunktionen****)
+
+(****Maschine einmessen****)
+N1
+IF E40121 = 1 THEN
+   G140ES3
+ELSE
+   G140ES1
+ENDI
+G79 N9999
+
+
+(****Warmlaufprogram starten****)
+N2
+IF E40125 = 1 THEN
+   G77 H301.0
+ELSE
+   G77 H300.0
+ENDI
+G79 N9999
+
+
+(****Parkposition fahren****)
+N3
+G79 E40015=1 N9999	(WkstBeladeklappe offen)
+G79 E40119=1 N9999	(WzgBeladeklappe offen)
+G0 G90
+L14=UE70003
+XL14
+YE40122
+AE40125 CE40126 ZE40123 
+M196
+M170
+M161
+XE40121 
+G79 N9999
+
+
+
+(****HF Spindel einlaufen****)
+N4
+G0 G90 X440
+Y125
+C0
+Z-100
+L110=E40121+E40122+E40123+E40125+E40126+E40127
+(Drehzahlstufe 1)
+M62:1S10000M3
+FOR L1=E40121 DOWNTO 1 DO
+   $Einlaufprog noch 
+   $=L110
+   $+ Min.
+   G04 F60
+   $
+   L110=L110-1
+ENDF
+(Drehzahlstufe 2)
+M62:1S20000M3
+FOR L1=E40122 DOWNTO 1 DO
+   $Einlaufprog noch 
+   $=L110
+   $+ Min.
+   G04 F60
+   $
+   L110=L110-1
+   ENDF
+(Drehzahlstufe 3)
+M62:1S30000M3
+FOR L1=E40123 DOWNTO 1 DO
+   $Einlaufprog noch 
+   $=L110
+   $+ Min.
+   G04 F60
+   $
+   L110=L110-1
+ENDF
+(Drehzahlstufe 4)
+M62:1S40000M3
+FOR L1=E40125 DOWNTO 1 DO
+   $Einlaufprog noch 
+   $=L110
+   $+ Min.
+   G04 F60
+   $
+   L110=L110-1
+ENDF
+(Drehzahlstufe 5)
+M62:1S50000M3
+FOR L1=E40126 DOWNTO 1 DO
+   $Einlaufprog noch 
+   $=L110
+   $+ Min.
+   G04 F60
+   $
+   L110=L110-1
+   ENDF
+(Drehzahlstufe 6)
+M62:1S60000M3
+FOR L1=E40127 DOWNTO 1 DO
+   $Einlaufprog noch 
+   $=L110
+   $+ Min.
+   G04 F60
+   $
+   L110=L110-1
+ENDF
+M62:1S0M5
+E30228 = 1
+G04F1
+E30228 = 0
+G79 N9999
+
+
+
+(****Temperaturkompensation Refernz holen****)
+N5
+G135ES1
+G79 N9999
+
+
+(****Temperaturkompensation Refernz loeschen****)
+N6
+E84310=0
+E84311=0
+E84312=0
+G79 N9999
+
+
+(****Abrichtspindel einmessen****)
+N7
+IF E40121 = 1 THEN	(Messung 1)
+   G160EA1
+ELSE			(Messung 2)
+   G160EA2
+ENDI
+G79 N9999								  
+
+N8
+(**********Starten Abrichtprogramm*******)
+IF E40120=8 THEN
+G165EL0
+ENDI
+G79 N9999
+
+N9
+(**********Positionsfahrt C1*******)
+IF E40120=9 THEN
+L1=E40094
+  IF E71000<=1650000 THEN
+     G01 G90 F2000 CL1
+  ELSE
+     G01 G91 F5000
+     X400
+     Y165
+     G01 G90 F2000 CL1
+  ENDI  
+ENDI 
+G79 N9999
+
+N10
+(**********Positionsfahrt Z1*******)
+IF E40120=10 THEN
+  G01 G90 F5000 X500  
+  IF E40066=1 THEN
+     IF E40095=1 THEN
+        G0 G90 F5000 Z0
+     ELSE
+        G0 G90 F5000 Z76
+     ENDI
+  ENDI
+
+  IF E40066=2 THEN
+     IF E40095=1 THEN
+        G0 G90 F5000 Z-250
+     ELSE
+        G0 G90 F5000 Z-174
+     ENDI
+  ENDI      
+ENDI
+G79 N9999
+
+(****Unterstützung einmessen****)
+N11
+IF E40121 = 1 THEN	(Messung Schaftlünette)
+   G136EM1
+ELSE			(Messung Stützlünette)
+   G136EM2
+ENDI
+G79 N9999
+
+(****Nullpunktkompensation****)
+N12
+G137ES1
+G79 N9999
+
+(****Vorpositionierung manueller Scheibenwechsel****)
+N13
+G79 E40015=1 N9999	(WkstBeladeklappe offen)
+G79 E40119=1 N9999	(WzgBeladeklappe offen)
+
+G0 G90 
+X500
+Z-150
+Y125
+Y-115 C-70
+
+G79 N9999
+
+
+(****Kalibrieren Lasermessbrück****)
+N14
+   G77 H360.0
+
+G79 N9999
+
+(****Maschine Einschleifen****)
+N15
+G145EA1
+G79 N9999
+
+(****Fräskopf, Rechen, Greifer einmessen****)
+N16
+IF E40121 = 1 THEN		(Fräskopf)
+	G134 EM1
+ENDI
+IF E40121 = 2 THEN		(Rechen)
+	G134 EM2
+ENDI
+IF E40121 = 3 THEN		(Greifer)
+	G134 EM3
+ENDI
+G79 N9999
+
+
+(****Scheibenwechsler Funktionen****)
+
+(****Magazin takten****)
+N51
+E30200 = E40121
+M256
+G79 N9999
+
+
+(****Magazin auf Grundposition fahren****)
+N52
+M265
+G79 N9999
+
+
+(****Magazin Referenzieren und Werte setzen****)
+N53
+E30217 = 0
+M255
+(Bestueckung Magazin einlesen nach dem Referenzieren)
+IF E40117 =1 THEN
+   E30208 = E40108
+   E30209 = E40109
+   E30210 = E40110
+   E30211 = E40111
+   E30212 = E40112
+   E30213 = E40113
+   E30214 = E40114
+   E30215 = E40115
+   E30217 = 1
+ENDI
+G79 N9999
+
+
+(****Bestuckung Spindeln setzen****)
+N54
+E30224 = 1
+E80061 = E40121
+E80062 = E40122
+G4F1
+E30224 = 0
+G79 N9999
+
+
+(****Spindel  laden****)
+N55
+E30224 = 1
+TE40122
+G4F0.3
+E30011 = E40121 
+M6
+G4F1
+E30224 = 0
+G79 N9999
+
+
+(****Spindel  entladen****)
+N56
+E30224 = 1
+T0
+G4F0.3
+E30011 = E40121 
+M6
+G4F1
+E30224 = 0
+G79 N9999
+
+
+
+
+(****HP160 Funktionen****)
+
+(****HP160-Achsen einmessen****)
+N101
+IF E40121 = 0 THEN		(X2-Achse)
+   G120 EM4
+ENDI
+IF E40121 = 1 THEN		(Y2-Achse)
+   G120 EM5
+ENDI
+G79 N9999
+
+
+(****HP160-Messfahrten****)
+N102
+(Kompensation Grundwert)
+IF E40121 = 0 THEN
+   G120EK1
+   G120EF31
+ENDI
+G79 N9999
+
+
+(****HP160-Grundposition****)
+N103
+M230
+G79 N9999
+
+
+(****HP160-Spannfutter setzen****)
+N104
+E30222 = 1
+IF E40121=0 THEN  
+   (Wkst)
+   E80090 = E40122 (Wkst-Nummer)
+   E80120 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80140 = E40122 (Hulsen-Nummer)
+ENDI
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HP160-Spannfutter laden****)
+N105
+IF E40121=0 THEN 
+   (Wkst)
+   IF E80090=0 THEN
+      M110
+      E80104 = E40123*1000 (Durchmesser)
+      E80100 = E40122      (Wkst-Nummer)
+      G120 ELE80100 EC1
+   ENDI
+ELSE
+   (Hulse)
+   IF E80140=0 THEN 
+      M110
+	  E30130=E40122
+      M86
+      G120EHE40025   (Hulsen-Nummer)
+   ENDI
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HP160-Spannfutter ablegen****)
+N106
+IF E40121=0 THEN 
+   (Wkst)
+   G120EL0EC1
+ELSE
+   (Hulse)
+   G120EH0
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HP160-Greifer1 Bestueckung setzen****)
+N107	
+IF E40121=0 THEN 
+   (Wkst)
+   E80088 = E40122 (Wkst-Nummer)
+   E80121 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80143 = E40122 (Hulsen-Nummer)  
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HP160-Greifer1 ablegen****)
+N108
+M110
+G0X400
+M226
+G120EF11EY435
+G120EF10EX250
+M201
+IF E40121=0 THEN 
+   (Wkst)
+   E80081 = 0
+   G120EF20
+ELSE
+   (Hulse)
+   E80081 = 0
+   G120EF40
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HP160-Greifer2 Bestueckung setzen****)
+N109	
+IF E40121=0 THEN 
+   (Wkst)
+   E80089 = E40122 (Wkst-Nummer)
+   E80122 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80144 = E40122 (Hulsen-Nummer)  
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HP160-Greifer2 ablegen****)
+N110
+M110
+G0X400
+M226
+G120EF11EY435
+G120EF10EX250
+M201
+IF E40121=0 THEN 
+   (Wkst)
+   G120EF20
+ELSE
+   (Hulse)
+   G120EF40
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HP160-Palette vermessen****)
+N111
+G120EME40121EN9
+G79 N9999
+
+
+(****HP160-Palettenposition anfahren****)
+N112
+(G120 EPE40122 EQE40121)
+G120ETE40123 EUE40122 EVE40121
+G79 N9999
+
+
+(****HP160-Hulsenposition anfahren****)
+N113
+E30059 = 0
+M176
+G120EF10EXE40121
+G120EF11EYE40122
+G79 N9999
+
+(**** HP 160-Home Position****)
+N114
+
+G0 G90 
+X500
+Z-150
+Y225
+C0
+
+G120 EF11 EY430
+G120 EF10 EX220
+M201
+
+
+G79 N9999
+
+(********ITC Funktionen**********)
+(****ITC Spannfutter setzen****)
+N124
+E30222 = 1
+IF E40121=0 THEN  
+   (Wkst)
+   E80090 = E40122 (Wkst-Nummer)
+   E80120 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80140 = E40122 (Hulsen-Nummer)
+ENDI
+G4F1
+E30222 = 0
+G79 N9999
+
+(****ITC Spannfutter laden****)
+N125
+IF E40121=0 THEN 
+   (Wkst)
+   IF E80090=0 THEN
+      M110
+      E80104 = E40123*1000 (Durchmesser)
+      E80100 = E40122      (Wkst-Nummer)
+      G120 ELE80100 EC1
+   ENDI
+ELSE
+   (Hulse)
+   IF E80140=0 THEN 
+      M110
+      E30130=E40122
+      M86
+      G120EHE40025   (Hulsen-Nummer)
+   ENDI
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+(****Spannfutter ablegen****)
+N126
+IF E40121=0 THEN 
+   (Wkst)
+   G120EL0EC1
+ELSE
+   (Hulse)
+   G120EH0
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+(****ITC Greifer RT Bestueckung setzen****)
+N127
+IF E40121=0 THEN 
+   (Wkst)
+   E80088 = E40122 (Wkst-Nummer)
+   E80121 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80143 = E40122 (Hulsen-Nummer)  
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+(****ITC Greifer RT ablegen*******)
+N128
+G120EB1
+G79 N9999
+
+(****ITC Greifer FT Bestueckung setzen***)
+N129
+IF E40121=0 THEN 
+   (Wkst)
+   E80089 = E40122 (Wkst-Nummer)
+   E80122 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80144 = E40122 (Hulsen-Nummer)  
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+(****ITC Greifer FT ablegen****)
+N130
+G120EB1
+G79 N9999
+
+(****ITC Palette vermessen****)
+N131
+G120EME40121EN9
+G79 N9999
+
+(****ITC Palettenposition anfahren****)
+N132
+G120ETE40123 EUE40122 EVE40121
+G79 N9999
+
+(****ITC Huelsenposition anfahren****)
+N133
+G79 N9999
+
+(****ITC Bestückungsposition anfahren****)
+N134
+G120 EP0
+G79 N9999
+
+(****ITC Bestückungsposition anfahren****)
+N134
+G120 EP0
+G79 N9999
+
+(****ITC Homeposition anfahren****)
+N135
+(Bestueckungsposition anfahren)
+G0 G90
+X510
+Y160 Z100
+C0
+M239
+M238
+G79 N9999
+
+(****ITC RT von Greifer in Spannfutter****)
+N136
+G120EK1
+G79 N9999
+
+
+(****HC4 Funktionen****)
+
+(****HC4-Achsen einmessen****)
+N151
+IF E40121 = 0 THEN		(X2-Achse)
+   G120 EM4
+ENDI
+IF E40121 = 1 THEN		(Y2-Achse)
+   G120 EM5
+ENDI
+G79 N9999
+
+
+(****HC4-Messfahrten****)
+N152
+(Kompensation Grundwert)
+IF E40121 = 0 THEN
+   G120EK1
+   G120EF31
+ENDI
+G79 N9999
+
+
+(****HC4-Spannfutter setzen****)
+N153
+IF E40121=0 THEN  
+   (Wkst)
+   E80090 = E40122 (Wkst-Nummer)
+   E80120 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80140 = E40122 (Hulsen-Nummer)
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HC4-Spannfutter laden****)
+N154
+IF E40121=0 THEN 
+   (Wkst)
+   IF E80090=0 THEN
+      M110
+      E80104 = E40123*1000 (Durchmesser)
+      E80100 = E40122      (Wkst-Nummer)
+      G120 ELE80100 EC1
+   ENDI
+ELSE
+   (Hulse)
+   IF E80140=0 THEN 
+      M110
+      E30130= E40122
+      M86
+      G120EHE40025   (Hulsen-Nummer)
+   ENDI
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HC4-Spannfutter ablegen****)
+N155
+E80021=2
+IF E40121=0 THEN 
+   (Wkst)
+   G120EL0EC1
+ELSE
+   (Hulse)
+   G120EH0
+ENDI
+M226
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HC4-Greifer Bestueckung setzen****)
+N156	
+IF E40121=0 THEN 
+   (Wkst)
+   E80088 = E40122 (Wkst-Nummer)
+   E80121 = E40123 (Durchmesser)
+ELSE
+   (Hulse)
+   E80143 = E40122 (Hulsen-Nummer)  
+ENDI
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HC4-Greifer ablegen****)
+N157
+M110
+G0X400
+G120EPE40122
+IF E40121=0 THEN 
+   (Wkst)
+   G120EF11EYE40203
+ELSE
+   (Hulse)
+   G120EF11EYE40203
+ENDI
+M226
+IF E40015=1 THEN
+   M233
+ENDI
+M231
+M201
+M232
+M227
+M220
+IF E40121=0 THEN 
+   (Wkst)
+   E80088 = 0
+ELSE
+   (Hulse)
+   E80143 = 0
+ENDI
+M231
+M226
+E30222 = 1
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HC4-Kettenposition****)
+N158
+E30222 = 1
+IF E40121=0 THEN 
+   (Beladeposition)
+   G120EPE40122
+ELSE
+   (Bestuckungposition)
+   G120EBE40122
+ENDI
+G4F1
+E30222 = 0
+G79 N9999
+
+
+
+
+(****HPR250 Funktionen****)
+
+(****HPR250-Reset****)
+N201
+M261
+E30060=100	(JobNr=100)
+M266
+G79 N9999
+
+
+(****HPR250-Vorposition Ausrichten****)
+N202
+M261
+E30060=800 	(JobNr=800)
+M263
+M261
+E30060= 1100	(JobNr=1100)
+E30061= E40121	(Arg1=PosX)
+E30062= E40122	(Arg2=PosY)
+E30063= E40123	(Arg3=PosZ)
+E30064= E40125	(Arg4=PosW)
+E30065= E40126	(Arg5=PosP)
+E30066= E40127	(Arg6=PosR)
+M263
+G79 N9999
+
+
+(****HPR250-Vorposition ToolFrame****)
+N203
+M261
+E30060=800	(JobNr=800)
+M263
+M261
+E30060= 1100	(JobNr=1100)
+E30061= E40121	(Arg1=PosX)
+E30062= E40122	(Arg2=PosY)
+E30063= E40123	(Arg3=PosZ)
+E30064= E40125	(Arg4=PosW)
+E30065= E40126	(Arg5=PosP)
+E30066= E40127	(Arg6=PosR)
+M263
+G79 N9999
+
+
+(****HPR250-Vorposition Hulsenablage****)
+N204
+M261
+E30060=1440	(JobNr=1440)
+E30061=E40121	(Arg1=GreiferNr)
+E30062=E40122	(Arg2=Hulsenplatz)
+M263
+G79 N9999
+
+
+(****HPR250-Vorposition Umsetzplatz****)
+N205
+M261
+E30060=1410	(JobNr=1410)
+E30061=E40121	(Arg1=GreiferNr)
+M263
+G79 N9999
+
+
+(****HPR250-Vorposition A1UebergabePos****)
+N206
+G0 G90 X400
+C0
+Y220Z50
+M200
+M261
+E30060=600	(JobNr=600)
+M263
+M261
+E30060=820	(JobNr=820)
+M263
+M261
+E30060=590	(JobNr=590)
+E30061=E40121	(Arg1=Wkst_Hulse)
+E30062=E40122	(Arg2=GreiferNr)
+M263
+G79 N9999
+
+
+(****HPR250-Initialkompensation****)
+N207
+VAR H9840:1		   
+G0 G90 X400
+C0
+Y220Z50
+M200
+M261
+E30060=600	(JobNr=600)
+M263
+M261
+E30060=820	(JobNr=820)
+M263
+M195
+M198
+G0 G90 X[XPos1] Z[ZPos1]
+M261
+E30060=570	(JobNr=570)
+E30061=E40121	(Arg1=Wkst_Hulse)
+E30062=E40122	(Arg2=GreiferNr)
+M263
+M196
+M199
+G0 G90 X400
+M261
+E30060=800	(JobNr=800)
+M263
+M201
+G79 N9999
+
+
+(****HPR250-Greifer auf_zu****)
+N208
+M261
+IF E40121=0 THEN
+   (Greifer1)
+   IF E40122=0 THEN
+      (auf)
+      E30060=412   (JobNr=412)
+   ELSE
+      (zu)
+      E30060=414   (JobNr=414)
+      E30061=0     (Arg1=ohne Durck)
+   ENDI
+ELSE
+   (Greifer2)
+   IF E40122=0 THEN
+      (auf)
+      E30060=416   (JobNr=416)
+   ELSE
+      (zu)
+      E30060=418   (JobNr=418)
+      E30061=0     (Arg1=ohne Druck)
+   ENDI
+ENDI
+M266
+G79 N9999
+
+
+(****HPR250-Greifer mit Druck beaufschlagen****)
+N209	  
+M261
+(Greifer1)
+IF E40121=1 THEN
+	   
+   E30060=402	(JobNr=402)
+   E30061=1 	(Arg1=mit Druck)  
+	   
+ENDI
+(Greifer2)
+IF E40121=1 THEN
+	   
+   E30060=408	(JobNr=402)
+   E30061=1 	(Arg1=mit Druck)
+	   
+ENDI
+M266
+G79 N9999
+
+
+(****HPR250-Grundposition****)
+N210
+M261
+E30060=800	(JobNr=800)
+M263
+M201
+G79 N9999
+
+
+
+(****HPR250-Spannfutter setzen****)
+N211
+E30222 = 1
+IF E40121=0 THEN
+   (Wkst)
+   E80090 = E40122   (WkstNr)
+   E80094 = E40123   (Durchmesser)
+   E80096 = E40125   (Greifhohe)
+ELSE
+   (Hulse)
+   E80140 = E40122   (HulseNr)
+   M261
+   E30060=1607       (JobNr=1607)
+   E30061=E40122     (Arg2=HulseNr) 
+   M266
+ENDI
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HPR250-Spannfutter laden****)
+N212
+E30222 = 1
+M261
+E30060=800 		(JobNr=800)
+M263
+M261
+   E30060=412   (JobNr=412)
+M263
+M261
+   E30060=416   (JobNr=416)
+M263						   
+IF E40121=0 THEN
+   (Wkst)
+   E80104 = E40123*1000   (Durchmesser)
+   E80106 = E40125*1000   (Greifhohe)
+   G120ELE40122	     (WkstNr)
+ELSE
+   (Hulse)
+   E30130= E40122
+   M86
+   G120EHE40025   (Hulsen-Nummer)
+ENDI
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HPR250-Spannfutter entladen****)
+N213
+M261
+   E30060=412   (JobNr=412)
+M263
+M261
+   E30060=416   (JobNr=416)
+M263					   
+E30222 = 1
+IF E40121=0 THEN
+   (Wkst)
+   G120EL0
+ELSE
+   (Hulse)
+   G120EH0
+ENDI
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HPR250-Greifer setzen****)
+N214
+IF E40121=0 THEN
+   (Wkst)
+   M261
+   E30060=1605			(JobNr=1605)
+   E30061=E40122		(Arg1=Greifer RT/FT)
+   E30062=E40123		(Arg2=WkstNr auf Pal)
+   E30063=E40125		(Arg3=WkstDurchmesser)
+   E30064=E40126		(Arg4=Greifhohe)
+   M266
+   IF E40122=0 THEN
+      (Greifer1)
+      E80088 = E40123 		(WkstNr)
+      E80121 = E40125/1000 	(Durchmesser)
+   ELSE
+      (Greifer2)
+      E80098 = E40123 		(WkstNr)
+      E80122 = E40125*1000	(Durchmesser)
+   ENDI
+ELSE
+   (Hulse)
+   M261
+   E30060=1606			(JobNr=1606)
+   E30061=E40122		(Arg1=Greifer RT/FT)
+   E30062=E40123		(Arg2=HulseNr) 
+   M266
+ENDI
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HPR250-Greifer ablegen****)
+N215
+M261
+E30060=800 		(JobNr=800)
+M263
+M201
+M261
+IF E40121=0 THEN
+   (Wkst)
+   E30060=120		(JobNr=120)
+   E30061=0		(Arg1=WkstNr auf Pal)
+   E30062=0		(Arg2=WkstDurchmesser)
+   E30063=0		(Arg3=Greifhohe)
+ELSE
+   (Hulse)
+   E30060=140		(JobNr=140)
+   E30061=0		(Arg1=HulsenNr)
+ENDI
+M263
+G4F1
+E30222 = 0
+G79 N9999
+
+
+(****HPR250-Palettenposition****)
+N216
+M261
+E30060=800 		(JobNr=800)
+M263
+M261
+E30060=1610		(JobNr=1610)
+E30061=E40121		(Arg1=PalNr)
+E30062=E40122		(Arg2=WkstNr auf Pal)
+E30063=E40125		(Arg3=Greifhohe)
+E30064=E40123		(Arg4=WkstDurchmesser)
+M263
+G79 N9999
+
+
+(****HPR250-Vorposition Paletten vermessen****)
+N217
+M261
+E30060=800		(JobNr=800)
+M263
+M261
+E30060=1030		(JobNr=1030)
+E30061=E40121		(Arg1=PalNr)
+E30062=E40122		(Arg2=Eckpunkt)
+M263
+G79 N9999
+
+
+(****HPR250-Vorposition User Frame****)
+N218
+M261
+E30060=800 	(JobNr=800)
+M263
+M261
+E30060= 1100	(JobNr=1100)
+E30061= E40121	(Arg1=PosX)
+E30062= E40122	(Arg2=PosY)
+E30063= E40123	(Arg3=PosZ)
+E30064= E40125	(Arg4=PosW)
+E30065= E40126	(Arg5=PosP)
+E30066= E40127	(Arg6=PosR)
+M263
+G79 N9999
+
+
+(****HPR250-Ausrichten Greifer****)
+N219
+M261
+E30060=800 	(JobNr=800)
+M263
+M261
+E30060=1116 	(JobNr=600)
+E30061=E40121	(Arg1=Drehwinkel)
+M263
+G79 N9999
+
+
+(****HPR250-Prufposition Uebergaben****)
+N220
+M261
+E30060=800 	(JobNr=800)
+M263
+G0X400
+G0C0
+G0Y220Z50
+M200
+M261
+E30060=600 	(JobNr=600)
+M263
+M261
+E30060=585 	(JobNr=585)
+E30061= E40121	(Arg1=Wkst/Hulsen)
+E30062= E40122	(Arg2=Greifer)
+E30063= E40123	(Arg3=Durchmesser)
+M263
+G79 N9999
+
+
+(****HPR250-Messposition UserFrame****)
+N221
+M261
+E30060=800 	(JobNr=800)
+M263
+M261
+E30060=1116 	(JobNr=600)
+E30061=E40121	(Arg1=Drehwinkel)
+M263
+G79 N9999
+
+
+N9999
+M2
+
+  

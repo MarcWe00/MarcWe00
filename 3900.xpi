@@ -1,0 +1,423 @@
+%390.0@2(Messprogramm Lasermessbruecke )
+(********Vermessen von Einspannlaenge und Rundlauffehler mit der Lasermessbruecke unter NumrotoPlus******)
+VAR
+[Data(100)]
+[MessP_V(10)]
+[MessP_H(10)]
+[a][b][c][d][e]
+[Ref_X]=E40006
+[Ref_Y]=E40007
+[Ref_Z]=E40008
+[Anf_X]
+[Anf_Y]
+[Anf_Z]
+[Anf_A]
+[Anf_C]
+[Vorw_EinspL]=0
+[Vorw_RundLUE]=0(283)
+[Vorw_RundLK]=0(44)
+[Vorw_Blas]=E40135
+[Grenze_X]=E40137
+[T_Blas]=E40136
+[Vorw_ES]=E40138
+[FreiFa]=10
+[status]
+[small]
+[large]
+[index]
+[F_LMB]=120
+[F_LMB1]=10								(Messgeschwindigkeit mit Laser)
+[F_ung]=800
+[Rundlauf1]
+[Rundlauf2]
+[Einsp]
+[PosX]
+[Sp_DZ]=1000
+ENDV
+N1000
+G79[Ref_X]=0 N10400
+G79[Ref_Y]=0 N10400
+G79[Ref_Z]=0 N10400
+IF [Ref_X]<130 OR [Ref_X]>150 THEN
+	G79 N10400
+ENDI
+IF [Ref_Y]<302 OR [Ref_Y]>310 THEN
+	G79 N10400
+ENDI
+IF [Ref_Z]<-385 OR [Ref_Z]>375 THEN
+	G79 N10400
+ENDI
+M187
+IF [NR_DATA(64)]=1 THEN							(Vorwahl Messen Einspannlaenge)	
+	G79 [NR_DATA(1)]=0 N10100
+	E80022=0							(Rueckgabewert auf 0)
+	G0 G90
+	X510
+	Z-125
+	IF UE71000>160 THEN
+		Y160
+		C-120
+	ELSE
+		C-120
+	ENDI
+	[Anf_X]=[Ref_X]+[NR_DATA(1)]+[FreiFa]				(Festlegen der Anfahrpositionen an das Werkstueck)
+	[Anf_Y]=[Ref_Y]
+	[Anf_Z]=[Ref_Z]+[NR_DATA(285)]
+	[PosX]=[Anf_X]
+	G77 N10500 N10600
+	[Anf_A]=0
+	G0 G90
+  	X510
+	A[Anf_A] 						(Anfahren bzw. Vorpositionieren der Achsen)
+	Y[Anf_Y] Z[Anf_Z]
+	M187
+	X[Anf_X]
+	G01 G90
+	'X=[Ref_X]+[NR_DATA(1)]-10
+	[PosX]='X
+	G77 N10500 N10600
+	G77 N8000 N8100
+	IF [Vorw_ES]=1 THEN	
+		M62:3
+		M91 M3 S[Sp_DZ]
+		F[F_LMB] XL923 G10 N1010
+		G79 N10100
+		N1010
+		'X=UE70001+0.2
+		F[F_LMB] XL923
+		'X=[Ref_X]+[NR_DATA(1)]-10
+		F[F_LMB1] XL923 G10 N1012
+		G79 N10100
+		N1012
+		'Z=[Ref_Z]+{[NR_DATA(9)]/2}+2
+		'X=UE70001-0.1
+		G01 G90 F5000 XL923 ZL925
+		'Z=[Ref_Z]
+		F[F_LMB] ZL925 G10 N1013
+		G79 N10100
+		N1013
+		'Z=UE72001+0.2
+		F5000 ZL925
+		'Z=[Ref_Z]
+		F[F_LMB1] ZL925 G10 N1014
+		G79 N10100
+		N1014
+		M62:3 M5 S0
+		M90
+		'X=UE70001+4
+		'A=ME76001
+		'Z=[Anf_Z]
+		G01 G90 F5000 XL923 ZL925 AL900
+		'X=[Ref_X]+[NR_DATA(1)]-10
+		G77 N8000 N8100
+		F[F_LMB] XL923 G10 N1015
+		G79 N10100
+		N1015
+	ELSE
+		F[F_LMB] XL923 G10  N1020
+		G79 N10100
+		N1020
+	ENDI
+	N1030
+	[a]=UE70001							(Ablegen des Messwertes in Variable)
+	'X=[a]+5
+	G01 G90 F2000 XL923						(Freifahren der X-Achse)
+	'Z=[Ref_Z]+{[NR_DATA(282)]/2}+[FreiFa]				(Freifahren der Z-Achse)
+	G01 G90 F2000 ZL925
+	[b]=UE70001-[Ref_X]
+	[Einsp]=[b]
+	[c]=[b]-[NR_DATA(1)]					(Berechnen der Einspannlaenge)
+	E80022=[b]-[NR_DATA(1)]/U1	(Ergebnis in Parameter ablegen. Ergebnis ist Differenz zur programmierten Laenge)
+	[status]=1
+	IF [tNrCtrl]>0 THEN
+		$+ Einspannlaenge:
+		L10=[Einsp]*1000 $=TL10/1000 $+mm
+		G4F0.5
+		E80021=4
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+	ENDI
+ENDI
+IF [NR_DATA(44)]=1 OR [NR_DATA(283)]=1 THEN							(Vorwahl Messung Rundlauf)
+	IF [status]=0 THEN
+		G0 G90
+		X510
+		Z-125
+		IF UE71000>160 THEN
+			Y160
+			C-120
+		ELSE
+			C-120
+		ENDI
+	ENDI
+	E80024=0
+	IF [NR_DATA(298)]=0 OR [NR_DATA(299)]=0 THEN			(Kontrolle ob Durchmesser und Laengsposition fuer)
+		G79 N10300						(Rundlaufmessung vorne vorhanden)								
+	ENDI
+	IF [status]=1 THEN						(Wenn Messung Laenge dann wird auf gemessene Laenge gefahren)
+		[Anf_X]=[Ref_X]+[NR_DATA(1)]+[c]-[NR_DATA(298)]
+	ELSE
+		[Anf_X]=[Ref_X]+[NR_DATA(1)]-[NR_DATA(298)]		(Wenn keine Messung Laenge dann wird auf programmierte Laenge gefahren)
+	ENDI
+	[PosX]=[Anf_X]
+	G77 N10500 N10600
+	[Anf_Y]=[Ref_Y]
+	[Anf_Z]=[Ref_Z]+{[NR_DATA(299)]/2}+[FreiFa]
+	[Anf_A]=0
+	G0 G90
+	A[Anf_A]					(Fahren auf Vorposition zum Messen)
+	Y[Anf_Y]
+	Z[Anf_Z]
+	(G77 N10500 N10600)
+	X[Anf_X]
+	[index]=1					(Messfehler)
+	FOR [a]=0 TO 300 BY 60 DO
+		G0 G90
+		A[a]
+		G01 G90
+		G77 N8000 N8100
+		F[F_LMB] Z[Ref_Z] G10
+		[MessP_V(index)]=UE72001
+		'Z=UE72001+1
+		F2000 ZL925
+		[index]=[index]+1
+	ENDF
+	G0 G90 A0	
+	[small]=[MessP_V(1)]						(Ermittlung des Rundlauffehlers vorne)
+	[large]=[MessP_V(1)]
+	FOR [index]=2 TO 6 DO
+		IF [MessP_V(index)]<[small] THEN
+			[small]=[MessP_V(index)]
+		ENDI	 
+		IF [MessP_V(index)]>[large] THEN
+			[large]=[MessP_V(index)]
+		ENDI
+	ENDF
+	[Rundlauf1]=[large]-[small]
+	E80024=[Rundlauf1]/U1
+	IF [tNrCtrl]>0 THEN
+		$+ Rundlauf vorne:
+		L10=[Rundlauf1]*1000 $=TL10/1000 $+mm
+		G4F1
+		E80021=4
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+	ENDI
+	IF [Rundlauf1]>[NR_DATA(284)] THEN
+		$+ Rundlauf vorne Ausserhalb Toleranz
+		IF [tNrCtrl]>0 THEN
+			G4F1
+			E80021=3
+			REPEAT G4F0.1
+			UNTIL E80021=0
+			$
+			[tNrCtrl]=2
+		ELSE
+			M0
+			M02
+		ENDI
+	ENDI	
+
+	IF [NR_DATA(338)]<>0 THEN						(Vorwahl Rundlaufmessung hinten)
+		E80028=0							(Ruecksetzen des Uebergabeparameters)
+		IF [NR_DATA(339)]=0 THEN					(Ist Laengsposition vorhanden?)
+			G79 N10300
+		ENDI
+		IF [status]=1 THEN
+			[Anf_X]=[Ref_X]+[NR_DATA(1)]+[c]-[NR_DATA(338)]	(Wenn Messung Laenge dann wird auf gemessene Laenge gefahren)
+		ELSE
+			[Anf_X]=[Ref_X]+[NR_DATA(1)]-[NR_DATA(338)]		(Wenn keine Messung Laenge dann wird auf programmierte Laenge gefahren)
+		ENDI
+		[PosX]=[Anf_X]
+		G77 N10500 N10600
+		[Anf_Y]=[Ref_Y]							(Fahren auf Vorposition zum Messen)	
+		[Anf_Z]=[Ref_Z]+{[NR_DATA(339)]/2}+[FreiFa]
+		[Anf_A]=0
+		G0 G90
+		A[Anf_A] 						(Fahren auf Vorposition zum Messen)
+		Z[Anf_Z]
+		Y[Anf_Y]
+		X[Anf_X]
+		G01 G90
+		[index]=1
+		FOR [a]=0 TO 300 BY 60 DO
+			G0 G90
+			A[a]
+			G01 G90
+			G77 N8000 N8100
+			F[F_LMB] Z[Ref_Z] G10
+			[MessP_H(index)]=UE72001
+			'Z=UE72001+1
+			F2000 ZL925
+			[index]=[index]+1
+		ENDF
+		G0 G90 A0
+		[small]=[MessP_H(1)]						(Ermittlung des Rundlauffehlers hinten)
+		[large]=[MessP_H(1)]
+		FOR [index]=2 TO 6 DO
+			IF [MessP_H(index)]<[small] THEN
+				[small]=[MessP_H(index)]
+			ENDI	 
+			IF [MessP_H(index)]>[large] THEN
+			[large]=[MessP_H(index)]
+			ENDI
+		ENDF
+		[Rundlauf2]=[large]-[small]
+		E80028=[Rundlauf2]/U1
+		IF [tNrCtrl]>0 THEN
+			$+ Rundlauf hinten:
+			L10=[Rundlauf2]*1000 $=TL10/1000 $+mm
+			G4F0.5
+			E80021=4
+			REPEAT G4F0.1
+			UNTIL E80021=0
+			$
+		ENDI	
+		IF [Rundlauf2]>[NR_DATA(284)] THEN
+			$+ Rundlauf hunten Ausserhalb Toleranz
+			IF [tNrCtrl]>0 THEN
+				G4F1
+				E80021=3
+				REPEAT G4F0.1
+				UNTIL E80021=0
+				$
+				[tNrCtrl]=2
+			ELSE
+				M0
+				M02
+			ENDI
+		ENDI	
+	ENDI	
+ENDI
+N6000
+M179
+G0 G90
+X[NR_DATA(52)]
+Y[NR_DATA(51)]
+Z[NR_DATA(50)]
+A[NR_DATA(54)] C[NR_DATA(53)]
+G79 N20000
+N8000
+	IF [Vorw_Blas]=1 THEN
+		M116
+		G04 F[T_Blas]
+		M117
+		G04F0.5
+	ENDI
+N8100
+N10000 $Err: Kollision
+	G0 G90
+	X510
+	Y160
+	C0
+	Z-125
+	IF [tNrCtrl]>0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+		[tNrCtrl]=2
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N10100 $Err: Einspannlaenge nicht gefunden
+	G0 G90
+	X510
+	Y160
+	C0
+	Z-125
+	IF [tNrCtrl]>0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+		[tNrCtrl]=2
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N10200 $Err: Schneide nicht gefunden
+	G0 G90
+	X510
+	Y160
+	C0
+	Z-125
+	IF [tNrCtrl]>0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+		[tNrCtrl]=2
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N10300 $Err: Eingabefehler
+	G0 G90
+	X510
+	Y160
+	C0
+	Z-125
+	IF [tNrCtrl]>0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+		[tNrCtrl]=2
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N10400 $Err: Referenzpunkt nicht vorhanden
+	G0 G90
+	X510
+	Y160
+	C0
+	Z-125
+	IF [tNrCtrl]>0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+		[tNrCtrl]=2
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N10500 
+	IF [PosX]<[Grenze_X] THEN
+		$Err: Kollision X-Achse
+		G0 G90
+		X510
+		Y160
+		C0
+		Z-125
+		M0
+		M02
+	ENDI
+N10600
+N16000
+N17000
+N19000
+		
+N20000
+
+
+
+
+
+	 
+   

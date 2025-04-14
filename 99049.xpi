@@ -1,0 +1,13 @@
+%9904.9@2(Brake Test - Configuration)
+(V1.0 / 14.04.2016 NUM-CH/APL)
+
+N10 (General)
+[RTO]     = 0           (RTO[6]:  [0]:Automatic   [1..110]:Search )
+N19
+N100 (Axis)
+[AxisAdr] = 2           (Axis address)
+[Inc]     = -500        (Increment)
+[e20000]  = 20002       (E-Parameter E200xx [1])
+[eParam]  = 81900       (E-Parameter E8xyyy [4])
+N109
+N9090 $Error: nor free RTO found

@@ -1,0 +1,104 @@
+%9860.0@1(HC4)(Daten Lader)
+(DATA_PCEall.xpi)
+(Abgeleitet von HP160: )
+(@1)
+
+
+N1000 (Werkstueckwechsler allgemein)
+  [PalTypRT]      	= 1           (Palettentyp RT: 1:Var1 2:Var2 3:Var3 5:Benutzer )
+  [PalTypFT]      	= 2    			  (Palettentyp RT: 1:Var1 2:Var2 3:Var3 5:Benutzer )
+  
+  [F_0]           	= 12000			  (Vorschub Hauptachsen schnell)
+  [F_1]           	= 1500 			  (Vorschub Hauptachsen langsam, Einfuttern)
+  [F_2]           	= 2000 			  (Vorschub Hauptachsen langsam, Ausfuttern)
+  [F2_0]          	= 12000			  (Vorschub Wechslerachsen schnell)
+  [F2_1]          	= 12000  		  (Vorschub Wechslerachsen mit Wkst)
+  [F2_2]     	   	  = 12000  		  (Vorschub Greifer mit X2 in Maschinenraum)
+  [F2_3]          	= 2000 
+  [F2_4]          	= 12000
+  [F2_5]          	= 6000       	(Vorschub Y2, X2 in Handlingsraum) 
+  [F2_6]          	= 1500	    	(Vorschub Kette Eilgang HC4)
+  
+  [oSchieb]       	= E40181	    (Nachschieben: 0=aus / 1=[sSchieb] / 2=Wert von NR)
+  [sSchieb]       	= E40182	    (Nachschieben Laenge)
+  [A1_S]                = E40209   	(0=Nachschieben mit A1 spannen, 1=ohne)
+  
+  [oZHub]         	= E40186      (Z-Achse abheben bei Wechsel 0=aus, 1=[sZHub])
+  [sZHub]         	= E40187      (Z Achsenhub)
+  
+  [S_TurnA]       	= E40183      (A-Achse drehen beim Einfuttern 0=aus / >0=Drehzahl)
+  
+  [oSpWdh]        	= E40185      (Nachtraegliches Loesen-Spannen nach Einfuttern)
+  
+  [FreiFa_X]      	= E40188      (Freifahren X1 bei Wechsel 0=[Pos1X], 1=NR)
+  
+  [ZAusbl]		= E40216	     (Pos. Z1-Achse beim ausblasen)
+  [Ausbl] 	   	= E40184	    (Futter Ausblasen 0 = Nein, 1 = Ja )
+  [A1_RT]         	= E40204		 (Modus beim Einfuttern RT 0=Grei. drucklos,1=Grei.AUF,2=Grei.ZU)
+  
+  [ChuckL]        	= E40201      (0=Pos2X_RT[FT], 1=Wert NR)	
+  
+  [Chg_Hue]       	= E40019      (0=ohne Huelsenwechsel, 1=mit Huelsenwechsel)
+  
+  [Support]	   	    = E40190      (Unterstuetzung 0 = Nein, 1 = Ja )
+    
+  [Gr_Nr]         	= E40180 (Greifernummer 0 = 3-12.5mm, 1 = 13-20mm, 2 = 6-16mm)
+  
+  [HC4_mod]       	= E40191      (1=HSK63)
+
+  [HC4Plus]		= E40116      (1=HC4+)
+  
+  [XDiff_FT]		= E40205	(Differenz Uebergabe RT/FT)
+N1099
+
+N2000 (Einmessdaten)
+  [PosX_0]        	= 400.0 		  (Position X fuer Drehung C)
+  [PosY_0]        	= 220.0 		  (Position Y zurueck versenkt)
+  [PosC_0]        	= 0.0   		  (Position C fuer Zurueckfahren Y)
+  
+  [Pos1X]         	= E40189      (Position X vor Spannfutter fuer Greifer drehen)
+
+  [Pos0X_RT]      	= E40202(200)		  (Position X Greifer RT vor Wkst-Traeger)
+  [Pos0X_FT]		=E40202(200)      (Position X Greifer FT vor Wkst-Traeger)
+  [Pos2X_RT]      	= E40192	    (Position X Wkst in Spannfutter Greifer RT)  
+  [Pos2X_FT]      	= E40192	    (Position X Wkst in Spannfutter Greifer FT)  
+  [PosZ_RT]       	= E40193(-128.866)  		(Position Z Beladen RT)  
+  [PosZ_FT]       	= E40193(-128.895)  		(Position Z Beladen FT)  
+  
+  [Pos1X2]        	= 467  		    (Position X2 Wechsel RT)
+  [Pos1SinX2]     	= 316
+  [Pos2SinX2]    	  = 300
+
+  [Pos1Y2]        	= E40194(79.824)	  	(Position Y2 Wechsel RT)
+  [Pos2Y2]        	= E40194(-9.715)	  	(Position Y2 Wechsel FT)
+
+  [Pos3X2]        	= 250  		    (Position X2 Warten vor Beladetuere)
+  [Pos3Y2]        	= 435  		    (Position Y2 Warten vor Beladetuere)
+  [Pos4X2]        	= 300  		    (Position X2 fuer Bestuckung)
+  [Pos4Y2]        	= 170  		    (Position Y2 fuer Bestuckung)
+  [Pos5X2]        	= 280
+  [Pos6X2]        	= 220         (Position X2 vor Palette Z2 ab)
+  [Pos6aX2]         = 202         (Position X2 vor Palette Z2 ab bei Huelsenwechsel)
+  [Pos7X2]          = 230			    (Position X2 quer mit Huelse)
+  [DurUeb]      	  = E40200	    (Rohlingsdurchmesser Uebergabe A-Achse Greifer 0)
+N2999
+
+N3000
+	[Gr_Nr]        	  = E40180  (Greifernummer 0 = 3-12.5mm, 1 = 13-20mm, 2 = 6-16mm)
+	[DurUeb]      	  = E40200(12) 	    (Rohlingsdurchmesser Uebergabe A-Achse Greifer 0)
+	([Pos1Y2]		      = E40196)		  (Position Y2 Wechsel RT)
+N3100 
+
+N4000
+  (Parameter für HC4)
+	[Y2HSK_Ch]        = E40203	    (Y2-Position Übergabe Magazin)
+	[Y2HSK_Ma]	      = E40194      (Y2-Position Übergabe A-Achse)
+	[X1HSK_Ma]        = E40192      (X1-Position Übergabe A-Achse)
+	[Z1HSK_Ma]        = E40193      (Z1-Position Übergabe A-Achse)
+	[X1HSK_1]         = 180         (Position vor A-Achse für Vorschub langsam)
+        [X1HSK32]	  = 161		(Position X1 HSK32 vor Futter)
+N5000
+
+  
+ 
+ 

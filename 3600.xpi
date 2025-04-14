@@ -1,0 +1,166 @@
+%360.0@2(Referenzprogramm Y-Achse Lasermessbrücke )
+VAR
+[MessP_Y(100)]
+[MessP_Z(100)]
+[MessP_Y2(10)]
+[MessP_Z2(10)]
+[Mess1][Mess2][Mess3][Mess4][Mess5]
+[Ref_X]=E40006
+[Ref_Y]=307 (E40007)
+[Ref_Z]=E40008
+[Ref_Xneu]=30196
+[Ref_Yneu]=30197
+[Ref_Zneu]=30198
+[Start_X]=136
+[Start_Y]=307
+[Start_Z]=-379
+[smallestZ][smallestY]
+[index]
+[F_LMB]=120
+[F_Vorp]=3000
+[T_Blas]=E40136
+[Vorw_B]=E40135
+[EinspL]=E40121
+[Dur_Dorn]=E40122
+[Dur_Akt]
+[Dur_Aktneu]
+[Dur_Komp]=E40009
+[Dur_KompNeu]=30199
+[a][b][c][d][e][f][k][l]
+([M99x]=998-[.BM997]+[.BM999])
+ENDV
+(M997)
+(G997)
+G71
+G0 G90
+X510 A0
+IF UE71000>160 THEN
+	Y160
+ENDI
+C-120
+IF [Ref_Y]<>0 THEN
+	IF [Ref_Y]>312 OR [Ref_Y]<303 THEN
+		G79 N11000
+	ENDI
+	Y[Ref_Y]
+ELSE
+	Y[Start_Y]
+ENDI
+IF [Ref_Z]<>0 THEN
+	IF [Ref_Z]>-370 OR [Ref_Z]<-385 THEN
+		G79 N11000
+	ENDI
+	Z[Ref_Z]
+ELSE
+	Z[Start_Z]
+ENDI
+IF [Ref_X]<>0 THEN
+	G79 [EinspL]=0 N10000
+	'X=[Ref_X]+[EinspL]+10
+	G01 G90 F[F_Vorp] XL923
+ELSE
+	G79 [EinspL]=0 N10000
+	'X=[Start_X]+[EinspL]+10
+	G01 G90 F[F_Vorp] XL923
+ENDI
+N1000
+M187
+G01 G90 
+'X=UE70000-20
+G77 N8000 N8100
+F[F_LMB] XL923 G10 N1010
+G79 N11000
+N1010
+[Mess1]=UE70001
+G01 G91
+X1
+G77 N8000 N8100
+F[F_LMB] X-5 G10 N1020
+G79 N11000
+N1020
+[Mess2]=UE70001
+G01 G91
+X1
+G77 N8000 N8100
+F[F_LMB] X-5 G10 N1030
+G79 N11000
+N1030
+[Mess3]=UE70001
+G01 G91
+X5
+[a]={[Mess1]+[Mess2]+[Mess3]}/3
+E[Ref_Xneu]=[a]-[EinspL]
+G01 G90
+'Z=UE72000+{[Dur_Dorn]/2}+5
+G01 G90 F[F_Vorp] ZL925
+'X=UE70001-15
+XL923
+G01 G90 F[F_Vorp]
+'Y=UE71000-2
+YL924
+G77 N8000 N8100
+
+N1050
+G01 G90 F[F_Vorp] 
+'Z=[Start_Z]+{[Dur_Dorn]/2}+3
+G01 G90 F[F_Vorp] ZL925
+'Z=[Start_Z]
+G77 N8000 N8100
+G01 G90 F[F_LMB] ZL925 G10 N1060
+G79 N11000
+N1060
+[a]=UE72001
+'Z=[Start_Z]-{[Dur_Dorn]/2}-3
+G01 G90 F[F_Vorp] ZL925
+'Z=[Start_Z]
+G01 G90 F[F_LMB] ZL925 G10 N1070
+G79 N11000
+N1070
+[b]=UE72001
+[c]=[a]-[b]
+[k]=[Dur_Dorn]+0.002
+[l]=[Dur_Dorn]-0.002
+IF [c]>[l] AND [c]<[k] THEN
+	G79 N2000
+ENDI
+'Y=UE71000+0.1
+G01 G90 F[F_Vorp] YL924
+G79 UE71000<=309 N1050
+G79 N11000
+N2000
+E[Ref_Yneu]=UE71000
+IF E[Ref_Yneu]>312 OR E[Ref_Yneu]<303 THEN
+	G79 N11000
+ENDI
+'Z=[Start_Z]+{[Dur_Dorn]/2}+10
+G01 G90 F[F_Vorp] ZL925
+E[Ref_Zneu]={[a]+[b]}/2
+IF E[Ref_Zneu]>-370 OR E[Ref_Zneu]<-385 THEN
+		G79 N11000
+ENDI
+E[Dur_KompNeu]=[c]-[Dur_Dorn]
+G0 G90
+X510
+Z-250
+Y160
+C0
+G79 N20000	
+N8000
+IF [Vorw_B]=1 THEN
+	M116
+	G04 F[T_Blas]
+	M117
+	G04 F0.5
+ENDI
+N8100
+N10000 $Laser bereits angefahren
+M0
+G79 N20000
+N11000 $Laser Messposition nicht erreicht
+M0
+G79 N20000
+N20000
+M179
+(M[M99x])
+M02	 
+   

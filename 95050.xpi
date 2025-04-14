@@ -1,0 +1,14 @@
+%9505.0@2(Referenzwerte setzen)
+(RefwerteSetzen.xpi)
+
+E30221 = 0
+IF E40124=1 THEN
+E30221 = 1
+E92000 =1	(X1_Achse)
+E92001 =1	(Y1_Achse)
+E92002 =1	(Z1_Achse)
+E92004 =1	(C1_Achse)
+E92005 =1	(X2_Achse)
+E92006 =1	(Y2_Achse) 
+E30221 = 0
+ENDI

@@ -1,0 +1,63 @@
+%9510.0@1(Konfiguration Werkzeugwechsler )
+N1000
+([Best_SP1] = 0 (Bestuckung beim Start Spindel1)
+([Best_SP2] = 0 (Bestuckung beim Start Spindel2)
+[PosX1] = 400  (Parkposition X1-Achse)
+[PosY1] = 130 (Parkposition Y1-Achse)
+[PosZ1Sp1] = 0 (Parkposition Z1-Achse)
+[PosZ1Sp2] = -200 (Parkposition Z1-Achse)
+[PosZ1HF] = -200  
+[PosC1] = 0 (Parkposition C1-Achse)
+[Sp_Akt] = 30011 (Parameternummer Spindelnummer aktuell)
+[Sp_TNext] = 30010 (Parameternummer naechstes Werkzeug)
+[Sp_Next] = 30012 (Parameternummer Spindelnummer naechstes Werkzeug)
+[Y1_Nocke] = E40210		(237.5) (Warteposition Werkzeugwechselarm einschwenken auf Nocke)
+[Y1_Rueck] = E40211		(244) (Startposition Werkzeugwechselarm rueckschwenken)
+[Y1_Rille] = E40212		(256.2) (Position Eingriff Werkzeugrille)
+[Y1_Geloe] = E40213		(275) (Position Werkzeug gelost)
+[Y1_BlaA] = E40215		(280) (Position Blasen Aus)
+[Y1_Ende] = E40214		(309)	(Position vollstaendig ausgefuttert)
+
+[Y1_NoHF] = E40210		(237.5) (Warteposition Werkzeugwechselarm einschwenken auf Nocke)
+[Y1_RueHF] = E40211		(244) (Startposition Werkzeugwechselarm rueckschwenken)
+[Y1_RiHF] = E40212		(256.2) (Position Eingriff Werkzeugrille)
+[Y1_GelHF] = E40213		(275) (Position Werkzeug gelost)
+[Y1_BlHF] = E40215		(280) (Position Blasen Aus)
+[Y1_EnHF] = E40214		(309)	(Position vollstaendig ausgefuttert)
+
+[Best_SP1] = 80061 (Parameternummer aktuelle Bestuckung Spindel1)
+[Best_SP2] = 80062 (Parameternummer aktuelle Bestuckung Spindel2)
+[Wkz_Takt] = 30200 (Werkzeugnummer an SPS zum takten)
+[Speed_1] = 8000 (Geschwindigkeit 1)
+[Speed_2] = 8000 (Geschwindigkeit 2)
+[Speed_3] =8000 (Geschwindigkeit 3)
+[Speed_4] =1000 (Geschwindigkeit 4)
+[Speed_5] =20000 (Geschwindigkeit 5)
+[Zust_SP1] = 40101 (Spannzustand Spindel 1, 0=ohne Wkz 1=mit Wkz)
+[Zust_SP2] = 40102 (Spannzustand Spindel 2, 0=ohne Wkz 1=mit Wkz)
+[CNC_Pl1] = 30208 (Parameternummer Belegung Magazinplatz 1, 0=ohne 1=mit)
+[CNC_Pl2] = 30209 (Parameternummer Belegung Magazinplatz 2, 0=ohne 1=mit)
+[CNC_Pl3] = 30210 (Parameternummer Belegung Magazinplatz 3, 0=ohne 1=mit)
+[CNC_Pl4] = 30211 (Parameternummer Belegung Magazinplatz 4, 0=ohne 1=mit)
+[CNC_Pl5] = 30212 (Parameternummer Belegung Magazinplatz 5, 0=ohne 1=mit)
+[CNC_Pl6] = 30213 (Parameternummer Belegung Magazinplatz 6, 0=ohne 1=mit)
+[CNC_Pl7] = 30214 (Parameternummer Belegung Magazinplatz 7, 0=ohne 1=mit)
+[CNC_Pl8] = 30215 (Parameternummer Belegung Magazinplatz 8, 0=ohne 1=mit)
+[SPS_Pl1] = 40108 (Parameternummer SPS Belegung Magazinplatz 1, 0=ohne 1=mit)
+[SPS_Pl2] = 40109 (Parameternummer SPS Belegung Magazinplatz 2, 0=ohne 1=mit)
+[SPS_Pl3] = 40110 (Parameternummer SPS Belegung Magazinplatz 3, 0=ohne 1=mit)
+[SPS_Pl4] = 40111 (Parameternummer SPS Belegung Magazinplatz 4, 0=ohne 1=mit)
+[SPS_Pl5] = 40112 (Parameternummer SPS Belegung Magazinplatz 5, 0=ohne 1=mit)
+[SPS_Pl6] = 40113 (Parameternummer SPS Belegung Magazinplatz 6, 0=ohne 1=mit)
+[SPS_Pl7] = 40114 (Parameternummer SPS Belegung Magazinplatz 7, 0=ohne 1=mit)
+[SPS_Pl8] = 40115 (Parameternummer SPS Belegung Magazinplatz 8, 0=ohne 1=mit)
+[Flag_SPS] = 40117 (Referenzflag von der SPS)
+[T_Wait] = 0.2	(Wartezeit) 
+[Vorw_HF] = E40103
+[SpSW]= E40098(2)
+[SpSWUeb1] = 40099
+[SpSWUeb2] = 40100
+N2000
+
+
+

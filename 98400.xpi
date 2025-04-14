@@ -1,0 +1,71 @@
+%9840.0@1(HPR250)
+(DATA_PCEall.xpi)
+(V1.0a / 21.01.14 / NUM/Apl)
+N1000 (Werkstueckwechsler allgemein)
+[PalTypRT]      = 1     		(Palettentyp RT: 1:Var1 2:Var2 3:Var3 5:Benutzer )
+[PalTypFT]      = 2    		(Palettentyp RT: 1:Var1 2:Var2 3:Var3 5:Benutzer )
+
+(Vorschube)
+[F_0]           = 12000  		(Vorschub Hauptachsen schnell)
+[F_1]           = 1000   		(Vorschub Hauptachsen langsam, Einfuttern)
+[F_IN]          = 1000   		(Vorschub Huelse einfuttern)
+[F_OUT]         = 1000   		(Vorschub Huelse ausfuttern)
+[F_A1]          = 3000   		(Vorschub A1 positionieren Huelse)
+N1099
+N2000
+(Konfiguration Werkstueckwechsel)
+[oSchieb]       = E40181           	(Nachschieben: 0=aus / 1=[sSchieb] / 2=Wert von NR)
+[sSchieb]       = E40182          	(Nachschieben Laenge)
+[oZHub]         = E40186           	(Z-Achse abheben bei Wechsel 0=aus, 1=[sZHub])
+[sZHub]         = E40187           	(Z Achsenhub) 
+[S_TurnA]       = E40183         	(A-Achse drehen beim Einfuttern 0=aus / >0=Drehzahl)
+[oSpWdh]        = E40185     	(Nachtraegliches Loesen-Spannen nach Einfuttern)
+[FreiFa_X]      = E40188     	(Freifahren X1 bei Wechsel 0=[Pos1X], 1=NR)
+[Support]	   = E40190     	(Unterstuetzung 0 = Nein, 1 = Ja )
+[RichtPal]      = 1      		(Abzeilen: 0 = X-Richtung, 1 = Y-Richtung)
+[Gr_Nr]         = E40180           	(Greifernummer 0 = 3-12.5mm, 1 = 13-20mm, 2 = 6-16mm)
+[Chg_Hue]       = E40019       	(Huelsenwechsel 0=nein, 1=ja)
+[ChuckL]        = E40201           	(0=Pos2X_RT[FT], 1=Wert NR)
+[Ausbl] 	   = E40184		(Futter Ausblasen 0 = Nein, 1 = Ja)
+N2099
+N3000
+(Konfiguration Huelsenwechsel)
+[X1SlFrei]      = 270   		(X1 Parkposition Huelse)
+[X1Sl1]         = E40045	    	(X1 Freifahrposition Huelse)
+[X1SlRT]        = E40055	    	(X1 Uebergabeposition Huelse RT)
+[X1SlFT]        = E40054	    	(X1 Uebergabeposition Huelse FT)
+[Z1Sl_RT]       = E40047		(Z1 Uebergabeposition Huelse RT)
+[A1Sl_RT]       = E40049		(A1 Uebergabeposition Huelse RT)
+[Z1Sl_FT]       = E40050		(Z1 Uebergabeposition Huelse FT)
+[A1Sl_FT]       = E40052		(A1 Uebergabeposition Huelse FT)
+[A1Dreh]        = E40053		(A1 Verdrehung verriegeln/entriegeln Huelse)   
+[Dur_Hue1]      = E40020     	(Durchmesser Huelse 1)
+[Dur_Hue2]      = E40025     	(Durchmesser Huelse 2)
+[Dur_Hue3]      = E40030    		(Durchmesser Huelse 3)
+[Dur_Hue4]      = E40035     	(Durchmesser Huelse 4)
+[Dur_Hue5]      = E40036		(Durchmesser Huelse 5)
+[Dur_Hue6]      = E40037		(Durchmesser Huelse 6)
+N3099
+N4000
+(Einmessdaten)
+[PosX_0]        = 400.0  		(Position X fuer Drehung C)
+[PosY_0]        = 220.0  		(Position Y zurueck versenkt)
+[PosC_0]        = 0.0    		(Position C fuer Zurueckfahren Y)
+[XPos1]          = 92		(Position X Kompensieren)
+[ZPos1]          = 50		(Position Z Kompensieren)	
+
+[Pos1X]         = E40189		(Position X vor Spannfutter fuer Greifer drehen)
+[Pos2X_RT]      = E40192	    	(Position X Wkst in Spannfutter Greifer RT)
+[Pos2X_FT]      = E40193	    	(Position X Wkst in Spannfutter Greifer FT)
+[PosZ_RT]       = E40194        	(Position Z Beladen RT)
+[PosZ_FT]       = E40195       	(Position Z Beladen FT)
+[DurUeb]        = E40200      	(Rohlingsdurchmesser Uebergabe A-Achse Greifer 0)
+N4099
+
+
+
+
+
+
+
+
