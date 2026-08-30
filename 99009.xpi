@@ -1,0 +1,17 @@
+%9900.9@1(Oszillation )
+(NrOszCfg.xpi)(V3.0a / 14.11.2014 NUM-CH/APL)
+
+N10
+[eParam]   = 84000      (inkl. 30 folgende Parameter)
+[ePoti]    = 1      	(Potentiometer 0:none 1:E79002 47xxx:E47xxx)
+[ePlcStop] = 20005      (PLC-Stop      0:none          200xx:E200xx)
+[eNcStop]  = 10005      (NC-Stop:      0:none          100xx:E100xx)
+[RTO]      = 0          (RTO:          0:Automatisch   >0:Suchen)
+[TPot]     = 60000      (Filterzeit Potentiometer [us])
+[TOsz]     = 15000      (Filterzeit Oszillator [us])
+N19
+N20
+[OszVA]   = 2           (Name of vertically axis, L10)
+[OszQA]   = 1           (Name of diameter axis, L11)
+[OszLA]   = 0           (Name of length axis, L12)
+N29

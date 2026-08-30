@@ -1,0 +1,29 @@
+%9873.0@1(HP160)(Daten Huelsenwechsel)
+(DATA_PCES.xpi)
+(V1.0a / 21.01.14)
+
+N1000
+[X1SlFrei] = 270		(X1 Parkposition Huelse)
+[X1Sl1]     = E40045		(X1 Freifahrposition Huelse)
+[X1Sl_RT] = E40054		(X1 Uebergabeposition Huelse RT)
+[X1Sl_FT] = E40055		(X1 Uebergabeposition Huelse FT)
+[Z1Sl_RT]  = E40047		(Z1 Uebergabeposition Huelse RT)
+[Y2Sl_RT]  = E40048		(Y2 Uebergabeposition Huelse RT)
+[A1Sl_RT]  = E40049		(A1 Uebergabeposition Huelse RT)
+[Z1Sl_FT]  = E40050		(Z1 Uebergabeposition Huelse FT)
+[Y2Sl_FT]  = E40051		(Y2 Uebergabeposition Huelse FT)
+[A1Sl_FT]  = E40052		(A1 Uebergabeposition Huelse FT)
+[A1Dreh]   = E40053		(A1 Verdrehung verriegeln/entriegeln Huelse)
+[FrHueX2]  = 2.5		(Freifahren in X2 Huelse)
+[FrHueY2]  = 2.5		(Freifahren in Y2 Huelse)
+[F_IN]    = 1000
+[F_OUT] = 1000
+[F_A1] =3000
+[Dur_Hue1] =E40020
+[Dur_Hue2] =E40025
+[Dur_Hue3] =E40030
+[Dur_Hue4] =E40035
+N2000
+
+
+

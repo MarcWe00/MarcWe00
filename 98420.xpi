@@ -1,0 +1,32 @@
+%9842.0@1(HPR250)
+(DATA_SLE.xpi)
+(V1.0a / 21.01.14)
+N1000 (Daten Huelse: 1)
+[X2SleRT] =E40021  (267)		(X2-Achse Huelse RT)
+[Y2SleRT] =E40022  (87)		(Y2-Achse Huelse RT) 
+[X2SleFT] =E40023  (267)		(X2-Achse Huelse FT)
+[Y2SleFT] =E40024  (8)		(Y2-Achse Huelse FT)  
+N1999
+N2000 (Daten Huelse: 2)
+[X2SleRT] =E40026  (267)		(X2-Achse Huelse RT)
+[Y2SleRT] =E40027  (212)		(Y2-Achse Huelse RT)
+[X2SleFT] =E40028  (267)		(X2-Achse Huelse FT)
+[Y2SleFT] =E40029  (133)		(Y2-Achse Huelse FT)  
+N2999
+N3000 (Daten Huelse: 3)
+[X2SleRT] =E40031  (267)		(X2-Achse Huelse RT)
+[Y2SleRT] =E40032  (337)		(Y2-Achse Huelse RT) 
+[X2SleFT] =E40033  (267)		(X2-Achse Huelse FT)
+[Y2SleFT] =E40034  (258)		(Y2-Achse Huelse FT)   
+N3999
+N4000 (Daten Huelse: 4)
+[X2SleRT] =E40036  (267)		(X2-Achse Huelse RT)
+[Y2SleRT] =E40037  (462)		(Y2-Achse Huelse RT) 
+[X2SleFT] =E40038  (267)		(X2-Achse Huelse FT)
+[Y2SleFT] =E40039  (383)		(Y2-Achse Huelse FT)  
+N4999
+N5000 (Daten Huelse: 5)
+
+N9999
+
+

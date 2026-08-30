@@ -1,0 +1,414 @@
+%10134.0@2  (HP170 Messprogramme Fraeskoepfe)
+
+VAR
+(Variablen zum zwischenspeichern)
+[A1][A2][A3][a][b][c][d][e][f]
+[X1][X2][X3]
+[L1][L2][L3]
+
+(Diese Variablen sind fuer Jobs im Channel 2 -> HP verfahren)
+[eJobSet]=30060
+[eJobArg1]=80082
+[eJobArg2]=80083
+[eJobArg3]=80084
+[eJobArg4]=80085
+
+(Fixe Startpositionen um den Rechen auszumessen)
+[Start_ReX]=310.725
+[Start_ReY]=-52.9
+[Start_ReZ]=-151
+(Fixe Startpositionen um den Greifer auszumessen)
+[Start_GrX]=264.490
+[Start_GrY2]=378.5
+[Start_GrZ]=-191.951
+
+(Werkstueckmesstaster Referenzen)
+[RefX_WstMess][RefY_WstMess][RefZ_WstMess]	
+
+(Ergebnisse der Messung in Channel 2)
+[AntY_FT]=82804
+[AntY_RT]=82807
+									
+
+(Eingabedaten von Vollmer HMI)
+[Len_Gew]=40122
+[Brei_Sf]=40123
+[Dur_Sf]=40125
+[Steig]=40126
+[Pos_Sf]=40127
+[Len_K]=40130	
+
+(Ergebnisse an Vollmer HMI)
+[RefX_SF]=30001
+
+[RefX_Re]=30002
+[RefY_Re]=30003
+[RefZ_Re]=30004
+
+[RefX_RTGr]=30005
+[RefY_RTGr]=30006
+[RefZ_RTGr]=30007
+[RefX_FTGr]=30008
+[RefY_FTGr]=30009
+[RefZ_FTGr]=30010				
+
+(Membervariablen)
+[Len_Mess_A_Achse]
+[Stirnfl_FK]
+[ProbeDia] = 4
+
+[M99x]=998-[.BM997]+[.BM999]
+ENDV			
+
+M997
+G997
+M261
+
+(Kalibrierungsdaten Werkstueckmesstaster)
+G77 H288.0 N100 N100
+[RefY_WstMess]='I
+[RefZ_WstMess]='J
+[RefX_WstMess]='K
+
+(**************************************** Auswahl des Programm ****************************************)
+N1000
+IF 'EM=1 THEN
+	G77 N2000 N2999
+ENDI
+IF 'EM=2 THEN
+	G77 N3000 N3999
+ENDI
+IF 'EM=3 THEN
+	G77 N4000 N4999
+ENDI
+
+N1100
+E[eJobSet]='EF
+IF 'EF>0 THEN	
+	M261
+ENDI
+IF 'EF=11 THEN
+	E[eJobArg2]='EY/U1
+	E[eJobArg1]=10000
+		
+ENDI
+IF 'EF=51 THEN				
+	E[eJobArg2]='EM
+	E[eJobArg3]='EN
+ENDI
+IF 'EF>0 AND 'EF<100 THEN
+	M263
+ENDI
+N1199
+G79 N20000
+
+(**************************************** Einspannlaenge Fraeskopf ausmessen ****************************************)
+N2000
+
+(Freifahren)
+G0 G90 X400 
+Y160 Z-250
+C0
+
+(Vorpositionierung Messfahrt)
+'X=[RefX_WstMess]
+'Y=[RefY_WstMess] - 2
+'Z=[RefZ_WstMess]
+ZL925 YL924 
+
+(Messung Stirnflaeche Fraeskopf)
+M191
+G01 G90 F500 
+G79 E20100=0 N10000
+XL923 G10 N2010
+G79 N11000
+
+(Speichern Position Stirnflaeche)
+N2010
+[Stirnfl_FK] = UE70001 - [RefX_WstMess]
+'X=UE70001+4
+G0 G90 XL923
+
+(Messung Durchmesser Fraeskopf)
+L1 = E[Dur_Sf]/2
+'X=UE70001-5
+'Y=[RefY_WstMess] - L1  - 5
+'Z=[RefZ_WstMess]-5
+G01F500
+YL924
+XL923 ZL925
+
+
+(Vorpositionierung Messung X-Position Schluesselflaeche)
+L3 = E[Brei_Sf]/2
+L4 =E[Len_K] 
+L5 =E[Pos_Sf]
+'X = [Stirnfl_FK] + [RefX_WstMess] + L3 - L4 + L5
+L4 = E[Dur_Sf] /2
+'Y = [RefY_WstMess] - L4 - 0.4
+XL923
+G01F300
+YL924
+
+(Messung X-Position Schluesselflaeche)
+'X=[Stirnfl_FK] + [RefX_WstMess] - E[Len_K] 
+G01 G90 F100
+G79 E20100=0 N10000
+XL923 G10 N2040
+G79 N11000
+N2040
+E[RefX_SF] = UE70001 - [RefX_WstMess]						(Gemessene Position - Messtasterversetzung)
+'X=UE70001+0.5
+XL923
+G01 F300 G91
+Y-10
+G0 G90
+Z-150
+X400
+N2999
+
+
+(**************************************** Referenzpunkte bestimmen am Rechen ****************************************)
+N3000
+
+(Freifahren)
+G0 G90
+X400 
+Y160 Z0
+C0
+G0 G90
+
+(Länge des A-Achsen Messtasters ausmessen)
+'X=[RefX_WstMess]
+'Y=[RefY_WstMess]
+'Z=[RefZ_WstMess] - [ProbeDia]
+ZL925 YL924 
+M191
+G01 G90 F500 
+G79 E20100=0 N10000
+XL923 G10 N3005
+G79 N11000
+N3005
+[Len_Mess_A_Achse] = UE70001 - [RefX_WstMess]
+G91 X5
+
+(Y-Ref Rechen)
+G0 G90
+Z[Start_ReZ] Y[Start_ReY]
+M191					
+X[Start_ReX]
+G01 G91 F300
+G79 E20100=0 N10000
+Y-10 G10 N3010			
+G79 N11000
+N3010
+E[RefY_Re]=UE71001-{[ProbeDia]/2}		
+'Y=UE71001+5
+G0 G90 YL924
+
+(X-Ref Rechen)
+'X=[Start_ReX]+10
+XL923
+'Y=UE71001-10
+YL924
+'X=UE70000-20
+G01 G90 F300
+G79 E20100=0 N10000
+XL923 G10 N3020
+G79 N11000
+N3020
+E[RefX_Re]=UE70001 - [Len_Mess_A_Achse]			(AntX_Re Antastposition X Rechen? + Durchmesser Abstand)
+'X=UE70001+10
+G0 G90 XL923
+
+
+G0 G91 Z-14
+(Hier wird der Rechen von innen gemessen) 
+(Oben messen)
+N3050
+G0 G90 X[Start_ReX]		(Nach vorne fahren ins Loch)
+G01 G91 F300			
+G79 E20100=0 N10000	
+Z-20 G10 N3060		(Messfahrt nach oben in Z-Richtung)
+G79 N11000
+
+(Unten Messen)
+N3060
+L1=UE72001	
+G01 G91 Z1		
+G79 E20100=0 N10000
+Z40 G10 N3070		
+G79 N11000
+N3070
+L2=UE72001				
+
+L3=L2-L1				
+IF L3<0 THEN
+	L3*-1				
+ENDI
+ 
+E[RefZ_Re] = UE72001 - {L3/2}
+L10 = E[RefZ_Re]
+G01 G90 ZL10
+
+(Freifahren)
+G0 G90 X400
+C0
+Y160
+M199					
+N3999
+
+(**************************************** Referenzpunkte bestimmen Greifer ****************************************)
+N4000
+
+(Freifahren und Greifer öffnen)
+G0 G90 
+X400
+M191
+C0
+Y230
+M220
+M222
+
+(Scheibe in der oberen Spindel auswechseln)
+IF E80062 <> 0 THEN
+	E30224 = 1	
+	T0
+	G4F0.3
+	E30011 = 2
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+(Länge des A-Achsen Messtasters ausmessen)
+'X=[RefX_WstMess]
+'Y=[RefY_WstMess]
+'Z=[RefZ_WstMess] - [ProbeDia]
+ZL925 YL924 
+M191
+G01 G90 F500 
+G79 E20100=0 N10000
+XL923 G10 N4005
+G79 N11000
+N4005
+[Len_Mess_A_Achse] = UE70001 - [RefX_WstMess]
+G91 X5
+
+(Auf Startposition fahren und Greifer einschwenken)
+G0 G90 Z[Start_GrZ]
+'EF=11 'EY=[Start_GrY2] G77 N1100N1199
+'EF=30 G77 N1100N1199
+X[Start_GrX]
+
+(Z-Position FT messen)
+'Z=UE72000+10
+G01 G90 F300
+G79 E20100=0 N10000
+ZL925 G10  N4010
+G79 N11000
+N4010
+E[RefZ_FTGr]=UE72001+ {[ProbeDia]/2}
+
+
+(Z-Position freifahren und X-Position vorpositionieren)
+F5000
+'Z=UE72001-5
+ZL925
+'X=UE70001+10
+XL923
+'Z= E[RefZ_FTGr] 
+ZL925
+
+(Messfahrt X-Position und Berechnung der Position)
+F300
+'X=UE70000-15
+G79 E20100=0 N10000
+XL923 G10 N4020
+G79 N11000
+N4020
+E[RefX_FTGr] =UE70001-[Len_Mess_A_Achse] 
+
+(X-Position freifahren und Y-Messung FT vorbereiten)
+F5000
+'X=UE70001+5
+XL923
+'Y=[Start_GrY2]-15
+'EF=11 'EY=L924 G77 N1100N1199 
+X[Start_GrX]
+
+(Y2-Messfahrt im Channel 2 durchführen)
+'EF=51 'EN=300 G77 N1100N1199
+E[RefY_FTGr]=E[AntY_FT] + {[ProbeDia]/2}
+
+(Y2-Achse verfahren auf RT Greifer verfahren) 
+'X=UE70000+15
+XL923
+'EF=11 'EY=489 G77 N1100N1199
+Z[Start_GrZ]
+X[Start_GrX]
+
+(Z-Messung Rohteilseite)
+'Z=UE72000+10
+G01 G90 F300
+G79 E20100=0 N10000
+ZL925 G10 N4030
+G79 N11000
+N4030
+E[RefZ_RTGr]=UE72001+{[ProbeDia]/2}
+
+(Z-Position freifahren und X-Position vorpositionieren)
+F5000
+'Z=UE72001-5
+ZL925
+'X=UE70001+10
+XL923
+'Z= E[RefZ_FTGr] +  [ProbeDia]
+ZL925
+
+(Messfahrt X-Position RT)
+F300
+'X=UE70000-15
+G79 E20100=0 N10000
+XL923 G10 N4040
+G79 N11000
+N4040
+E[RefX_RTGr]=UE70001-[Len_Mess_A_Achse] 
+
+(X-Position freifahren und Y-Messung FT vorbereiten)
+F5000
+'X=UE70001+5
+XL923
+'Y=489-40
+'EF=11 'EY=L924 G77 N1100N1199
+X[Start_GrX]
+
+(Y2-Messfahrt im Channel 2 durchführen)
+'EF=51 'EN=300 G77 N1100N1199
+E[RefY_FTGr]=E[AntY_FT] + {[ProbeDia]/2}
+
+(Messung Y-Position RT im Channel 2)
+'EF=51 'EN=400 G77 N1100N1199
+E[RefY_RTGr]=E[AntY_RT] + {[ProbeDia]/2}
+
+(Freifahren und Greifer wieder einschwenken)
+G0 G90 
+X400
+'EF=31 G77 N1100N1199
+
+N4999
+
+
+
+N10000
+$ Probe already approached
+M0 
+M2
+N11000
+$ Measuring Position not reached
+M0
+M2
+N20000
+M[M99x]
+M02
+        

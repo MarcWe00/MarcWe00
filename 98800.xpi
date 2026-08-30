@@ -1,0 +1,41 @@
+%9880.0@1(Daten Lader)
+
+
+N1000 (Werkstueckwechsler allgemein)
+  [PalTypRT]		= 1		(Palettentyp RT: 1:Var1 2:Var2 3:Var3 5:Benutzer )
+  [PalTypFT]		= 2    		(Palettentyp RT: 1:Var1 2:Var2 3:Var3 5:Benutzer )
+  
+  [F_0]			= 20000		(Vorschub Hauptachsen schnell)
+  [F_1]			= 3000 		(Vorschub Hauptachsen langsam, Einfuttern)
+  [F_2]			= 6000		(Vorschub Hauptachsen langsam, Ausfuttern)
+  [F_3]			= 5000
+  [F_IN]    		= 1500
+  [F_OUT] 		= 4000
+  [F_INH]    		= 1000
+  [F_OUTH] 		= 2000
+  [F_A1] 		=6000
+  [F2_6]          	= 4000           (Vorschub Nachschiebebetrag)
+  
+
+  	
+N1099
+N2000 (Einmessdaten)
+  [PosX_0]        	= 510.0		(Position X fuer Drehung C)
+  [PosY_0]        	= 165.0		(Position Y zurueck versenkt)
+  [PosC_0]        	= 0.0		(Position C fuer Zurueckfahren Y) 
+  [PosZ_0]        	= -125		(Position Z) 
+  		
+N2999
+
+
+
+
+
+
+
+
+
+
+
+
+      

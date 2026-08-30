@@ -1,0 +1,157 @@
+%9512.0@2(Werkzeug entladen aus Maschine in Wechsler)
+(WkzEntladen.xpi)
+
+VAR
+[temp1] 
+[temp2] 
+ENDV
+VAR H9510.0 N1000 N2000	(Konfigurationsvariablen einlesen)
+VAR H9515.0 N1000 N2000	(Konfiguration manueller Wechsel einlesen)
+G71		(metrisch)
+IF E[Flag_SPS] =1 THEN	(Bestueckung Magazin einlesen nach dem Referenzieren)
+E[CNC_Pl1] = E[SPS_Pl1]
+E[CNC_Pl2] = E[SPS_Pl2]
+E[CNC_Pl3] = E[SPS_Pl3]
+E[CNC_Pl4] = E[SPS_Pl4]
+E[CNC_Pl5] = E[SPS_Pl5]
+E[CNC_Pl6] = E[SPS_Pl6]
+E30217 = 1
+ENDI
+N100
+G79 [Sp_Nr] = 0 N8500	
+G79 [Sp_Nr] = 1 N2000 
+G79 [Sp_Nr] = 2 N4000 
+N2000
+G79 E[Zust_SP1] = 1 N8600 (Fehler Bestueckung Spindel 1)
+L170 = [Wkz_Nr]			
+[temp1] = L170 + 30210
+IF E[temp1] = 1 THEN (Test Magazinplatz belegt)
+G79 N8800
+ENDI
+G0 G90 C0
+G0 G90 Y200
+M258 (Loesekurve nach unten)		
+M254 (Hubeinheit nach unten)
+G0 G90 (Achsen auf Parkposition)
+X[PosX1]
+Z[PosZ1Sp1]
+C[PosC1]
+G0 G90  Y[Y1_Nocke] (Mit Y1 auf Position Nocke fahren)    
+E[Wkz_Takt] = [Wkz_Nr]	(Werkzeugnummer an SPS)
+(G04 F[T_Wait] (Wartezeit)
+M256 (Auf Wkz_Nr takten)    					 
+M259 (Beladetuere oeffnen)	
+M252 (Werkzeugarm auf Nocken ausschwenken)
+G01 G90 F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+(G04 F[T_Wait] (Wartezeit)
+F[Speed_2] Y[Y1_Geloe]	(Mit Y1 auf Position geloest)
+(G04 F[T_Wait] (Wartezeit)
+F[Speed_3] Y[Y1_Ende]	(Mit Y1 auf Position ganz ausgefuttert)
+M251 (Werkzeugarm einschwenken)
+M260 (Beladetuere zu)
+(Magazinbelegung aktualisieren)
+E30217 = 0
+IF [Wkz_Nr] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF [Wkz_Nr] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF [Wkz_Nr] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF [Wkz_Nr] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF [Wkz_Nr] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF [Wkz_Nr] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+E30217=0
+G0 G90 Y130
+IF E[Zust_SP1] = 1 THEN 
+E[Best_SP1] = 0		
+ELSE 
+G79 N8700 (Fehler Wkz nicht abgenommen)
+ENDI
+G79 N9998
+N4000	
+G79 E[Zust_SP2] = 1 N9600 (Fehler Bestueckung Spindel 2)
+L171 = [Wkz_Nr]			
+[temp2] = L171 + 30210
+IF E[temp2] = 1 THEN (Test Magazinplatz belegt)
+G79 N9800
+ENDI
+G0 G90 C0
+G0 G90 Y200
+M257 (Loesekurve nach oben)		
+M253 (Hubeinheit nach oben)
+G0 G90 (Achsen auf Parkposition)
+X[PosX1]
+Z[PosZ1Sp2]
+C[PosC1]
+G0 G90  Y[Y1_Nocke] (Mit Y1 auf Position Nocke fahren)    
+E[Wkz_Takt] = [Wkz_Nr]	(Werkzeugnummer an SPS)
+(G04 F0.2 (Wartezeit)
+M256 (Auf Wkz_Nr takten)    					 
+M259 (Beladetuere oeffnen)	
+M252 (Werkzeugarm auf Nocken ausschwenken)
+G01 G90 F[Speed_1] Y[Y1_Rille]	(Mit Y1 auf Position Werkzeugrille)
+(G04 F0.1 (Wartezeit)
+F[Speed_2] Y[Y1_Geloe]	(Mit Y1 auf Position geloest)
+(G04 F0.1 (Wartezeit)
+F[Speed_3] Y[Y1_Ende]	(Mit Y1 auf Position ganz ausgefuttert)
+M251 (Werkzeugarm einschwenken)
+M260 (Beladetuere zu)
+(Magazinbelegung aktualisieren)
+E30217 = 0
+IF [Wkz_Nr] = 1 THEN E[CNC_Pl1] = 1
+ENDI
+IF [Wkz_Nr] = 2 THEN E[CNC_Pl2] = 1
+ENDI
+IF [Wkz_Nr] = 3 THEN E[CNC_Pl3] = 1
+ENDI
+IF [Wkz_Nr] = 4 THEN E[CNC_Pl4] = 1
+ENDI
+IF [Wkz_Nr] = 5 THEN E[CNC_Pl5] = 1
+ENDI
+IF [Wkz_Nr] = 6 THEN E[CNC_Pl6] = 1
+ENDI
+E30217=0
+G0 G90 Y130
+IF E[Zust_SP2] = 1 THEN 
+E[Best_SP2] = 0		
+ELSE 
+G79 N9700
+ENDI
+G79 N9999
+N8500
+(Fehler Eingabe Spindelnummer 1 oder 2)
+G77 H9513.0 N9050
+G79 N9999
+N8600
+(Fehler Bestueckung Spindel 1)
+G77 H9513.0 N9250
+G79 N9999
+N8700
+(Fehler Werkzeug nicht aufgenommen Spindel 1)
+G77 H9513.0 N9300
+G79 N9999
+N8800
+(Fehler Magazinplatz nicht belegt)
+G77 H9513.0 N9350
+G79 N9999
+N9600
+(Fehler Bestueckung Spindel 2)
+G77 H9513.0 N9500
+G79 N9999
+N9700
+(Fehler Werkzeug nicht aufgenommen Spindel 2)
+G77 H9513.0 N9550
+G79 N9999
+N9800
+(Fehler Magazinplatz nicht belegt)
+G77 H9513.0 N9600
+G79 N9999
+N9997 
+N9998 
+N9999 M02	
+
+
+

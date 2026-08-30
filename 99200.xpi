@@ -1,0 +1,1932 @@
+%9920.0@2(HP160)
+(Aufruf ueber G120 und @2)
+VAR
+	[JobNr]
+	[JobArg(4)]
+	[eJobAkt]=40060
+	[eJobSet]=30060
+	[MeldNr]=30225
+	[WkstAktiv]=30222
+	[AnfHulsen]=30130
+	[AnfPalNr]=30131
+	[AnfPalPos]=30133	
+	[eSubJob]=80080
+	[eLdGet]=80081
+	[eJobArg1]=80082
+	[eJobArg2]=80083
+	[eJobArg3]=80084
+	[eJobArg4]=80085
+	[eJobRes]=80086
+	[ePceGrRT]=80088
+	[ePceGrFT]=80089
+	[eGrZ_RT]=40011
+	[eGrZ_FT]=40012
+	[eGr_Akt]=40013
+	[eSpZust]=40014
+	[ePceNr0]=80090
+	[ePceCL0]=80091
+	[ePceRL0]=80092
+	[ePceCHL0]=80093
+	[ePceSL0]=80094
+	[ePceRD0]=80095
+	[ePceID0]=80096
+	[NRCStatus]=80021
+	[eNachsR0]=80098
+	[eNachsF0]=80099
+	[eNrCntrl]=20030
+	[ePceNr1]=80100
+	[ePceCL1]=80101
+	[ePceRL1]=80102
+	[ePceCHL1]=80103
+	[ePceSL1]=80104
+	[ePceRD1]=80105
+	[ePceID1]=80106
+	[ePceNr2]=80110
+	[ePceCL2]=80111
+	[ePceRL2]=80112
+	[ePceCHL2]=80113
+	[ePceSL2]=80114
+	[ePceRD2]=80115
+	[ePceID2]=80116
+	[eDurNr0]=80120
+	[eDurRT]=80121
+	[eDurFT]=80122
+	[eHueNr0]=80140
+	[eHueNr1]=80141
+	[eHueGet]=80142
+	[eHueGrRT]=80143
+	[eHueGrFT]=80144
+	[eHueDur]=80145
+	[eXoffsRT]=80150
+	[eXoffsFT]=80151
+	[PosX_RT]
+	[PosX_FT]
+	[PZA_RT0]
+	[PYA_RT0]
+	[PZA_FT0]
+	[PYA_FT0]
+	[PZA_RT1]
+	[PYA_RT1]
+	[PZA_FT1]
+	[PYA_FT1]
+	[PZA_RT2]
+	[PYA_RT2]
+	[PZA_FT2]
+	[PYA_FT2]
+	[T]
+	[N]
+	[N1][N2][N3][t1]
+	[HN1][HN2]
+	[HT]
+	[HN]
+	[a][b][c]
+	[k][l][m]
+	[n][o][p]
+	[r][s][t]
+	[Offs_Ref]
+	[Offs_Kor]
+	[FreiY2] [FreiX1]
+	[sAufn] [sEinsp]
+	[maxP]
+	[tSchiebR][tSchiebF]
+	[tSchRR][tSchRF]
+	[XoffsRT]
+	[XoffsFT]
+	[tempR][tempF]
+	[tZHubR] [tZHubF]
+	[Get][Back][Next]
+	[Dur_Back][Dur_Get][Dur_Next]
+	[HGet][HBack] [Dur_Job]
+	[Ktemp1] [Ktemp2]
+	[keinRT]=0
+	[PrkPosX]=UE70000
+	[PrkPosY]=UE71000
+	[PrkPosZ]=UE72000
+	[PrkPosC]=ME74000
+	[M99x]=998-[.BM997]+[.BM999]
+	[E11009]=E11009
+	[E11010]=E11010
+	[StartX] [StartZ] [StartY2][ZAusbl]
+	[KFlag]=84100	(Schalter Kompensation 0=ja, 1=Nein)
+	(Daten Laden)
+	[Gr_Nr][oSchieb][oZHub][S_TurnA][oSpWdh][FreiFa_X]
+	[Ausbl][A1_RT][A1_S][ChuckL][Chg_Hue][Support][Vorw_Lo][PalPaare2]
+	[sSchieb][sZHub]
+	[Z1_Safe][PosX_PR][APosMl][RowIN][lPrism]
+	[Pos1X][Pos0X_RT][Pos0X_FT][Pos2X_RT][Pos2X_FT][PosZ_RT][PosZ_FT]
+	[DurUeb][DiffA1Gr][XDiff_FT][WkstWkz][UebParam]
+		
+	(Palettendaten)
+	[PalWkstNr][PalPosNr]
+	[GrpH_RT][GrpH_FT][Dur_Pal]
+	[MultiPal]	
+
+	(Kompensation)
+	[GrMWZ1][GrMWY2]
+	[KompZ1][KompY2]
+	[MValZ1][MValY2]
+	
+	(Huelsendaten)
+	[HuelseNr][HuelseDur]
+	[Dur_Hue][Nr_Hue]
+	[Chg_HueNr]
+	
+	(Huelsenwechsel)
+	[HuelseNr][HuelseDur]
+	[X1Sl1][X1Sl_RT][X1Sl_FT]
+	[Z1Sl_RT][Y2Sl_RT]
+	[A1Sl_RT][Z1Sl_FT]
+	[Y2Sl_FT][A1Sl_FT]
+	[A1Dreh]
+ENDV
+E[WkstAktiv]=1
+G71 (metrisch)
+
+VAR H9820:1	(Werkstueckwechsler allgemein einlesen)
+(VAR H9825:1)	(Kompensation einlesen)
+(VAR H9823:1)	(Daten Huelsenwechsel einlesen)
+
+(~~~ Plausibilitaetskontrolle ~~~)
+IF [.IBE1(12)]=1 AND [.IBE1(16)]=1 THEN
+	E[MeldNr]=1
+	G79 N9000
+ENDI
+
+IF [.IBE1(12)]=0 AND [.IBE1(8)]=0 AND [.IBE1(13)]=0 AND [.IBE1(11)]=0 AND [.IBE1(16)]=0 AND [.IBE1(19)]=0 AND [.IBE1(6)]=0 AND [.IBE1(2)]=0 AND [.IBE1(20)]=0 THEN
+	E[MeldNr]=1
+	G79 N9000
+ENDI
+
+IF [.IBE1(12)]=1 THEN
+ENDI
+
+IF [.IBE1(16)]=1 THEN
+	IF [.IBE1(17)]=0 OR 'EQ>4 OR 'EQ<1 THEN
+		(E[MeldNr]=5)
+		(G79 N9000)
+	ENDI
+ENDI
+
+IF [.IBE1(19)]=1 THEN
+ENDI
+(~~~~~)
+
+
+
+G53 					(aufheben Nullpunktverschiebung)
+G59X0Y0Z0A0C0 	(programmieren Nullpunktverschiebung)
+G94F[F_0]			(Vorschub in mm/min)
+E11009=0			(Ausfuehrung einer kompletten Umdrehung in G1 bei Rundachsen)
+
+M261
+$+
+M997
+G997
+G79[.IBE1(19)]=1N1000	(~ES~)
+G79[.IBE1(6)]=1N1100	(~EF~)
+G79[.IBE1(1)]=1N1500	(~EA~)
+G79[.IBE1(2)]=1N1600	(~EB~)
+G79[.IBE1(13)]=1N1700	(~EM~)
+G79[.IBE1(11)]=1N1800	(~EK~)
+G79[.IBE1(16)]=1N2000	(~EP~)
+G79[.IBE1(20)]=1N2100	(~ET~)
+G79[.IBE1(12)]=1N3000	(~EL~)
+G79[.IBE1(8)]=1N5000	(~EH~)
+G79N9000
+
+
+(~~~~~~~~~~~ES~~~~~~~~~~~)
+N1000	(Wkst Nummer setzen)			
+	IF 'EG=0 THEN	(Futter)
+		E[ePceNr0]='ES
+	ENDI
+	IF 'EG=1 THEN	(RT Greifer)
+		E[ePceGrRT]='ES
+	ENDI
+	IF 'EG=2 THEN	(FT Greifer)
+		E[ePceGrFT]='ES
+	ENDI
+	G79N9000
+	
+	
+(~~~~~~~~~~~EF~~~~~~~~~~~)	
+N1100		(Job im 2.Kanal ausfuehren)
+	IF 'EF>0 THEN
+		IF [.IBE1(6)]=1 THEN
+			$Job-Manager: Warten auf Gruppe 2
+		ENDI
+		M261
+	ENDI
+	IF 'EF=4 THEN				(Platznummer auf Palette anfahren)
+		E[eJobArg2]='EP
+		E[eJobArg3]='EQ
+	ENDI
+	IF 'EF=5 OR 'EF=105 THEN	(Greiferposition anfahren)
+		E[eJobArg2]='EA
+		E[eJobArg3]='ED
+	ENDI
+	IF 'EF=6 THEN				(Greiferposition anfahren)
+		E[eJobArg2]='EB
+		E[eJobArg3]='ED
+		E[eJobArg4]='EP
+	ENDI
+	IF 'EF=7 THEN				(Platznummer auf PaletteNr anfahren)
+		E[eJobArg2]='ET
+		E[eJobArg3]='EU
+		E[eJobArg4]='EV
+	ENDI
+	IF 'EF=35 OR 'EF=135 THEN	(In Maschine einfahren + Greiferposition anfahren)
+		E[eJobArg2]='EA
+		E[eJobArg3]='ED
+	ENDI
+	IF 'EF=50 THEN				(Messzyklus Palette)
+		E[eJobArg2]='EM
+		E[eJobArg3]='EN
+	ENDI
+	IF 'EF=51 THEN				(Messzyklus)
+		E[eJobArg2]='EM
+		E[eJobArg3]='EN
+	ENDI
+	(IF 'EF=20 OR 'EF=120 THEN)	(Ablegen/holen)
+		(E[eJobArg2]=[Dur_Back])
+		(E[eJobArg3]=[Dur_Get])
+		(E[eJobArg4]=[Dur_Next])
+	(ENDI)
+	IF 'EF=10 THEN				(X2-Achse verfahren)
+		E[eJobArg2]='EX/U1
+	ENDI
+	IF 'EF=11 OR 'EF=111 THEN	(Y2-Achse verfahren)
+		E[eJobArg2]='EY/U1
+	ENDI
+	
+	E[eJobArg1]='F
+	E[eJobSet]='EF
+	IF [.IBE1(6)]=1 THEN
+		$Job-Manager: Job 
+		$= 'EF
+		$+ aktiv
+	ENDI
+	IF 'EF>0 AND 'EF<100 THEN
+		M263
+	ENDI
+
+	IF 'EF>99 THEN
+		M264
+	ENDI
+	IF [.IBE1(6)]=1 THEN
+		$
+	ENDI
+N1199
+	G79N9000
+
+	
+(~~~~~~~~~~~EA~~~~~~~~~~~)	
+N1500		(Greiferposition anfahren)	
+	'EF=5
+	'F=[F2_0]
+	G77N1100N1199
+N1599
+
+
+(~~~~~~~~~~~EB~~~~~~~~~~~)	
+N1600		(Greiferposition anfahren)
+	'EF=6
+	'F=[F2_0]
+	G77N1100N1199
+	G79N9000
+N1699
+
+
+(~~~~~~~~~~~EM~~~~~~~~~~~)
+N1700		(Messzyklus Palette)
+	'EF=50
+	IF 'EN=999 THEN
+		G77 N8300N8600
+	ENDI
+	G77N1100N1199
+N1750
+	G79N9000
+N1799
+
+
+(~~~~~~~~~~~EK~~~~~~~~~~~)
+N1800		(Kompensation)
+	IF 'EK=1 THEN
+		G77N8700N8800
+	ENDI
+G79 N9000
+
+
+(~~~~~~~~~~~EP~~~~~~~~~~~)
+N2000		(Platznummer auf Palette anfahren)
+	G77H21000N1100
+	$= 'EP
+	$+ Pal:
+	$= 'EQ
+	'EF=4
+	'F=[F2_0]
+	G77N1100N1199
+N2999
+	G79N9000
+	
+	
+(~~~~~~~~~~~ET~~~~~~~~~~~)	
+N2100		(Platznummer auf PaletteNr anfahren)
+	G77H21000N1100
+	$= 'EU
+	$+ Pal:
+	$= 'ET
+	'EF=7
+	'F=[F2_0]
+	G77N1100N1199
+N2999
+	G79N9000
+	
+	
+(~~~~~~~~~~~EL~~~~~~~~~~~)
+N3000		(Ladezyklus)
+	G77N10500N10599	(Daten Lader)	
+	G77H21000N1102
+	
+	VAR H9823:1		(Daten Huelsenwechsel einlesen)
+		
+	(GreiferRT geschlossen mit Wkst + keine WkstNr im GreiferRT)
+	IF E[eGrZ_RT]=2 AND E[ePceGrRT]=0 THEN
+		E[MeldNr]=13
+		G79 N9000
+	ENDI
+	
+	(GreiferFT geschlossen mit Wkst + keine WkstNr im GreiferFT)
+	IF E[eGrZ_FT]=2 AND E[ePceGrFT]=0 THEN
+		E[MeldNr]=14
+		G79 N9000
+	ENDI
+	
+	(Futter geschlossen + keine WkstNr im Futter)
+	IF E[eSpZust]=2 AND E[ePceNr0]=0 THEN
+		E[MeldNr]=15
+		G79 N9000
+	ENDI
+	
+	(Futter geoeffnet + WkstNr im Futter)
+	IF E[eSpZust]=1 AND E[ePceNr0]<>0 THEN
+		E[MeldNr]=15
+		G79 N9000
+	ENDI
+	
+	(WkstNr im GreiferRT + WkstNr im GreiferFT)
+	IF E[ePceGrRT]<>0 AND E[ePceGrFT]<>0 THEN
+		E[MeldNr]=16
+		G79 N9000
+	ENDI
+	
+	(Futter geschlosen + WkstNr im Futter > zu ladende WkstNr -> zu ladene Nr-1 setzen, da HP nur abfolgend abzeilt)
+	IF E[eSpZust]=2 AND E[ePceNr0]>'EL AND 'EL<>0 THEN
+		E[ePceNr0]='EL-1
+	ENDI
+	
+	
+
+	(Huelsenwechsel)
+	IF [Chg_Hue]=1 AND 'EL<>0 THEN
+		[HuelseDur]=E[ePceSL1]/1000    	(Hülsendurchmesser)
+		G77N10210N10299						
+		[Chg_HueNr]=[Nr_Hue]		
+
+		(* A1 ohne Hülse und ohne Werkstück *)
+		IF E[eHueNr0]=0 AND E[ePceNr0]=0 THEN
+			IF [Nr_Hue]<>9999 THEN
+				'EH=[Chg_HueNr] 
+				G77 N5000 N6000 		(Hülse einwechseln)
+			ENDI
+			G79 N3090			(kein Hülsenwechsel, direkt Werkstück entladen und neues laden)
+		ENDI
+
+		(* A1 ohne Hülse und mit Werkstück 20mm *)
+		IF E[eHueNr0]=0 AND E[ePceNr0]<>0 THEN	
+			'EL=0 G77 N3100 N3999     	(Werkstueck entladen)
+			IF [Nr_Hue]<>9999 THEN      	(Kennung 20mm ohne Hülse)
+				'EH=[Chg_HueNr]              	(neue Hülsennummer)
+				G77 N5000 N6000        	 	(Hülse einwechseln)
+			ENDI
+        
+			'EL=E[ePceNr1]            		(neue Werkstücknummer)
+			G79 N3100                 			(neues Werkstück einwechseln) 
+		ENDI
+
+		(* A1 mit Hülse, nächste Hülsennummer gleich *)
+		IF E[eHueNr0]<>0 AND E[eHueNr0]=[Nr_Hue] THEN   (nächste Hülsennummer gleich)
+			G79 N3090   (kein Hülsenwechsel, direkt Werkstück entladen und neues laden)
+		ENDI
+
+		(* A1 mit Hülse oder Werkstück ohne Hülse, nächste Hülsennummer nicht gleich *)
+		IF E[eHueNr0]<>0 AND E[eHueNr0]<>[Nr_Hue] THEN  
+			IF E[ePceNr0]<>0 THEN		(Werkstück gespannt)
+				'EL=0 G77 N3100 N3999   (Werkstueck entladen)
+			ENDI
+				
+			IF [Nr_Hue]=9999 THEN     	(Kennung 20mm ohne Hülse)
+				'EH=0 G77 N5000 N6000  	(Hülse entladen)			
+			ELSE
+				'EH=[Chg_HueNr]       	(neue Hülsennummer)
+				G77 N5000 N6000        	(Hülse einwechseln)
+			ENDI 
+			'EL=E[ePceNr1]            	(neue Werkstücknummer)
+			G79 N3100                	(neues Werkstück einwechseln)       					
+		ENDI
+	ENDI	
+N3090
+N3100
+	G77N10500N10599			
+	IF 'EL<>E[ePceNr0] THEN
+		[Back]=E[ePceNr0]
+		[Get]='EL
+	ELSE
+		[Back]=0
+		[Get]=0
+	ENDI
+	[Next]=E[ePceNr2]
+	IF 'EL=0 THEN
+		[Next]=0
+	ENDI
+
+	(~~~~~~~~~~Entladen - Laden - Vorbereiten~~~~~~~~~~)
+	IF [Back]>0 OR [Get]>0 THEN
+		G77N10000N10099		(Daten Kompensation)
+		G77N8140N8149		(Job erfolgreich ausgefuehrt)
+		G79[keinRT]=1N3990
+		E[eLdGet]=[Get]
+		'EF=120G77N1100N1199
+
+		(Vorposition Hauptachsen)
+		G90G1F[F_0]X[PosX_0]
+		IF UE71000>160 THEN
+			Y160
+		ENDI	
+		G9G1F[F_0]C[PosC_0]
+		G1F[F_0]Y[PosY_0]
+	
+(********************Paralleler Werkzeugwechsel********************)
+ 		IF E[WkstWkz]=1 AND E80021=0 THEN
+			E71005=-1
+                       		 E[UebParam]=3
+            	ENDI
+(************************************************************************)
+				
+		M261
+		G77N8140N8149		(Job erfolgreich ausgefuehrt)
+		G79[keinRT]=1N3990	
+		
+		(Einfahren Laderachsen)
+		('EF=130G77N1100N1199)
+		IF 'EL=0 THEN
+			G77N8075N8079	(Futterlaenge verrechnen)
+		ELSE
+			G77N8070N8079	(Futterlaenge verrechnen)
+		ENDI
+
+		(Freifahren X1)
+		G77N8030N8040
+		M300				(Beladeklappe auf - fly)
+		G90G1F[F_0]X[FreiX1]
+		
+		IF [Support]=1 OR [Support]=3 THEN
+			M170	(Stuetzluenette runter)
+		ENDI
+		
+		IF [Support]=4 OR [Support]=5 THEN
+			M170	(Stuetzluenette runter)
+			M174	(Niederhalter zurueck)
+		ENDI
+
+		M261
+		$+
+(		WHILE E[eJobRes]<>2 DO)
+(			G4F.1)
+(		ENDW)
+			
+		(~~~~~ Spannzange => Greifer FT ~~~~~)
+		IF [Back]>0 THEN
+			G77H21000N1104
+			$=[Back]
+			G77H21000N1106
+			
+			(Palettendaten FT anfordern)
+			[PalWkstNr]=[Back]
+			G77N10400N10499
+			
+			IF 'EL=0 THEN
+				G77N8025N8029
+			ELSE
+				G77N8025N8029
+			ENDI
+			
+			G77N8170N8180	(JobDurchmesser bestimmen)
+			
+			(Kompensation ausfuehren)
+			IF E[KFlag]=1 THEN
+				'EF=130G77N1100N1199
+				G77 N8700 N8800
+				G04 F.2
+				'EF=105'EA=4 'ED=[Dur_Job]G77N1100N1199	(Greiferposition anfahren)
+			ELSE
+				'EF=35'EA=4 'ED=[Dur_Job]G77N1100N1199	(Greiferposition anfahren)
+			ENDI
+			
+			G77N8050N8060	(Z1 abheben)
+			G77N8060N8070	(Greiferoffset kompakt berechnen [c])
+
+			(Z1 Position mit Abheben und Kompensation berechnen)
+			'Z=[PosZ_FT]+[tZHubF]-[c]+E[KompZ1]
+			G90G1F[F_0]ZL925
+			
+			M222	(GreiferFT oeffnen)
+			
+			(Hauptachsen Wkst in Spannfutter)
+			IF 'EL=0 THEN
+				G77N8045N8050	(Nachschieben aktiv)
+				G77N8075N8079
+			ELSE
+				G77N8045N8050	(Nachschieben aktiv)
+				G77N8075N8079
+			ENDI
+			IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+			   'X=[PosX_FT]+[lPrism]
+			ELSE
+                            'X=[PosX_FT]
+			ENDI
+
+			(Nachschieben)
+			IF [tSchRF]<0 THEN
+					'X='X-[tSchRF]
+			ENDI
+			
+			(Diff RT/FT Uebergabe)
+			IF [XDiff_FT]<0 THEN
+					'X='X-[XDiff_FT]
+			ENDI
+			G9G90G1F[F_0]XL923
+			
+			G77N8060N8070	(Greiferoffset kompakt berechnen [c])
+			'Z=[PosZ_FT]-[c]+E[KompZ1]
+			G9G90G1F[F_0]ZL925
+						
+			(M110)
+			G77N8170N8180	(JobDurchmesser bestimmen)
+
+			IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+				M173	(Mikroluenette - Finger hoch)
+			ENDI
+			
+			'EF=5'EA=2 'ED=[Dur_Job]
+			G77N1100N1199
+
+			M223	(GreiferFT schliessen)
+			M110	(Futter oeffnen)
+			
+
+			(Nachschieben rueckwaerts)
+			IF [tSchiebF]>0 OR [XDiff_FT]>0 THEN
+				'X=0
+				IF [tSchiebF]>0 THEN
+					'X='X+[tSchiebF]
+				ENDI			
+				IF [XDiff_FT]>0 THEN
+					'X='X+[XDiff_FT]
+				ENDI
+				G91G1F[F_1]XL923
+			IF [Support]=0 OR [Support]=1 OR [Support]=4 THEN	
+				IF [A1_S]=0 THEN
+					M111	(Futter schliessen)
+				ENDI
+			ENDI
+
+				IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+					M172	(Mikroluenette - Finger ab)
+				ENDI
+				
+				M222	(GreiferFT oeffnen)
+				
+				G77N8170N8180
+				'EF=5'EA=4 'ED=[Dur_Job]
+				G77N1100N1199
+				
+				G91G1F[F_1]X-L923
+				
+				G77N8170N8180
+				'EF=5'EA=2 'ED=[Dur_Job]
+				G77N1100N1199
+					
+				M223	(GreiferFT schliessen)
+
+				IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+					M173	(Mikroluenette - Finger hoch)
+				ENDI
+				
+				IF [A1_S]=0 THEN
+					M110	(Futter oeffnen)
+				ENDI
+				
+				G77N8155N8159	(GreiferFT geschlossen)
+			ENDI
+			
+			G77N8155N8159	(GreiferFT geschlossen)
+			G77N8120N8129	(A1-Achse drehen)
+
+			IF 'EL=0 THEN
+				G77N8075N8079	(Futterlaenge verrechnen)
+			ELSE
+				G77N8075N8079
+			ENDI
+			
+			IF [Support]=0 OR [Support]=1 OR [Support]=4 THEN
+				'X=[PosX_FT]+[GrpH_FT](+[DiffA1Gr])		(Greifhoehehe verrechnen)
+				G90G1F[F_2]XL923
+			ENDI
+
+			G77N8130N8139	(A1-Achse stoppen)
+			
+			G90G1F[F_0]X[FreiX1]
+			
+			(Belegung aktualisieren)
+			E[ePceNr0]=0
+			E[eDurNr0]=0
+			E[ePceGrFT]=[Back]
+			
+			G77N8170N8180	(JobDurchmesser bestimmen)
+				
+			E[eDurFT]=[Dur_Job]
+			E[eDurNr0]=0
+		ENDI
+
+
+		(~~~~~ Greifer RT => Spannzange~~~~~)
+		IF [Get]>0 THEN
+			G77H21000N1104
+			$=[Get]
+			G77H21000N1105
+
+			(Palettendaten FT anfordern)
+			[PalWkstNr]=[Get]
+			G77N10300N10399
+			G77N10400N10499
+			
+			G77N8170N8180	(JobDurchmesser bestimmen)
+			(Kompensation ausfuehren)
+			IF E[KFlag]=1 THEN
+				'EF=130G77N1100N1199
+				G77 N8700 N8800
+				G04 F.2				
+			ELSE			
+				(Einfahren Laderachsen)
+				'EF=30G77N1100N1199
+			ENDI
+
+			(Futter Ausblasen)
+			IF [Ausbl]>0 THEN
+				'EF=111 'EY=438 G77N1100N1199
+				G0 G90 Z[ZAusbl]
+				'EF=11 'EY=438 G77N1100N1199
+				M112 ( Ausblasen)
+				
+				G77N8170N8180	(JobDurchmesser bestimmen)
+				'EF=105'EA=1 'ED=[Dur_Job] G77N1100N1199
+				
+				G77N8060N8070	(Greiferoffset berechnen)
+				
+				(Z1 Position mit Kompensation berechnen)
+				'Z=[PosZ_RT]-[c]+E[KompZ1]
+				G9G90G1F[F_0]ZL925
+
+			ELSE
+				G77N8170N8180	(JobDurchmesser bestimmen)
+				'EF=105'EA=1 'ED=[Dur_Job]G77N1100N1199
+			ENDI
+		
+	
+			G77N8020N8025	(Nachschiebeweg berechnen)
+			G77N8040N8045	(Nachschieben aktivieren)
+			G77N8060N8070	(Greiferoffset berechnen)
+			
+			(Z1 Position mit Kompensation berechnen)
+			'Z=[PosZ_RT]-[c]+E[KompZ1]
+			G9G90G1F[F_0]ZL925
+
+			M110	(Futter oeffnen)
+
+			IF 'EL=0 THEN
+				G77N8075N8079	(Futterlaenge verrechnen)
+			ELSE
+				G77N8070N8079
+			ENDI
+
+			'EF=5'EA=1 'ED=[Dur_Job]G77N1100N1199
+			(Mikrolunette)
+			IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+				M173	(Mikroluenette - Finger hoch)
+				'Z=[PosZ_RT]-[c]+E[KompZ1]+0.1
+				G9G90G1F[F_1]ZL925
+				'X=[PosX_RT]+[PosX_PR]+[lPrism]
+				G9G90G1F[F_0]XL923
+				'Z=[PosZ_RT]-[c]+E[KompZ1]
+				G9G90G1F[F_1]ZL925
+				
+			ELSE
+				'X=[PosX_RT]+[GrpH_RT]
+				G90G1F[F_0]XL923
+			ENDI
+
+			G77N8120N8129	(A1-Achse drehen)
+
+			(Mikrolunette)
+			IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+				'X=[PosX_RT]+[lPrism]-[tSchRR]
+				G9G90G1F[F_0]A[APosMl]
+				G9G90G1F[F_1]XL923
+			ELSE
+				'X=[PosX_RT]-[tSchRR]
+				G9G90G1F[F_1]XL923
+			ENDI
+
+			G77N8130N8139	(A1-Achse stoppen)
+			IF [S_TurnA]>0 THEN			
+				G90G1F20000A0	(A1-Achse auf 0 drehen)
+			ENDI
+
+			(Mikroluenette)
+			IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+				IF [RowIN]=0 THEN
+					IF [tSchiebR]<=0 THEN
+						M111	(Futter schliessen)
+					ENDI
+					M228	(GreiferRT schliessen Federkraft)
+					(G04F0.5)
+					M172	(Mikroluenette - Finger ab)
+					M220	(GreiferRT auf)
+				ELSE
+					M228	(GreiferRT schliessen Federkraft)
+					(M220)	(GreiferRT auf)
+					M172	(Mikroluenette - Finger ab)
+					(G04F0.5)
+					IF [tSchiebR]<=0 THEN
+					   M111	(Futter schliessen)
+					ENDI
+					M220	(GreiferRT auf)
+				ENDI
+			ENDI
+
+		IF [Support]=0 OR [Support]=1 OR [Support]=4 THEN
+			(Modus Einfuttern: drucklos)
+			IF [A1_RT]=0 THEN
+				M228	(GreiferRT schliessen Federkraft)
+			ENDI
+			(Modus Einfuttern: auf)
+			IF [A1_RT]=1 THEN
+				M220	(Greifer auf)
+				G77N8170N8180	(JobDurchmesser bestimmen)
+				'EF=5'EA=3 'ED=[Dur_Job]
+				G77N1100N1199
+			ENDI
+			(Modus Einfuttern: zu)
+			IF [A1_RT]=2 THEN
+				M221
+			ENDI
+
+
+			
+			(Futter auf/zu)
+			IF [A1_S]=0 THEN
+				M111	(Futter schliessen)
+				M220	(GreiferRT auf)
+			ELSE
+				M220	(Greifer auf)
+			ENDI
+		ENDI
+
+			G77N8170N8180	(JobDurchmesser bestimmen)
+			'EF=5'EA=3 'ED=[Dur_Job]
+			G77N1100N1199
+			
+			(Nachschieben)
+			IF [tSchiebR]>0 THEN
+				G91G1F[F2_6]X[tSchiebR]
+				G77N8170N8180	(JobDurchmesser bestimmen)
+				'EF=5'EA=1 'ED=[Dur_Job]
+				G77N1100N1199
+		
+				G77N8150N8155	(GreiferRT geschlossen)
+				M221	(GreiferRT zu)
+
+				IF [Support]=0 OR [Support]=1 OR [Support]=4 THEN		
+				(Futter auf/zu)
+					IF [A1_S]=0 THEN
+						M110
+					ENDI
+				ENDI
+
+				IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+					M110
+					M173
+					G04F0.5
+				ENDI
+				
+				G91G1F[F_1]X-[tSchiebR]
+
+
+				(Mikroluenette)
+			IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+				IF [RowIN]=0 THEN
+					M111	(Futter schliessen)
+					M228	(GreiferRT schliessen Federkraft)
+					(G04F0.5)
+					M172	(Mikroluenette - Finger ab)
+					M220	(GreiferRT auf)
+				ELSE
+					M228	(GreiferRT schliessen Federkraft)
+					(M220)	(GreiferRT auf)
+					M172	(Mikroluenette - Finger ab)
+					(G04F0.5)
+					M111	(Futter schliessen)
+					M220	(GreiferRT auf)
+				ENDI
+			ENDI
+
+
+			IF [Support]=0 OR [Support]=1 OR [Support]=4 THEN
+				(Modus Einfuttern: drucklos)
+				IF [A1_RT]=0 THEN
+					M228	(GreiferRT zu Federkraft)
+				ENDI
+				
+				(Modus Einfuttern: auf)				
+				IF [A1_RT]=1 THEN
+					M220	(GreiferRT auf)
+					
+					G77N8170N8180	(JobDurchmesser bestimmen)
+					'EF=5'EA=3 'ED=[Dur_Job]
+					G77N1100N1199
+				ENDI
+			
+				(Modus Einfuttern: zu)	
+				IF [A1_RT]=2 THEN
+					M221
+				ENDI
+				
+				M111	(Futter schliessen)
+				M220	(GreiferRT auf)
+				
+				G77N8170N8180	(JobDurchmesser bestimmen)
+				'EF=5'EA=3 'ED=[Dur_Job]
+				G77N1100N1199
+			ENDI
+			ENDI
+			M111	(Futter schliessen)
+			
+			(Futter auf/zu)
+			IF [oSpWdh]=1 THEN
+				M110	(Futter oeffnen)
+				M111	(Futter schliessen)
+			ENDI
+			
+			G77N8050N8060	(Z1 abheben)
+			G77N8060N8070	(Greiferoffset berechnen)
+			
+			(Z1 Position mit Abheben und Kompensation berechnen)
+			'Z=[PosZ_RT]+[tZHubF]-[c]+E[KompZ1]
+			G90G1F[F_0]ZL925
+			
+			IF 'EL=0 THEN
+				G77N8075N8079	(Futterlaenge verrechnen)
+			ELSE
+				G77N8070N8079
+			ENDI
+
+			(keine Mikroluenette)
+			IF [Support]=0 OR [Support]=1 OR [Support]=4 THEN
+				'X=[PosX_RT]+[GrpH_RT](+[DiffA1Gr])	(Greifhoehehe verrechnen)
+				G90G1F[F_0]XL923
+			ENDI
+			G90G1F[F_0]X[FreiX1]
+			
+			(Belegung aktualisieren)
+			E[ePceNr0]=[Get]
+			E[ePceGrRT]=0
+			G77N8170N8180
+			E[eDurNr0]=[Dur_Job]
+			E[eDurRT]=0
+		ENDI
+		
+		(Ausfahren Laderachsen)
+		'EF=131G77N1100N1199
+		IF [Vorw_Lo]=1 THEN
+			M171	(Stuetzluenette hoch)
+		ENDI
+		
+(		M261)
+		$+
+(		WHILE E[eJobRes]<>2 DO)
+(			G4F.1)
+(		ENDW)
+		
+		(Vorposition Hauptachsen)
+		G90G1F[F_0]X[PosX_0]
+
+		 IF E[WkstWkz]=1 AND E80021=0 THEN
+			(Warte auf Freigabe von Kanal 3)
+			WHILE E[UebParam] <> 1 DO
+   			G4 F0.1
+			ENDW
+
+			E71005=1	(Y-Achse @01 in Kanal 1 uebernehmen)
+                        	G0G1 Y165
+             
+		ENDI
+
+	ENDI
+
+	
+	
+(~~~~~  ~~~~~)
+N3990
+	IF [Next]>0 OR [Get]>0 THEN
+		IF [MultiPal]=1 OR [PalPaare2]=1 AND [Chg_Hue]=1 THEN			
+			IF E[ePceSL1]<>E[ePceSL2] THEN
+				[Next]=0
+			ENDI
+		ENDI
+		E[eLdGet]=[Next]
+		'EF=120G77N1100N1199
+	ELSE
+		E[eLdGet]=0
+		'EF=20G77N1100N1199
+	ENDI
+	IF 'EL=0 THEN
+		IF E[ePceGrRT]>0 OR E[ePceGrFT]>0 THEN
+			E[eLdGet]=0
+			'EF=20G77N1100N1199
+		ENDI
+	ENDI
+
+	 IF E[WkstWkz]=1 AND E80021=0 THEN
+		(Warte auf Freigabe von Kanal 3)
+		WHILE E[UebParam] <> 1 DO
+   			G4 F0.1
+	ENDW
+
+		E71005=1	(Y-Achse @01 in Kanal 1 uebernehmen)
+                        G0G1 Y165
+             
+	ENDI
+
+	G79N3999
+	G0G52X[PrkPosX]Y[PrkPosY]Z[PrkPosZ]
+	G0G52C[PrkPosC]
+	$
+N3999
+	G79N9000
+	
+	
+(~~~~~~~~~~~EH~~~~~~~~~~~~)	
+N5000		(Huelsenwechsel)
+	(GreiferRT geschlossen mit Wkst + keine WkstNr im GreiferRT)
+	IF E[eGrZ_RT]=2 AND E[eHueGrRT]=0 THEN
+		E[MeldNr]=13
+		G79 N9000
+	ENDI
+	
+	(GreiferFT geschlossen mit Wkst + keine WkstNr im GreiferFT)
+	IF E[eGrZ_FT]=2 AND E[eHueGrFT]=0 THEN
+		E[MeldNr]=14
+		G79 N9000
+	ENDI
+	
+	(WkstNr im GreiferRT + WkstNr im GreiferFT)
+	IF E[ePceGrRT]<>0 AND E[eHueGrFT]<>0 THEN
+		E[MeldNr]=16
+		G79 N9000
+	ENDI
+	
+	(Wkst laden)
+	IF E[ePceNr0]<>0 THEN
+		E[MeldNr]=15
+		G79 N9000
+	ENDI
+	
+	(Huelse im Futter ungleich Huelse bringen)
+	IF 'EH<>E[eHueNr0] THEN
+		[HBack]=E[eHueNr0]
+		[HGet]='EH
+	ELSE
+		[HBack]=0
+		[HGet]=0
+	ENDI
+	
+	
+	(~~~~~~~~~~Huelse: Entladen - Laden - Vorbereiten~~~~~~~~~~)
+	IF [HBack]>0 OR [HGet]>0 THEN
+		VAR H9823:1		(Daten Huelsenwechsel einlesen)
+		G77N10100N10199
+		G77N10000N10099		(Daten Kompensation)
+			
+		(*M82 liefert Huelsendaten zu Nr)
+		[HuelseNr]=[HGet]
+		G77N10200N10299
+
+		E[eHueGet]=[HGet]
+		'EF=40 G77N1100N1199
+		
+		(Vorposition Hauptachsen)
+		G90G1F[F_0]X[X1SlFrei]	(X1 Parkposition Huelse)
+		G9G1F[F_0]C[PosC_0]
+		G1F[F_0]Y[PosY_0]
+		
+		M112	(Ausblasen)
+		M261
+		G77N8140N8149	(Job erfolgreich ausgefuehrt)
+		
+		(Einfahren Laderachsen)
+		'EF=130G77N1100N1199
+		
+		IF [Support]=1 OR [Support]=3 OR [Support]=4 THEN
+		
+			M170	(Stuetzluenette runter)
+		ENDI
+		
+		M261
+		$+
+		WHILE E[eJobRes]<>2 DO
+			G4F.1
+		ENDW
+	
+	
+		(~~~~~ Huelse in Aufnahme => Greifer FT ~~~~~)
+		IF [HBack]>0 THEN
+			G77H21000N1104
+			$=[HBack]
+			G77H21000N1106
+						
+			(Z1 Uebergabeposition Huelse FT)
+			'Z=[Z1Sl_FT]+30
+			G90G1F[F_0]ZL925			(Z'=L925)
+			
+			(A1 Uebergabeposition Huelse FT + A1 Verdrehung verriegeln/entriegeln Huelse)
+			'A=[A1Sl_FT]+[A1Dreh]
+			G90G1F[F_0]AL900			(A'=L900)
+			
+			(Y2 Uebergabeposition Huelse FT + Freifahren in Y2 Huelse)
+			'Y=[Y2Sl_FT]+[FrHueY2]
+			'EF=11 'EY=L924				(Y'=L924)
+			G77N1100N1199
+			
+			M222		(GreiferFT oeffnen)
+			
+			(X1 Uebergabeposition Huelse FT)
+			'X=[X1Sl_FT]
+			G9G90G1F[F_0]XL923
+			
+			(Z1 Uebergabeposition Huelse FT + 2)
+			'Z=[Z1Sl_FT]+2
+			G90G1F[F_0]ZL925
+			
+			(Z1 Uebergabeposition Huelse FT + E[KompZ1])
+			'Z=[Z1Sl_FT]+E[KompZ1]
+			G90G1F200ZL925
+			
+			M110		(Futter oeffnen)
+	
+			(Y2 Uebergabeposition Huelse FT + E[KompY2])
+			'EF=11 'EY=[Y2Sl_FT]+E[KompY2] 
+			'F=200
+			G77N1100N1199
+			'F=0
+			
+			M229		(GreiferFT schliessen Federkraft)
+			
+			(A1 akt. Position - A1 Verdrehung verriegeln/entriegeln Huelse)
+			G91G1F[F_A1]A-[A1Dreh]
+			
+			(X1 Uebergabeposition Huelse FT)
+			'X=[X1Sl_FT]
+			G9G90G1F[F_OUT]XL923
+				
+			(X1 Freifahrposition Huelse)	
+			'X=[X1Sl1]
+			G90G1F[F_OUT]XL923
+			
+			'X=[X1Sl1]
+			G90G1F[F_0]XL923
+			
+			(Belegung GreiferRT ohne Huelse)
+			IF E[eHueGrRT]=0 THEN
+				'X=[X1SlFrei]	(X1 Parkposition Huelse)
+				G90G1F[F_0]XL923
+			ENDI
+		
+			(Belegung aktualisieren)
+			E[eHueNr0]=0
+			E[eHueDur]=0
+			E[eHueGrFT]=[HBack]
+		ENDI
+		
+		
+	(~~~~~ Greifer RT => Huelse in Aufnahme ~~~~~)
+		IF [HGet]>0 THEN
+			G77H21000N1104
+			$=[HGet]
+			G77H21000N1105
+				
+			(Y2 Uebergabeposition Huelse RT)	
+			'EF=11 'EY=[Y2Sl_RT]+E[KompY2]
+			G77N1100N1199
+			
+			(Z1 Uebergabeposition Huelse RT)
+			'Z=[Z1Sl_RT]+E[KompZ1]
+			G90G1F[F_0]ZL925
+			
+			(A1 Uebergabeposition Huelse RT)
+			G90G1F[F_0]A[A1Sl_RT]
+			
+			M110		(Futter oeffnen)
+			
+			(X1 Freifahrposition Huelse)
+			G90G1F[F_0]X[X1Sl1]
+	
+			(X1 Uebergabeposition Huelse RT)
+			G9G90G1F[F_IN]X[X1Sl_RT]
+			
+			(A1 akt. Position - A1 Verdrehung verriegeln/entriegeln Huelse)
+			G1G91G1F[F_A1]A[A1Dreh]
+			
+			M220	(GreiferRT oeffnen)
+		
+			(Y2 Uebergabeposition Huelse RT - Freifahren in Y2 Huelse)
+			'Y=[Y2Sl_RT]-[FrHueY2]
+			'EF=11 'EY=L924
+			G77N1100N1199
+			
+			(Z1 Uebergabeposition Huelse RT)
+			'Z=[Z1Sl_RT]+30
+			G90G1F[F_0]ZL925
+			
+			(X1 Parkposition Huelse)
+			G1G90G1F[F_0]X[X1SlFrei]
+			
+			(Belegung aktualisieren)
+			E[eHueNr0]=[HGet]
+			E[eHueGrRT]=0
+	
+			(*M82 liefert Huelsendaten zu Nr)
+			[HuelseNr]='EH 
+			G77N10200N10299
+		
+			E[eHueDur]=[Dur_Hue]		
+		ENDI
+		
+		(Ausfahren Laderachsen)
+		'EF=131G77N1100N1199
+		M261
+		$+
+		WHILE E[eJobRes]<>2 DO
+			G4F.1
+		ENDW
+	
+		E[eHueGet]=0
+		'EF=40G77N1100N1199
+	ENDI
+	IF 'EH=0 THEN
+		IF E[eHueGrRT]>0 OR E[eHueGrFT]>0 THEN
+			E[eHueGet]=0
+			'EF=40G77N1100N1199
+		ENDI
+	ENDI
+N6000
+	G79N9000
+
+
+(~~~~~ Nachschiebeweg berechnen ~~~~~)
+N8020
+	[tSchiebR]=0
+	[tSchiebF]=0
+	IF [oSchieb]=1 THEN
+		[tSchiebR]=[sSchieb]
+		[tSchiebF]=[sSchieb]
+	ENDI
+
+	IF [oSchieb]=2 AND E[ePceID1]>-99999999 THEN
+	   IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+		[tSchiebR]=E[ePceID1]/1000-[GrpH_RT]+[DiffA1Gr]+[lPrism]
+		[tSchiebF]=E[ePceID1]/1000-[GrpH_FT]+[DiffA1Gr]+[lPrism]
+	   ELSE
+		[tSchiebR]=E[ePceID1]/1000-[GrpH_RT]+[DiffA1Gr]
+		[tSchiebF]=E[ePceID1]/1000-[GrpH_FT]+[DiffA1Gr]
+	   ENDI
+	ENDI
+
+	IF [tSchiebR]<0 OR [tSchiebF]<0 THEN
+		[tSchiebR]=0
+		[tSchiebF]=0
+	ENDI
+
+	
+
+
+	E[eNachsR0]=[tSchiebR]*1000
+	E[eNachsF0]=[tSchiebF]*1000
+
+
+(~~~~~ ~~~~~)
+N8025
+	[tSchiebR]=0
+	[tSchiebF]=0
+	IF [oSchieb]=1 THEN
+		[tSchiebR]=[sSchieb]
+		[tSchiebF]=[sSchieb]
+	ENDI
+	IF [oSchieb]=2 THEN
+		[tSchiebR]=E[eNachsR0]/1000
+		[tSchiebF]=E[eNachsF0]/1000
+	ENDI
+	IF [tSchiebR]<0 OR [tSchiebF]<0 THEN
+		[tSchiebR]=0
+		[tSchiebF]=0
+	ENDI
+
+	
+N8029
+
+
+(~~~~~ ~~~~~)
+N8030
+	IF [FreiFa_X]=0 THEN
+		[FreiX1]=[Pos1X]
+	ELSE
+	
+		IF E[ePceCL1]>-99999999 AND E[ePceCHL1]>-99999999 THEN
+			[sAufn]=E[ePceCHL1]/1000
+			[sEinsp]=E[ePceCL1]/1000
+			[FreiX1]=[PosX_RT]+[sEinsp]-[sAufn]+[GrpH_RT]+[DiffA1Gr]
+		ELSE
+			[FreiX1]=[Pos1X]
+		ENDI
+	ENDI
+	
+	
+(~~~~~ Nachschiebeweg berechnen ~~~~~)
+N8040
+	[tSchRR]=0
+	[tSchRF]=0
+	IF [oSchieb]=2 AND E[ePceID1]>-99999999 THEN
+	   IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN			
+		[tempR]=E[ePceID1]/1000-[GrpH_RT]+[DiffA1Gr]+[lPrism]
+		[tempF]=E[ePceID1]/1000-[GrpH_FT]+[DiffA1Gr]+[lPrism]
+	   ELSE
+		[tempR]=E[ePceID1]/1000-[GrpH_RT]+[DiffA1Gr]
+		[tempF]=E[ePceID1]/1000-[GrpH_FT]+[DiffA1Gr]
+	   ENDI
+		
+		IF [tempR]<0 OR [tempF]<0 THEN
+			[tSchRR]=[tempR]
+			[tSchRF]=[tempF]
+		ELSE
+			[tSchRR]=0
+			[tSchRF]=0
+		ENDI
+		
+	ENDI
+	
+	
+	E84155=[tSchRR]*1000
+	E84156=[tSchRF]*1000
+
+
+(~~~~~ Nachschieben von NUMRoto ~~~~~)
+N8045
+IF [oSchieb]=2 THEN
+	[tSchRR]=E84155/1000
+	[tSchRF]=E84156/1000
+ENDI
+
+
+
+
+(~~~~~ Z1 abheben ~~~~~)
+N8050
+	[tZHubR]=0
+	[tZHubF]=0
+	IF [oZHub]=1 THEN
+		[tZHubR]=[sZHub]
+		[tZHubF]=[sZHub]
+	ENDI
+	
+	
+	
+(~~~~~ Greiferoffset berechnen ~~~~~~)
+N8060
+	(Greiferdaten laden)
+	[N1]=[Gr_Nr]+1
+	[N1]=[N1]*1000
+	[N2]=[N1]+999
+	VAR H9824:1N[N1]N[N2]
+		
+	L1=[DurUeb]*[DurUeb]*[GrZVerA]
+	L2=[DurUeb]*[GrZVerB]
+	[a]=L1+L2+[GrZVerC]
+	L1=[Dur_Pal]*[Dur_Pal]*[GrZVerA]
+	L2=[Dur_Pal]*[GrZVerB]
+	[b]=L1+L2+[GrZVerC]
+	[c]=[a]-[b]
+
+	
+(~~~~~ Futterlaenge verrechnen RT ~~~~~)
+N8070
+	[XoffsRT]=0
+	[XoffsFT]=0
+	IF [ChuckL]=1 AND E[ePceCHL1]>-99999999 THEN
+		[XoffsRT]=E[ePceCHL1]/1000
+		[XoffsFT]=E[ePceCHL1]/1000
+		[PosX_RT]=[Pos0X_RT]+[XoffsRT]
+		[PosX_FT]=[Pos0X_FT]+[XoffsFT]
+	ELSE
+		[PosX_RT]=[Pos2X_RT]
+		[PosX_FT]=[Pos2X_FT]
+	ENDI
+	E[eXoffsRT]=[XoffsRT]*1000
+	E[eXoffsFT]=[XoffsFT]*1000
+	IF [.IBE1(3)]=1 THEN
+		[PosX_RT]=[Pos2X_RT]
+		[PosX_FT]=[Pos2X_FT]
+	ENDI
+
+	
+(~~~~~ Futterlaenge verrechnen FT ~~~~~)
+N8075
+	[XoffsRT]=0
+	[XoffsFT]=0
+	IF [ChuckL]=1 THEN
+		[XoffsRT]=E[eXoffsRT]/1000
+		[XoffsFT]=E[eXoffsFT]/1000
+		[PosX_RT]=[Pos0X_RT]+[XoffsRT]
+		[PosX_FT]=[Pos0X_FT]+[XoffsFT]
+	ELSE
+		[PosX_RT]=[Pos2X_RT]
+		[PosX_FT]=[Pos2X_FT]
+	ENDI
+	IF [.IBE1(3)]=1 THEN
+		[PosX_RT]=[Pos2X_RT]
+		[PosX_FT]=[Pos2X_FT]
+	ENDI
+	
+N8079
+	IF [oSchieb]=2 AND E[ePceID1]>-99999999 THEN
+	   IF [Support]=2 OR [Support]=3 OR [Support]=5 THEN
+		[tSchiebR]=E[ePceID1]/1000-[GrpH_RT]+[DiffA1Gr]+[lPrism]
+		[tSchiebF]=E[ePceID1]/1000-[GrpH_FT]+[DiffA1Gr]+[lPrism]
+	   ELSE
+	        [tSchiebR]=E[ePceID1]/1000-[GrpH_RT]+[DiffA1Gr]
+		[tSchiebF]=E[ePceID1]/1000-[GrpH_FT]+[DiffA1Gr]
+ 	   ENDI
+
+	ENDI
+	IF [tSchiebR]<0 OR [tSchiebF]<0 THEN
+		[tSchiebR]=0
+		[tSchiebF]=0
+	ENDI
+
+	
+
+	E[eNachsR0]=[tSchiebR]*1000
+	E[eNachsF0]=[tSchiebF]*1000
+
+
+(~~~~~ A1-Achse drehen ~~~~~)
+N8120
+	IF [S_TurnA]>0 THEN	
+		E91003=0
+		E94203=35
+		E35303=11
+		M62:3
+		M4S[S_TurnA]
+	ENDI
+N8129
+
+
+(~~~~~ A1-Achse stoppen ~~~~~)
+N8130
+	IF [S_TurnA]>0 THEN
+		M62:3M5
+		E94203=3
+		E91003=1
+		E35303=0
+		[t1]=[S_TurnA]*360
+		(G90G1F[t1]A0)
+	ENDI
+N8139
+
+
+(~~~~~ Job erfolgreich ausgefuehrt ~~~~~)
+N8140
+	$+
+	IF E[eJobRes]=10 THEN
+		IF E[eNrCntrl]=1 THEN
+			E[eJobRes]=0
+			[keinRT]=1
+		ELSE
+			$Wechsler Rohteil nicht gefunden
+			E[eJobRes]=0
+			E[MeldNr]=30
+			G79 N9000
+		ENDI
+	ENDI
+N8149
+
+
+(~~~~~ GreiferRT geschlossen~~~~~)
+N8150
+	IF E[eGrZ_RT]=1 THEN
+		E[ePceGrRT]=0
+		E[MeldNr]=17
+	G79 N9000
+ENDI
+
+
+(~~~~~ GreiferFT geschlossen~~~~~)
+N8155
+	IF E[eGrZ_FT]=1 THEN
+		E[ePceGrFT]=0
+		E[MeldNr]=18
+		G79 N9000
+	ENDI
+N8159
+
+
+(~~~~~ JobDurchmesser bestimmen ~~~~~)
+N8170
+	IF [Chg_Hue]=1 THEN
+		IF E[eHueNr0]<>0 THEN
+			[HuelseNr]=E[eHueNr0]
+			G77N10200N10299
+		
+			[Dur_Job]=[Dur_Hue]				
+		ELSE
+			[Dur_Job]=[Dur_Pal]
+		ENDI
+	ELSE
+		[Dur_Job]=[Dur_Pal]
+	ENDI
+N8180
+
+
+(~~~~~ XXX nicht verwendet  ~~~~~)
+N8300
+	G77N10500N10510	(allg Greiferdaten laden)
+	E[MValZ1]=0
+	
+	(Startposition merken)
+	L10=UE70000
+	G0 G90 XL10
+	
+	L11=UE72000	
+	G0 G90 ZL11
+	
+	[StartX]=UE70000
+	[StartZ]=UE72000
+	
+	
+	M191	(Messtaster mit steigender Flanke aktivieren	)
+	G01 G91
+	F400 X-30 G10 N8310	(Messfahrt X1)
+	G79 N8910
+N8310
+	L2=UE70001	(X1 Position auslesen)
+	F5000 X5
+	G91
+	Z-15
+	'X=L2-3
+	G90 XL923
+	G91
+	F400 Z30 G10 N8320	(Messfahrt Z1)
+	G79 N8910
+N8320
+	L3=UE72001	(Z1 Position auslesen)
+	'Z=L3-5
+	G90 F5000 ZL925
+	
+	X[StartX]
+	'Z=L3+25
+	ZL925
+	'X=L2-3
+	G90 XL923
+	G91
+	F400 Z-30 G10 N8330
+	G79 N8910
+N8330
+	L4=UE72001
+	'Z=L4+5
+	G90 F5000 ZL925
+	X[StartX]
+	L100=L3+L4
+	L101=L100/2
+	ZL101
+	
+	IF [Gr_Nr]=0 THEN
+		IF 'EM=1 THEN
+			[PZA_RT0]=L101
+		ELSE
+			[PZA_FT0]=L101
+		ENDI
+	ELSE
+		IF 'EM=1 THEN
+			[PZA_RT1]=L101
+		ELSE
+			[PZA_FT1]=L101
+		ENDI
+	ENDI
+	
+	G90
+	'EF=51 'EN=220 
+	G77 N1100N1199
+	'X=L2-3
+	G90 XL923
+	
+	IF 'EM=1 THEN
+		'EF=51 'EN=200
+		G77 N1100N1199
+	ELSE
+		'EF=51 'EN=210
+		G77 N1100N1199
+	ENDI
+	
+	G79 E[MValZ1]=0 N8910
+	L5=E[MValZ1]+2
+	
+	IF [Gr_Nr]=0 THEN
+		L6=[DurUeb]/2
+		IF 'EM=1 THEN
+			[PYA_RT0]=L5+L6
+		ELSE
+			[PYA_FT0]=L5+L6
+		ENDI
+	ENDI
+	
+	IF [Gr_Nr]=1 THEN
+		L6=[DurUeb]/2
+		IF 'EM=1 THEN
+			[PYA_RT1]=L5+L6
+		ELSE
+			[PYA_FT1]=L5+L6
+		ENDI
+	ENDI
+		
+	IF [Gr_Nr]=2 THEN
+		L6=[DurUeb]/2
+		IF 'EM=1 THEN
+			[PYA_RT2]=L5+L6
+		ELSE
+			[PYA_FT2]=L5+L6
+		ENDI
+	ENDI
+	
+	G90 X[StartX]
+	'Y=L5+L6
+	'EF=11 'EY=L924
+	G77 N1100N1199
+	M193
+	
+	IF [Gr_Nr]=0 THEN
+		IF 'EM=1 THEN
+			$Z
+			$=[PZA_RT0]
+			$+ Y
+			$=[PYA_RT0]
+		ELSE
+			$Z
+			$=[PZA_FT0]
+			$+ Y
+			$=[PYA_FT0]
+		ENDI
+	ENDI
+	
+	IF [Gr_Nr]=1 THEN
+		IF 'EM=1 THEN
+			$Z
+			$=[PZA_RT1]
+			$+ Y
+			$=[PYA_RT1]
+		ELSE
+			$Z
+			$=[PZA_FT1]
+			$+ Y
+			$=[PYA_FT1]
+		ENDI
+	ENDI
+	
+	IF [Gr_Nr]=2 THEN
+		IF 'EM=1 THEN
+			$Z
+			$=[PZA_RT2]
+			$+ Y
+			$=[PYA_RT2]
+		ELSE
+			$Z
+			$=[PZA_FT2]
+			$+ Y
+			$=[PYA_FT2]
+		ENDI
+	ENDI
+N8600
+
+
+(~~~~~ Kompensation~~~~~)
+N8700
+	VAR H9825:1			(Kompensation einlesen)
+	G77N10000N10099	(Kompensationsdaten laden)
+	IF [.IBE1(11)]=1 THEN
+		G0 G90
+		X400
+		Y125
+		C0
+		Y220
+		Z-125
+		'EF=11 'EY=400 G77N1100N1199
+		'EF=30 G77N1100N1199
+	ENDI
+	'EF=111 'EY=[MP1Y2] G77N1100N1199
+	G0 G90 X[KFreiX1]Z[MP1Z1]
+	M195
+	(G0 G90 Z[MP1Z1])
+	'EF=11 'EY=[MP1Y2] G77N1100N1199	
+	G0 G90 X[MP1X1]
+	M198
+	G01 G91
+	G79 E20101=0 N8910
+	F250 Z-20 G10 N8710
+	G79 N8920
+N8710
+	E[MValZ1]=UE72001
+	IF [.IBE1(11)]=0 THEN
+		[Ktemp1]=E[MValZ1]-E[GrMWZ1]
+		E[KompZ1]=[Ktemp1]
+		IF E[KompZ1]>0.3 OR E[KompZ1]<-0.3 THEN
+			E[KompZ1]=0
+			G79 N8950
+		ENDI
+	ENDI 
+	G0 G90 Z[MP1Z1]
+	G0 G90 X[KFreiX1]
+	'EF=11 'EY=[MP2Y2] G77N1100N1199
+	G0 G90 X[MP2X1]Z[MP2Z1]
+	(G0 G90 X[MP2X1])
+	'EF=51 'EN=100 G77N1100N1199
+	IF [.IBE1(11)]=0 THEN
+		[Ktemp2]=E[MValY2]-E[GrMWY2]
+		E[KompY2]=[Ktemp2]
+		IF E[KompY2]>0.3 OR E[KompY2]<-0.3 THEN
+			E[KompY2]=0
+			G79 N8950
+		ENDI 
+	ENDI
+	M199
+	G0 G90 X[KFreiX1]
+	E[KFlag]=0
+
+	IF [.IBE1(11)]=1 THEN
+		E[KompZ1]=0
+		E[KompY2]=0
+
+		(Ergebnisse ausgeben)
+		$Z
+		$=E[MValZ1]
+		$+ Y
+		$=E[MValY2]
+	ENDI
+N8800
+
+
+(~~~~~ Fehler-Kompensation ~~~~~)
+N8910
+	$Messfehler
+	M0
+	G79 N9000
+N8920
+	$Messfehler
+	M0
+	G79 N9000
+	N8950
+	$Kompensationsfehler
+	M0
+	M2
+	
+	
+(~~~~~ Fehler ~~~~~)
+N8960
+	$No Sleeve
+	M0
+	M2
+	
+(~~~~~ Fehler ~~~~~)
+N8970
+	$Nachschieben nicht moeglich
+	M0
+	M2
+ 
+ 
+(Kompensationsdaten aus Eparam)
+N10000
+	[GrMWZ1]=40198	(Grundmesswert Z1 Greifer)
+	[GrMWY2]=40199	(Grundmesswert Y2 Greifer)
+	[KompZ1]=80190	(Kompensationswert in Z1-Richtung Greifer)
+	[KompY2]=80191	(Kompensationswert in Y2-Richtung Greifer)			
+	[MValZ1]=30161	(Messwert Z1-Richtung Greifer)
+	[MValY2]=30162	(Messwert Y2-Richtung Greifer)		
+N10099
+  
+
+(Daten Huelsenwechsel)
+N10100
+	[X1Sl1]=E40045		(X1 Freifahrposition Huelse)
+	[X1Sl_RT]=E40054	(X1 Uebergabeposition Huelse RT)
+	[X1Sl_FT]=E40055	(X1 Uebergabeposition Huelse FT)
+	[Z1Sl_RT]=E40047	(Z1 Uebergabeposition Huelse RT)
+	[Y2Sl_RT]=E40048	(Y2 Uebergabeposition Huelse RT)
+	[A1Sl_RT]=E40049	(A1 Uebergabeposition Huelse RT)
+	[Z1Sl_FT]=E40050	(Z1 Uebergabeposition Huelse FT)
+	[Y2Sl_FT]=E40051	(Y2 Uebergabeposition Huelse FT)
+	[A1Sl_FT]=E40052	(A1 Uebergabeposition Huelse FT)
+	[A1Dreh]=E40053		(A1 Verdrehung verriegeln/entriegeln Huelse)
+N10199
+
+
+(Huelsendaten aus Eparam)
+N10200
+	E[AnfHulsen]=[HuelseNr]
+	M82				(Daten von Huelse anfordern)
+	G79N10220
+	
+(Huelsendaten aus Eparam)
+N10210
+	E[AnfHulsen]=[HuelseDur]
+	M86				(Daten von Huelse anfordern)
+	
+(Durchmesser und HuelsenNr)
+N10220
+	[Dur_Hue]=E40020	(Durchmesser Huelse)
+	[Nr_Hue]=E40025		(PlatzNr Huelse)
+N10299
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(Palettendaten RT aus WkstNr aus EParam)
+N10300
+	E[AnfPalNr]=[PalWkstNr]
+	M87
+	G79N10350
+
+(Palettendaten RT aus Palettenplatz aus EParam)	
+N10310	
+	E[AnfPalPos]=[PalPosNr]
+	M83
+
+(Palettendaten Durchmesser RT)	
+N10350
+	[Dur_Pal]=E40159	(Rohlingsdurchmesser Palette RT)
+	[MultiPal]=E40169	(0=Palette 1 Durchmesser, 1=Multipalette)
+	
+(Palettendaten Greifhoehe RT)
+N10360
+	[GrpH_RT]=E40158	(Greifhoehe RT Greifer [mm])
+N10399
+
+
+(Palettendaten FT aus WkstNr aus EParam)
+N10400	
+	E[AnfPalNr]=[PalWkstNr]
+	M88
+	G79N10450
+
+(Palettendaten FT aus Palettenplatz aus EParam)	
+N10410
+	E[AnfPalPos]=[PalPosNr]
+	M84
+
+(Palettendaten Durchmesser RT)	
+N10450
+	[Dur_Pal]=E40170	(Rohlingsdurchmesser Palette FT)   
+	[MultiPal]=E40169	(0=Palette 1 Durchmesser, 1=Multipalette)
+	
+(Palettendaten Greifhoehe FT)
+N10460
+	[GrpH_FT]=E40168	(Greifhoehe FT Greifer [mm])                          
+N10499  
+
+
+(Daten Laden)
+N10500
+	(Laderauswahlen)
+	[Gr_Nr]		=E40180	(Greifernummer 0 = 3-12.5mm, 1 = 13-20mm, 2 = 6-16mm)
+	[DurUeb]	=E40200	(Rohlingsdurchmesser Uebergabe A-Achse Greifer 0)
+	[XDiff_FT]	=E40205	(Differenz Uebergabe RT/FT)
+	[WkstWkz]      =40035         (Vorwahl WkstWechsel WkzWechsel parallel, 0=nein, 1=ja)
+     [UebParam]    = 84900         (Uebergabeparameter Parallelwechsel)
+	
+N10510		
+	[oSchieb]	=E40181	(Nachschieben: 0=aus / 1=[sSchieb] / 2=Wert von NR)
+	[sSchieb]	=E40182	(Nachschieben Laenge)
+	[oZHub]		=E40186	(Z-Achse abheben bei Wechsel 0=aus, 1=[sZHub])
+	[sZHub]		=E40187	(Z1 Achsenhub)
+	[S_TurnA]	=E40183	(A-Achse drehen beim Einfuttern 0=aus / >0=Drehzahl)
+	[oSpWdh]	=E40185	(Nachtraegliches Loesen-Spannen nach Einfuttern)
+	[FreiFa_X]	=E40188	(Freifahren X1 bei Wechsel 0=[Pos1X], 1=NR)
+	[Ausbl]		=E40184	(Futter Ausblasen 0 = Nein, 1 = Ja )
+	[A1_RT]		=E40204	(Modus beim Einfuttern RT 0=Grei. drucklos,1=Grei.AUF,2=Grei.ZU)
+	[A1_S] 	   	=E40208	(Spannfutter Auf/Zu bei Nachschieben 0=Ein,1=Aus)
+	[ChuckL]	=E40201	(0=Pos2X_RT[FT], 1=Wert NR)	
+	[Chg_Hue]	=E40019	(0=ohne Huelsenwechsel, 1=mit Huelsenwechsel)
+	[Vorw_Lo]	=E40190
+	[Support]	=E40104	(Unterstuetzung 0 = Nein, 1 = Stütz, 2 = Schaft, 3 = Stütz + Schaft)
+	[PalPaare2]	=0		(2Paletten Paare)
+
+(Greiferpositionen)
+N10520
+	[Pos1X]		=E40189	(Position X vor Spannfutter fuer Greifer drehen)
+	[Pos0X_RT]	=E40202	(Position X Greifer RT vor Wkst-Traeger)
+	[Pos0X_FT]	=E40203	(Position X Greifer FT vor Wkst-Traeger)
+	[Pos2X_RT]	=E40192	(Position X Wkst in Spannfutter Greifer RT)
+	[Pos2X_FT]	=E40193	(Position X Wkst in Spannfutter Greifer FT)
+	[PosZ_RT]	=E40194	(Position Z Beladen RT)
+	[PosZ_FT]	=E40195	(Position Z Entladen FT)
+	[DurUeb]		=E40200	(Rohlingsdurchmesser Uebergabe A-Achse Greifer 0)
+	[DiffA1Gr]		=E40207 (Uebergabe Abstand A-Achse zu Greifer)	
+	[ZAusbl]		=E40209
+	
+(Daten Lunette)
+N10530
+	[PosX_PR]	=E40140 (124)	(X1 Position Prisma)
+	[APosMl]	=E40141 (310)	(A1-Position einfuttern)
+	[RowIN]		=E40142 (1)		(Reihenfolge einfuttern, 0=A1->Finger, 1=Finger->A1)
+	[lPrism]	=E40143 (15.6)	(Abstand Schaftprisma -> Futter)	
+N10599
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+(~~~~~ Programmende ~~~~~)	
+N9000
+	E[WkstAktiv]=0
+	E11009=[E11009]
+	E11010=[E11010]
+	G54
+	
+	'EA=0
+	'EL=0
+	'EP=0
+	'EQ=0
+	'ES=0
+	'EF=0
+	'EN=0
+	'F=0
+	
+	E[ePceCL1]=-99999999
+	E[ePceRL1]=-99999999
+	E[ePceCHL1]=-99999999
+	E[ePceRD1]=-99999999
+	E[ePceID1]=-99999999
+	E[ePceCL2]=-99999999
+	E[ePceRL2]=-99999999
+	E[ePceCHL2]=-99999999
+	E[ePceRD2]=-99999999
+	E[ePceID2]=-99999999
+	M[M99x]
+	
+	IF [keinRT]=1 THEN
+		G77H21000N1107
+		E[NRCStatus]=3
+		WHILE E[NRCStatus]<>0 DO
+			G4F.1
+		ENDW
+		$
+	ENDI
+G80        
+   
+  

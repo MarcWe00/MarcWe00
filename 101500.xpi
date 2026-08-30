@@ -1,0 +1,9 @@
+%10150.0@2(Bestueckung Spindeln setzen)
+(SetSpindelBest.xpi)
+
+E80061 =L926		(Bestueckung Spindel 1)
+E80062 = L927	
+M2
+
+
+

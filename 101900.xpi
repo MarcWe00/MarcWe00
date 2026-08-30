@@ -1,0 +1,28 @@
+%10190.0@2(Oszillation - G190_Osz)
+(G190_Osz.xpi) (V3.0a / 21.11.2014 NUM-CH/APL)
+
+VAR
+[i]
+[M9xx]=998+[.BM999]-[.BM997]
+ENDV
+SEARCH [OszAxe]N10
+G79N19
+N10
+VAR
+[OszAxe(9)]
+ENDV
+SAVE [OszAxe(9)]
+N19
+FOR [i]=1 TO 9 DO
+[OszAxe(i)]=[.IBX(i)]
+BCLR [.IBX(i)]
+ENDF
+M997
+G997
+$Axes :
+FOR [i]=1 TO 9 DO
+$=[OszAxe(i)]
+$+
+ENDF
+M[M9xx]
+G80

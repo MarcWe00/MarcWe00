@@ -1,0 +1,45 @@
+%8189.0@2(Scheibe verdrehen)
+VAR
+[rpm]
+[time]
+[M99x] = 998 - [.BM997] + [.BM999]
+ENDV
+M997
+G997
+[rpm] = E40232
+[time] = E40233
+M14
+G04F0.3
+IF E40105=1 THEN 
+  IF E72000<-1250000 THEN
+    E30054=E30000
+    M62:2 
+    M272
+  ELSE
+    IF E40103=3 THEN
+      E30227=1
+      M62:1 M3 S60
+      G04 F0.5
+      M14
+      E30227=0
+      S0M5
+    ELSE
+      E30054=E30000
+      M62:1 
+      M272
+    ENDI
+  ENDI
+ELSE
+  IF E72000<-1250000 THEN
+    M62:2 M3 S[rpm]
+    G4F[time]
+    M14
+    S0M5
+  ELSE
+    M62:1 M3 S[rpm]
+    G4F[time]
+    M14
+    S0M5
+  ENDI
+ENDI
+M[M99x]

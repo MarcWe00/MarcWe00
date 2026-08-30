@@ -1,0 +1,128 @@
+%9513.0@2(WkzError - Fehlerliste Wzg-Wechsler)
+(WkzError.xpi)
+
+N8100 (Magazinplatz belegt)
+E30220 = 1
+G79 N9999
+
+N8150 (Magazinplatz nicht bestueckt)
+E30220= 2
+G79 N9999
+
+N8200 (Fehler Bestuckung Magazin)
+E30220= 3
+G79 N9999
+
+N8250 
+E30220= 4
+G79 N9999
+
+N8300
+E30220= 5
+G79 N9999
+
+N8350 (Fehler Bestueckung Spindel 1 holen)
+E30220= 6
+G79 N9999
+
+N8400 (Fehler Bestueckung Spindel 1 bringen)
+E30220= 7
+G79 N9999
+
+N8450 (Fehler Wkz nicht aufgenommen Spindel 1)
+E30220= 8
+G79 N9999
+
+N8500 (Fehler Wkz nicht abgenommen Spindel 1)
+E30220= 9
+G79 N9999
+
+N8550
+E30220= 10
+G79 N9999
+
+N8600
+E30220= 11
+G79 N9999
+
+N8650 (Fehler Bestueckung Spindel 2 holen)
+E30220= 12
+G79 N9999
+
+N8700 (Fehler Bestueckung Spindel 2 bringen)
+E30220= 13
+G79 N9999
+
+N8750 (Fehler Wkz nicht aufgenommen Spindel 2)
+E30220= 14
+G79 N9999
+
+N8800 (Fehler Wkz nicht abgenommen Spindel 2)
+E30220= 15
+G79 N9999
+
+N8850
+E30220= 16
+G79 N9999
+
+N8900
+E30220= 17
+G79 N9999
+
+N8950
+E30220= 18
+G79 N9999
+
+N9000 (Fehler Werkzeugnummer nicht in Ordnung)
+E30220= 19
+G79 N9999
+
+N9050 (Fehler Eingabe Spindelnummer 1 oder 2)
+E30220= 20
+G79 N9999
+
+N9100
+E30220= 21
+G79 N9999
+
+N9150
+E30220= 22
+G79 N9999
+
+N9200
+E30220= 23
+G79 N9999
+
+N9250 (Fehler Bestueckung Spindel 1)
+E30220= 24
+G79 N9999
+
+N9300 (Fehler 2 Werkzeug nicht aufgenommen Spindel 1)
+E30220= 25
+G79 N9999
+
+N9350 (Fehler Magazinplatz nicht belegt)
+E30220= 26
+G79 N9999
+
+N9400
+E30220= 27
+G79 N9999
+
+N9450
+E30220= 28
+G79 N9999
+
+N9500 (Fehler Bestueckung Spindel 2)
+E30220= 29
+G79 N9999
+
+N9550 (Fehler Werkzeug nicht aufgenommen Spindel 2)
+E30220= 30
+G79 N9999
+
+N9600 (Fehler Magazinplatz nicht belegt)
+E30220= 31
+G79 N9999
+
+N9999

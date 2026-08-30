@@ -1,0 +1,1660 @@
+%9962.2@2(HC4)(Gruppe2)
+(CNC_GRP2.xpi)
+(Abgeleitet von HP160: )
+(9998.2@2 bzw. 9922.2@2)
+
+VAR
+  [JobNr]				        (Jobnummer)
+  [SubJobNr]
+  [eJob]=40060
+  [eSubJob]=80080			  (SubJob)
+  [eLdGet]=80081			  (Nr Wkst)
+  [eJobArg1]=80082		  (E-Parameter der Uebergabewerte)
+  [eJobArg2]=80083
+  [eJobArg3]=80084
+  [eJobArg4]=80085
+  [eJobRes]=80086			  (Job-Resultat:	0:undef 1:Job gestartet 2:Job erfolgreich beendet)
+
+  (~~ Greifer ~~~~~~~~~)
+  [ePceGrRT]=80088		  (Greifer RT Nr Wkst)
+  [ePceGrFT]=80089		  (Greifer FT Nr Wkst)
+  [eGrZ_RT]=40011			  (Greifer RT Zustand)
+  [eGrZ_FT]=40012			  (Greifer FT Zustand)
+  [eGr_Akt]=40013			  (Greifer Schwenkeinheit 0:frei 1:RT 2:FT)
+  [eSpZust]=40014			  (Spannfutter Spannzustand 0:undef 1:offen 2:gespannt)
+
+  [ePceNr0]=80090			  (Platznummer            aktuelles Wkst)
+  [ePceCL0]=80091       (Einspannlaenge         aktuelles Wkst)
+  [ePceRL0]=80092       (Rohlingslaenge         aktuelles Wkst)
+  [ePceCHL0]=80093      (Spannzangenlaenge      aktuelles Wkst)
+  [ePceSL0]=80094       (Schaftdurchmesser      aktuelles Wkst)
+  [ePceRD0]=80095       (Rohlingsdurchmesser    aktuelles Wkst)
+  [ePceID0]=80096       (Einstecktiefe          aktuelles Wkst)
+  [eNachsR0]=80098      (Nachschieblaenge RT    aktuelles Wkst)
+  [eNachsF0]=80099      (Nachschieblaenge FT    aktuelles Wkst)
+
+  [eNrCntrl]=20030		  (NrControl aktiv)
+
+  [ePceNr1]=80100			  (Platznummer            neues Wkst)
+  [ePceCL1]=80101       (Einspannlaenge         neues Wkst)
+  [ePceRL1]=80102       (Rohlingslaenge         neues Wkst)
+  [ePceCHL1]=80103      (Spannzangenlaenge      neues Wkst)
+  [ePceSL1]=80104       (Schaftdurchmesser      neues Wkst)
+  [ePceRD1]=80105       (Rohlingsdurchmesser    neues Wkst)
+  [ePceID1]=80106       (Einstecktiefe          neues Wkst)
+
+  [ePceNr2]=80110			  (Platznummer            naechstes Wkst)
+  [ePceCL2]=80111       (Einspannlaenge         naechstes Wkst)
+  [ePceRL2]=80112       (Rohlingslaenge         naechstes Wkst)
+  [ePceCHL2]=80113      (Spannzangenlaenge      naechstes Wkst)
+  [ePceSL2]=80114       (Schaftdurchmesser      naechstes Wkst)
+  [ePceRD2]=80115       (Rohlingsdurchmesser    naechstes Wkst)
+  [ePceID2]=80116       (Einstecktiefe          naechstes Wkst)
+
+  [eDurNr0]=80120
+  [eDurRT]=80121
+  [eDurFT]=80122
+  [eHueNr0]=80140				(aktuelle Hülse in A1)
+  [eHueNr1]=80141
+  [eHueGet]=80142
+  [eHueGrRT]=80143			(aktuelle Hülse in Greifer)
+  [eHueGrFT]=80144
+  [eXoffsRT]=80150
+  [eXoffsFT]=80151
+  [Pal_Typ]=30240
+  [Pal_Nr]=30241
+  [KompX]=80195
+
+  (~~ Allgemeine Variablen ~~~~~~~~~)
+  [temp1] [temp2] [temp3] [temp4]
+  [alpha1] [alpha2]
+  [T]
+  [N] [A] [B]
+  [N1][N2][N3]
+  [PalTyp]
+  [NbOnRowX][NbOnRowY]
+  [xPal0][yPal0]
+  [xPal1][yPal1]
+  [a][b] [alpha]
+  [c][d] 
+  [a1][b1][c1]
+  [a2][b2][c2]
+  [k][l][m]
+  [n][o][p]
+  [r][s][t]
+  [x1][y1][y2]
+  [Offs_Pal][Offs_Ref][Offs_Kor]
+  [FreiY2] [Typ] [PalNr] [Dur_Job]
+  [PX1] [PX1_M]
+  [PY1] [PY1_M]					
+  [PX2]
+  [PY2]
+  [PX3]
+  [PY3]
+  [PX4]
+  [PY4]
+  [WinkelY]
+  [WinkelX]
+  [Dur_Job]
+  [TEMP123]
+ENDV
+
+VAR H9860:1
+VAR H9863:1
+E11013=-1
+[F2_6]=[F2_6]*E40208/100
+
+N1000
+  $Job manager: Waiting
+  M262
+  [JobNr]=E[eJob]
+  E[eJobRes]=1
+  $Job manager: Job
+  $= [JobNr]
+  $+ active
+
+  IF [JobNr]=1 THEN			(Wechslerposition fuer Greifer drehen anhfahren)
+    M226
+    G1 F[F2_1]X[Pos3X2]
+    Y[Pos3Y2]
+  ENDI
+
+  IF [JobNr]=2 THEN			(Wechslerposition vor Beladeklappe anfahren)
+    M226
+    G1 F[F2_1]X[Pos3X2]
+    Y[Pos3Y2]
+  ENDI
+
+  IF [JobNr]=3 THEN			(Wechslerposition Bestückung anfahren)
+    M226
+    'X=[Pos4X2]
+    'Y=[Pos4Y2]
+    G1 F[F2_1]XL923
+    YL924
+  ENDI
+
+  IF [JobNr]=4 THEN			(Wechslerposition Platznummer anfahren)
+    'T=E[eJobArg2]
+    G77 N2500 N2599
+    EG30
+    G01 G90
+    F[F2_6] XL923 Y[Y2HSK_Ch]
+  ENDI
+
+N1010
+  IF [JobNr]=5 OR [JobNr]=105 THEN	
+    [A]=E[eJobArg2]
+    [Dur_Job]=E[eJobArg3]
+    G1 F[F2_4]
+    G77 N2800 N2899
+    E84150=L924
+    YL924
+  ENDI
+
+
+  IF [JobNr]=6 THEN					
+    'T=E[eJobArg2]
+    'T=E[eJobArg2]
+    G77 N2670 N2700
+    EG30
+    G01 G90
+    F[F2_6] XL923
+  ENDI
+
+
+  IF [JobNr]=50 THEN					(Einmessen)
+    'M=E[eJobArg2]
+    'N=E[eJobArg3]
+    
+    IF 'M=3 THEN
+      G77 N3900 N4000
+    ENDI
+
+    IF 'M=1 OR 'M=2 THEN
+        IF [MultiPal]=1 THEN
+          G77 N6000 N6700
+      ELSE
+        G77 N3000 N3700
+      ENDI
+    ENDI
+
+    IF 'M=4 THEN
+      E30240 = UE70000		
+    ENDI
+
+    IF 'M=5 THEN
+      G77 N13313 N13314
+    ENDI
+
+  ENDI
+
+
+  IF [JobNr]=51 THEN					
+    'M=E[eJobArg2]
+    'N=E[eJobArg3]
+    G77	N3700 N3800
+  ENDI
+
+
+  IF [JobNr]=10 THEN			(Achsposition anfahren X2)
+    'X=ME[eJobArg2]
+    G1 F[F2_6]
+    EG30
+    XL923
+  ENDI
+
+  (*********************************************************)
+  IF [JobNr]=11 OR [JobNr]=111 THEN 	(Achsposition anfahren Y2)
+    'Y=UE[eJobArg2]
+    
+    IF E[eJobArg1]<=0 THEN
+      G1 F[F2_0]
+    ELSE
+      G1 FE[eJobArg1]
+    ENDI
+
+    G77 N2000 N2099
+    YL924
+  ENDI
+
+  (*********************************************************)
+  IF [JobNr]=20 OR [JobNr]=120 THEN	(Werkstück in Wechsler ablegen/holen)
+
+    IF [JobNr]=120 THEN
+      G04 F1
+    ENDI
+    
+    (VAR H9863:1)
+    (M226)       
+    M231
+    
+    IF E[ePceGrRT]=0 THEN
+      M220
+      E[ePceGrRT]=0
+      E[eDurRT]=0
+    ENDI
+
+    IF E[ePceGrRT]>0 THEN   (aktuelle Rohteil-Nummer in Greifer)
+      IF E[eLdGet]=0 THEN   (Platznummer Werkstück)
+        $Unload piece:
+        $= E[ePceGrRT]
+        $+ Pal RT
+        'T=E[ePceGrRT]
+        'N=1
+        G77 N2500 N2599
+        G1 F[F2_6]
+        EG30
+        XL923
+        M226      (Z2-Achse auf)
+        M231      (X2-Freifahrzylinder ausfahren )
+        G01 G90 F1000 Y[Y2HSK_Ch] (Y2-Positon Übergabe Magazin)
+        M232      (X2 zurück)
+        M227      (Z2-Achse ab)
+        M220      (Greifer RT öffnen)
+        M231      (X2-Achse vor)
+        (M226)      (Z2-Achse auf)
+        E[ePceGrRT]=0
+        E[eDurRT]=0
+      ELSE
+        IF E[ePceGrRT]<>E[eLdGet] THEN
+          $Unload piece:
+          $= E[ePceGrRT]
+          $+ Pal:
+          $= RT
+          E30225=20
+          G79 N5100
+        ENDI
+
+      ENDI	
+    ENDI
+
+    IF E[ePceGrRT]=0 AND E[eLdGet]>0 THEN
+      $Load piece:
+      $= E[eLdGet]
+      $+ Pal RT
+      'T=E[eLdGet]
+      'N=1
+      G77 N2500 N2599
+      G1 F[F2_6]
+      EG30
+      XL923
+      M220
+      (M226)
+      M231
+      G9 G1 F[F2_5] Y[Y2HSK_Ch]
+      G90
+      M227
+      M232
+      M221
+
+      IF E[eGrZ_RT]=1 THEN
+        M220
+        E[ePceGrRT]=0
+        E[eDurRT]=0
+        E[eJobRes]=10
+        $Wechsler Rohteil nicht gefunden
+        E30225=30
+        G79 N5100
+      ELSE
+        E[ePceGrRT]=E[eLdGet]
+        
+        IF E[eLdGet]=E[ePceNr1] THEN
+          E[eDurRT]=E[ePceSL1]/1000
+        ENDI
+
+        M226
+        M231
+        E[eJobRes]=2
+      ENDI
+    ENDI
+    
+
+    IF E[eLdGet]=0 AND E[ePceNr0]<>0 THEN
+      M220
+      M231
+      M226
+      'T=E[ePceNr0]
+      G77 N2500 N2599
+      G1 F[F2_6]
+      EG30
+      XL923
+    ENDI
+  ENDI
+
+  (*********************************************************)
+  IF [JobNr]=30 OR [JobNr]=130 THEN		(X3 in Maschinenraum fahren)
+    $In Maschinenraum einfahren
+    G9 G1 F[F2_5] Y[Y2HSK_Ch]
+    G90
+    M226
+    M231
+    M200
+    M234
+    IF [Gr_Nr]=2 THEN
+    M227
+    ENDI
+    E[eJobRes]=2
+  ENDI
+
+  (*********************************************************)
+  IF [JobNr]=31 OR [JobNr]=131 THEN		(X3 aus Maschinenraum fahren)
+    $Aus Maschinenraum ausfahren
+    G1 F[F_0] Y[Y2HSK_Ch]
+    M200
+    M226
+    M233
+
+    IF E80021=0 OR E80021=199 THEN
+         IF E[ePceNr0]<>0  THEN
+             M201
+         ENDI
+    ENDI
+
+    IF E80021<>0 THEN
+             M201
+    ENDI
+
+       E[eJobRes]=2
+  ENDI
+
+  (********************************************)
+  IF [JobNr]=40 OR [JobNr]=140 THEN		
+    (M226)
+    M231
+
+    IF E[eHueGrRT]=0 THEN
+      M220
+      E[eHueGrRT]=0
+    ENDI
+
+    IF E[eHueGrRT]>0 THEN
+      $Unload piece:
+      $= E[eHueGrRT]
+      $+ Sleeve RT
+      'T=E[eHueGrRT](*1000)
+      'N=3
+      (VAR H9863:1)
+      G77 N2500 N2599
+      G1 F[F2_6]
+      EG30
+      XL923
+      M226
+      M231
+
+      'Y=[Y2HSK_Ch]
+      F[F2_5] YL924
+
+      M232
+      M227
+      M220
+      E[eHueGrRT]=0
+      M231
+      (M226)
+    ENDI
+
+    IF E[eHueGrRT]>0 THEN
+      IF E[eHueGet]=0 THEN
+        $Unload piece:
+        $= E[eHueGrRT]
+        $+ Sleeve RT
+        'T=E[eHueGrRT] (*1000)
+        'N=3
+
+        (VAR H9863:1)
+        M226
+        M231
+        G77 N2500 N2599
+        G1 F[F2_6]
+        EG30
+        XL923
+        'Y=[Y2HSK_Ch]
+        F[F2_5] YL924
+        M232
+        M227
+        M220
+
+        E[eHueGrRT]=0
+        M231
+        (M226)
+      ELSE
+        IF E[eHueGrRT]<>E[eHueGet] THEN
+          $Unload piece:
+          $= E[eHueGrRT]
+          $+ Pal:
+          $= RT
+          E30225=20
+          G79 N5100
+        ELSE
+        ENDI
+      ENDI
+    ENDI
+
+    IF E[eHueGrRT]=0 AND E[eHueGet]>0 THEN
+      $Load piece:
+      $= E[eHueGet]
+      $+ Sleeve RT
+      'T=E[eHueGet] (*1000)
+      'N=3
+
+      (VAR H9863:1)
+      M231
+      (M226)
+      G77 N2500 N2599
+      G1 F[F2_6]
+      EG30
+      XL923
+      M220
+      (M226)
+      M231
+
+      'Y=[Y2HSK_Ch]
+      F[F2_5] YL924
+      M227
+      M232
+      M228
+
+      IF E[eGrZ_RT]=1 THEN
+        M220
+        E[eHueGrRT]=0
+        E[eJobRes]=10
+        $Wechsler Rohteil nicht gefunden
+        E30225=30
+        G79 N5100
+      ELSE
+        E[eHueGrRT]=E[eHueGet]
+        E[eJobRes]=2
+        M226
+        M231
+      ENDI
+    ENDI
+
+    (M226)
+  ENDI
+
+  IF [JobNr]=900 THEN
+    'T=E80150
+    'N=E80150
+    G77 N2500 N2599
+    E80160=L923
+    E80161=L924
+  ENDI
+
+  G79 N1000
+
+N2000
+  IF E[eJobArg1]>0 THEN
+    FE[eJobArg1]
+    E[eJobArg1]=0
+  ENDI
+N2099
+
+N2100
+N2199
+
+N2500
+  (Durch Platznummer X2-Position berechnen)
+  (VAR H9860:1)
+  IF [HC4_mod]=1 THEN
+    [T]='T
+
+    IF [T]=1 THEN
+      'X=0
+    ELSE
+      [a]=[T]-1
+      [b]=2.278
+      'X=[a]*[b]
+    ENDI
+  ENDI
+
+  IF [HC4_mod]=0 THEN
+    [T]='T
+      
+    IF [T]=1 THEN
+      'X=0
+    ELSE
+      [a]=[T]-1
+      [b]=2.278
+      'X=[a]*[b]
+    ENDI
+  ENDI
+N2599
+
+N2600
+  [T]='T
+  [N]='N
+  [N1]=[T]*1000
+  [N2]=[N1]+999
+  VAR H9822:1N[N1]N[N2]
+  M226
+  G0 G90 X[Pos7X2]
+    
+  IF [N]=3 THEN
+    Y[Y2SleRT]
+    X[X2SleRT]
+  ENDI
+
+  IF [N]=4 THEN
+    Y[Y2SleFT]
+    X[X2SleFT]
+  ENDI
+N2630
+
+N2650
+  IF [MultiPal]=1 THEN
+    
+    IF [Chg_Hue]=1 THEN
+      
+      IF 'N=1 THEN
+        
+        IF E[eDurRT]<>0 THEN
+          [Dur_Job]=E[eDurRT]
+        ELSE
+          IF E[eHueNr0]=0 THEN
+            [Dur_Job]=E40170
+            E[eDurRT]=E40170
+          ENDI
+          
+          IF E[eHueNr0]=1 THEN
+            [Dur_Job]=[Dur_Hue1]
+            E[eDurRT]=[Dur_Hue1]
+          ENDI
+          
+          IF E[eHueNr0]=2 THEN
+            [Dur_Job]=[Dur_Hue2]
+            E[eDurRT]=[Dur_Hue2]
+          ENDI
+
+          IF E[eHueNr0]=3 THEN
+            [Dur_Job]=[Dur_Hue3]
+            E[eDurRT]=[Dur_Hue3]
+          ENDI
+
+          IF E[eHueNr0]=4 THEN
+            [Dur_Job]=[Dur_Hue4]
+            E[eDurRT]=[Dur_Hue4]
+          ENDI
+        ENDI
+      ENDI
+
+      
+      IF 'N=2 THEN
+
+        IF E[eDurFT]<>0 THEN
+          [Dur_Job]=E[eDurFT]
+        ELSE
+          IF E[eHueNr0]=0 THEN
+            [Dur_Job]=E40170
+            E[eDurFT]=E40170
+          ENDI
+
+          IF E[eHueNr0]=1 THEN
+            [Dur_Job]=[Dur_Hue1]
+            E[eDurFT]=[Dur_Hue1]
+          ENDI
+    
+          IF E[eHueNr0]=2 THEN
+            [Dur_Job]=[Dur_Hue2]
+            E[eDurFT]=[Dur_Hue2]
+          ENDI
+
+          IF E[eHueNr0]=3 THEN
+            [Dur_Job]=[Dur_Hue3]
+            E[eDurFT]=[Dur_Hue3]
+          ENDI
+    
+          IF E[eHueNr0]=4 THEN
+            [Dur_Job]=[Dur_Hue4]
+            E[eDurFT]=[Dur_Hue4]
+          ENDI
+        ENDI
+      ENDI
+    
+    ELSE
+      [Dur_Job]=E40170
+    ENDI
+    
+  ENDI
+
+N2670
+  (VAR H9860:1)
+  IF [HC4_mod]=1 THEN
+    [T]='T
+    
+    IF [T]=1 THEN
+      IF [HC4Plus] = 1 THEN
+	'X=0+240
+      ELSE
+	'X=0+190
+      ENDI
+    ELSE
+      [a]=[T]-1
+      [b]=2.278
+      'X=[a]*[b]
+      IF [HC4Plus] = 1 THEN
+	'X='X+240
+      ELSE
+	'X='X+190
+      ENDI
+    ENDI
+  ENDI
+
+  IF [HC4_mod]=0 THEN
+    [T]='T
+    
+    IF [T]=1 THEN
+       IF [HC4Plus] = 1 THEN
+	'X=0+240
+      ELSE
+	'X=0+190
+      ENDI
+    ELSE
+      [a]=[T]-1
+      [b]=2.278
+      'X=[a]*[b]
+       IF [HC4Plus] = 1 THEN
+	'X='X+240
+      ELSE
+	'X='X+190
+      ENDI
+    ENDI
+  ENDI
+
+N2700
+  [T]='T
+  [N]='N
+
+  IF [N]=1 THEN
+    [PalTyp]=[PalTypRT]
+    VAR H9861:1 N3000 N3100
+  ELSE
+    [PalTyp]=[PalTypFT]
+    VAR H9861:1 N3200 N3300
+  ENDI
+    
+  [N1]=[PalTyp]*1000
+  [N2]=[N1]+999
+  (VAR H9860:1 N3000 N3100)
+
+  IF [Gr_Nr]=0 THEN
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-3
+    ELSE
+      [k]=[Dur_Pal]-3
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.211
+    [n]=3/2
+    
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [Gr_Nr]=1 THEN
+    
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-14
+    ELSE
+      [k]=[Dur_Pal]-14
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.515
+    [n]=14/2
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [Gr_Nr]=2 THEN
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-6
+    ELSE
+      [k]=[Dur_Pal]-6
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.557
+    [n]=6/2
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+    E80170=[FreiY2]
+  ENDI
+N2799
+
+N2800
+  IF [A]=1 OR [A]=3 THEN
+    [PalTyp]=[PalTypRT]
+    VAR H9861:1 N3000 N3100
+  ELSE
+    [PalTyp]=[PalTypFT]
+    VAR H9861:1 N3200 N3300
+  ENDI
+
+  [N1]=[PalTyp]*1000
+  [N2]=[N1]+999
+  (VAR H9860:1 N3000 N3100)
+
+  IF [Gr_Nr]=0 THEN
+    [k]=[DurUeb]-3
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-3
+    ELSE
+      [m]=[Dur_Pal]-3
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+    
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-3
+    ELSE
+      [k]=[Dur_Pal]-3
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.211
+    [n]=3/2
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+    
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [Gr_Nr]=1 THEN
+    [k]=[DurUeb]-14
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-14
+    ELSE
+      [m]=[Dur_Pal]-14
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+    
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-14
+    ELSE
+      [k]=[Dur_Pal]-14
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.515
+    [n]=14/2
+    
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [Gr_Nr]=2 THEN
+    [k]=[DurUeb]-6
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-6
+    ELSE
+      [m]=[Dur_Pal]-6
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-6
+    ELSE
+      [k]=[Dur_Pal]-6
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.557
+    [n]=6/2
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [Gr_Nr]=0 THEN
+
+    IF [A]=1 THEN
+      'Y=[Pos1Y2]+[Offs_Kor]+E80191
+    ENDI
+
+    IF [A]=2 THEN
+      'Y=[Pos2Y2]-[Offs_Kor]+E80191
+    ENDI
+
+    IF [A]=3 THEN
+      'Y=[Pos1Y2]+[Offs_Kor]-[FreiY2]
+    ENDI
+
+    IF [A]=4 THEN
+      'Y=[Pos2Y2]-[Offs_Kor]+[FreiY2]
+    ENDI
+  ENDI
+
+  IF [Gr_Nr]=1 THEN
+    
+    IF [A]=1 THEN
+      'Y=[Pos1Y2]+[Offs_Kor]+E80193
+    ENDI
+
+    IF [A]=2 THEN
+      'Y=[Pos2Y2]-[Offs_Kor]+E80193
+    ENDI
+
+    IF [A]=3 THEN
+      'Y=[Pos1Y2]+[Offs_Kor]-[FreiY2]
+    ENDI
+
+    IF [A]=4 THEN
+      'Y=[Pos2Y2]-[Offs_Kor]+[FreiY2]
+    ENDI
+  ENDI
+
+  IF [Gr_Nr]=2 THEN
+
+    IF [A]=1 THEN
+      'Y=[Pos1Y2]+[Offs_Kor]+E80197
+    ENDI
+
+    IF [A]=2 THEN
+      'Y=[Pos2Y2]-[Offs_Kor]+E80197
+    ENDI
+
+    IF [A]=3 THEN
+      'Y=[Pos1Y2]+[Offs_Kor]-[FreiY2]
+    ENDI
+
+    IF [A]=4 THEN
+      'Y=[Pos2Y2]-[Offs_Kor]+[FreiY2]
+    ENDI
+  ENDI
+N2899
+
+
+N2900
+  IF [B]=1 THEN
+    [PalTyp]=[PalTypRT]
+  ELSE
+    [PalTyp]=[PalTypFT]
+  ENDI
+
+  [N1]=[PalTyp]*1000
+  [N2]=[N1]+999
+  VAR H9861:1N[N1]N[N2]
+  (VAR H9860:1)
+
+  IF [Gr_Nr]=0 THEN
+    [k]=[DurUeb]-3
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-3
+    ELSE
+      [m]=[Dur_Pal]-3
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-3
+    ELSE
+      [k]=[Dur_Pal]-3
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.211
+    [n]=3/2
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [Gr_Nr]=1 THEN
+    [k]=[DurUeb]-14
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-14
+    ELSE
+      [m]=[Dur_Pal]-14
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-14
+    ELSE
+      [k]=[Dur_Pal]-14
+    ENDI
+    
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.515
+    [n]=14/2
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [Gr_Nr]=2 THEN
+    [k]=[DurUeb]-6
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+    
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-6
+    ELSE
+      [m]=[Dur_Pal]-6
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [k]=[Dur_Job]-6
+    ELSE
+      [k]=[Dur_Pal]-6
+    ENDI
+
+    [l]=S60/C60
+    [Offs_Pal]=[k]/[l]
+    [m]=2.557
+    [n]=6/2
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [o]=[Dur_Job]/2
+    ELSE
+      [o]=[Dur_Pal]/2
+    ENDI
+
+    [p]=[n]+[Offs_Pal]
+    [r]=[p]-[o]
+    [FreiY2]=[m]-[r]+0.1
+  ENDI
+
+  IF [B]=1 THEN
+    'Y=UE71000-[FreiY2]
+  ENDI
+
+  IF [B]=2 THEN
+    'Y=UE71000+[FreiY2]
+  ENDI
+N2999
+
+M2 (Programmende)
+
+N13313
+	M226
+	M232
+	L10=UE71000
+	G01 G90 YL10
+	G91
+	F500 Y-500 G10 N666
+	G77N668	
+	N666
+	L1 = UE71001+2
+
+	N668
+	E30240 = L1 + 390
+	E30241 = 90
+	G0 G91 Y392
+	G90
+N13314
+
+N3000
+  E[Pal_Typ]='M
+  E[Pal_Nr]='N
+
+  [N1]=E[Pal_Nr]*1000
+  [N2]=[N1]+999
+  VAR H9861:1N[N1]N[N2]
+  (VAR H9860:1)
+  L10=UE71000
+  L11=UE70000
+  G01 G90 YL10
+  G01 G90 XL11
+  [k]=0
+  G91
+  F300 Y-25 G10
+  F500 Y2
+  F50 Y-4 G10 N3130
+  G79 N5000
+
+N3130
+  F500 Y1
+  F10  Y-2 G10 N3150
+  G79 N5000
+
+N3150
+  L1=UE71001
+  G04 F.1
+  F500 Y2
+  F300 Y30 G10 N3160
+  G79 N5000
+
+N3160
+  F500 Y-2
+  N3170
+  F50 Y4 G10 N3180
+  G79 N5000
+
+N3180
+  F500 Y-1
+  N3190
+  F10 Y2 G10 N3200
+  G79 N5000
+
+N3200
+  L2=UE71001
+  G04 F.1
+  L3=L1+L2
+  L4=L3/2
+  G01 G90 F12000 YL4
+  G01 G91
+  F300 X-30 G10 N3210
+  G79 N5000
+
+N3210
+  G91
+  F500 X2 
+  N3220
+  G01 G91
+  F50 X-4 G10 N3230
+  G79 N5000
+
+N3230
+  G91
+  F500 X1
+  N3240
+  G91
+  F10 X-2 G10 N3250
+  G79 N5000
+
+N3250
+  G91
+  L5=UE70001
+  G04 F.1
+  F500 X2
+  F300 X50 G10 N3260
+  G79 N5000
+
+N3260
+  F500 X-2 
+  N3270
+  F50 X4 G10 N3280
+  G79 N5000
+
+N3280
+  F500 X-1
+  N3290
+  F10 X2 G10 N3300
+  G79 N5000
+
+N3300
+  L6=UE70001
+  G04 F.1
+  L7=L5+L6
+  L8=L7/2
+  G01 G90 F12000 XL8
+
+  IF E[Pal_Typ]=1 THEN
+    [PY2]=L4  
+    [PX2]=L8
+  ELSE
+    [PY4]=L4  
+    [PX4]=L8
+  ENDI
+
+  L10=[NbPce_X2]-2
+  L10=L10*[sPce_X2]
+  G01 G91 F12000 X-L10
+
+N3305
+  G90
+  F300 Y0 G10 N3310
+  G79 N5000
+
+N3310
+  G91
+  F500 Y2 
+  N3320
+  F50 Y-4 G10 N3330
+  G79 N5000
+
+N3330
+  F500 Y1
+
+N3340
+  F10 Y-2 G10 N3350
+  G79 N5000
+
+N3350
+  L1=UE71001
+  G04 F.1
+  F500 Y2
+  G90
+  F300  Y486 G10 N3360
+  G79 N5000
+
+N3360
+  G91
+  F500 Y-2
+  N3370
+  F50 Y4 G10 N3380
+  G79 N5000
+
+N3380
+  F500 Y-1
+
+N3390
+  F10 Y2 G10 N3400
+  G79 N5000
+
+N3400
+  L2=UE71001
+  G04 F.1
+  L3=L1+L2
+  L4=L3/2
+  G01 G90 F12000 YL4
+  G01 G90
+  F300  X0 G10 N3410
+  G79 N5000
+
+N3410
+  G91
+  F500 X2 
+  N3420
+  G90
+  F50  X0 G10 N3430
+  G79 N5000
+
+N3430
+  G91
+  F500 X1 
+  N3440
+  G90
+  F10 X0 G10 N3450
+  G79 N5000
+
+N3450
+  G91
+  L5=UE70001
+  G04 F.1
+  F500 X2
+  F300 X50 G10 N3460
+  G79 N5000
+
+N3460
+  F500 X-2 
+  N3470
+  F50 X4 G10 N3480
+  G79 N5000
+
+N3480
+  F500 X-1 
+
+N3490
+  F10 X2 G10 N3500
+  G79 N5000
+
+
+N3500
+  L6=UE70001
+  G04 F.1
+  L7=L5+L6
+  L8=L7/2
+  G01 G90 F12000 XL8
+
+  IF E[Pal_Typ]=1 THEN
+    IF [k]=1 THEN
+      [PY3]=L4  
+      [PX3]=L8
+    ELSE
+      [PY1]=L4  
+      [PX1]=L8
+    ENDI
+  ENDI
+
+  IF E[Pal_Typ]=2 THEN
+    IF [k]=1 THEN
+      [PY1]=L4  
+      [PX1]=L8
+    ELSE
+      [PY3]=L4 
+      [PX3]=L8
+    ENDI
+  ENDI
+
+  G01 G90 F12000 XL8 YL4
+
+N3600
+  IF [k]=1 THEN
+    [k]=0
+    G79 N3700
+  ELSE
+    [k]=1
+
+    IF E[Pal_Typ]=1 THEN
+      [temp4]=[NbPce_Y2]-2*[sPce_Y2]
+      'Y=L4-[temp4]
+      G01 G90 F12000 YL924
+    ELSE
+      [temp4]=[NbPce_Y2]-2*[sPce_Y2]
+      'Y=L4+[temp4]
+      G01 G90 F12000 YL924
+    ENDI
+
+    G77 N3305 N3600
+  ENDI
+
+  IF E[Pal_Typ]=1 THEN
+    [a]=[PY1]-[PY2]
+    [b]=[PX1]-[PX2]
+    [alpha]=[a]/[b]
+    [WinkelY]=A[alpha]
+    [c]=[PY1]-[PY3]
+    [d]=[PX1]-[PX3]
+    [alpha]=[d]/[c]
+    [WinkelX]=A[alpha]
+    [c1]=[sPce_X2]
+    [a1]=[c1]*S[WinkelY]
+    [b1]=[c1]*C[WinkelY]
+    [PX1]=[PX1]-[b1]
+    [PY1]=[PY1]-[a1]
+  ENDI
+
+  IF E[Pal_Typ]=2 THEN
+    [a]=[PY3]-[PY4]
+    [b]=[PX3]-[PX4]
+    [alpha]=[a]/[b]
+    [WinkelY]=A[alpha]
+    [c]=[PY1]-[PY3]
+    [d]=[PX1]-[PX3]
+    [alpha]=[d]/[c]
+    [WinkelX]=A[alpha]
+    [c1]=[sPce_X2]
+    [a1]=[c1]*S[WinkelY]
+    [b1]=[c1]*C[WinkelY]
+    [c2]=[sPce_Y2]
+    [a2]=[c2]*S[WinkelX]
+    [b2]=[c2]*C[WinkelX]
+    [PX1]=[PX1]-[b1]+[a2]
+    [PY1]=[PY1]-[a1]+[b2]
+  ENDI
+
+  IF E[KompX]=0 THEN
+    
+    IF E[Pal_Typ]=1 THEN
+      [temp1]=[PX2]-[PX1]
+      [temp2]= [NbPce_X2]-1*[sPce_X2]
+      E[KompX]=[temp1]/[temp2]
+    ELSE
+      [temp1]=[PX4]-[PX3]
+      [temp2]= [NbPce_X2]-1*[sPce_X2]
+      E[KompX]=[temp1]/[temp2]
+    ENDI
+  ENDI
+
+  E30150=[PX1]
+  E30151=[PY1]
+  E30152=[WinkelY]
+  E30153=[WinkelX]
+
+N3700
+  (VAR H9860:1)
+  IF 'N=100 THEN
+    G01 G91
+    F250 Y-25 G10 N3710
+    G79 N5000
+    N3710
+    
+   
+      E30162=UE71001
+   
+
+   
+
+    G04 F.5
+    F12000 Y5
+    G90
+    G04 F.2
+    G79 N3800
+  ENDI
+
+  IF 'N=150 THEN
+    G01 G91
+    F250 Y5 G10 N3715
+    G79 N5000
+    N3715
+    
+   
+      E30162=UE71001
+   
+
+   
+
+    G04 F.5
+    F12000 Y-5
+    G90
+    G04 F.2
+    G79 N3800
+  ENDI
+
+  IF 'N=200 THEN
+    G01 G90
+    F250 Y485 G10 N3720
+    G79 N5000
+    N3720
+    G04 F.2
+    E30165=UE71001
+    G91
+    F12000 Y-10
+    G90
+    G04 F.1
+    G79 N3800
+  ENDI
+
+  IF 'N=210 THEN
+    G01 G91
+    F250 Y35 G10 N3730
+    G79 N5000
+    N3730
+    G04 F.2
+    E30165=UE71001
+    G04 F.5
+    G91
+    F12000 Y-10
+    G90
+    G04 F.5
+    G79 N3800
+  ENDI
+
+  IF 'N=220 THEN
+    'Y=UE71000-20
+    G01 G90
+    YL924
+  ENDI
+N3800
+
+N3900
+  L10=UE71000
+  L11=UE70000
+  G01 G90 YL10
+  G01 G90 XL11
+  G91
+  F300 Y-25 G10
+  F500 Y2
+  F50 Y-4 G10 
+  F500 Y1
+  F10  Y-2 G10 
+  L1=UE71001
+  G04 F.1
+  F500 Y2
+  F300 Y30 G10
+  F500 Y-2
+  F50 Y4 G10
+  F500 Y-1
+  F10 Y2 G10
+  L2=UE71001
+  G04 F.1
+  L3=L1+L2
+  L4=L3/2
+  G01 G90 F12000 YL4
+  G01 G91
+  F300 X-30 G10
+  G91
+  F500 X2 
+  G01 G91
+  F50 X-4 G10
+  G91
+  F500 X1
+  G91
+  F10 X-2 G10
+  G91
+  L5=UE70001
+  G04 F.1
+  F500 X2
+  F300 X50 G10
+  F500 X-2 
+  F50 X4 G10
+  F500 X-1
+  F10 X2 G10 N3300
+  L6=UE70001
+  G04 F.1
+  L7=L5+L6
+  L8=L7/2
+  G01 G90 F12000 XL8
+  $X
+  $= L8
+  $+ Y
+  $= L4
+  N4000
+  IF [Gr_Nr]=0 THEN
+    [k]=10-3
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-3
+    ELSE
+      [m]=[Dur_Pal]-3
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+  ENDI
+
+  IF [Gr_Nr]=1 THEN
+    [k]=16-14
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+    
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-14
+    ELSE
+      [m]=[Dur_Pal]-14
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+  ENDI
+
+  IF [Gr_Nr]=2 THEN
+    [k]=10-6
+    [l]=S60/C60
+    [Offs_Ref]=[k]/[l]
+
+    IF [MultiPal]=1 AND [Chg_Hue]=1 THEN
+      [m]=[Dur_Job]-6
+    ELSE
+      [m]=[Dur_Pal]-6
+    ENDI
+
+    [n]=[m]/[l]
+    [Offs_Kor]=[Offs_Ref]-[n]
+  ENDI
+  N4199
+
+  N5000
+  $Messfehler 
+  M2
+
+N5100
+  M02
+
+N6000
+  E[Pal_Typ]='M
+  E[Pal_Nr]='N
+  [N1]=E[Pal_Nr]*1000
+  [N2]=[N1]+999
+  VAR H9861:1N[N1]N[N2]
+  (VAR H9860:1)
+  L10=UE71000
+  L11=UE70000
+  G01 G90 YL10
+  G01 G90 XL11
+  [k]=0
+  G90
+  F300 X0 G10
+  G91
+  F500 X2
+  G90
+  F50 X0 G10 N6130
+  G79 N5000
+
+N6130
+  G91
+  F500 X1
+  G91
+  F10  X-2 G10 N6150
+  G79 N5000
+
+N6150
+  L1=UE70001
+  G04 F.1
+  G91
+  F500 X2
+  F300 X30 G10 N6160
+  G79 N5000
+
+N6160
+  F500 X-2
+
+N6170
+  F50 X4 G10 N6180
+  G79 N5000
+
+N6180
+  F500 X-1
+  N6190
+  F10 X2 G10 N6200
+  G79 N5000
+
+N6200
+  L2=UE70001
+  G04 F.1
+  L3=L1+L2
+  L4=L3/2
+  G01 G90 F12000 XL4
+  G91
+  F300 Y-10 G10 N6210
+  G79 N5000
+
+N6210
+  G91
+  F500 Y2 
+
+N6220
+  G01 G91
+  F50 Y-4 G10 N6230
+  G79 N5000
+
+N6230
+  G91
+  F500 Y1
+
+N6240
+  G91
+  F10 Y-2 G10 N6250
+  G79 N5000
+
+N6250
+  G91
+  L5=UE71001
+  G04 F.1
+  F500 Y5
+  [n]=10/2
+  [o]=[n]/C30
+  [p]=[o]-[n]-0.386
+  [PX1_M]=L4
+  [PY1_M]=L5-[p]
+  E30150=[PX1_M]
+  E30151=[PY1_M]
+  E30152=0.001
+  E30153=0.001
+  E[KompX]=1
+  G79N6700
+N6700
+
+ 
+ 
+ 
+ 
+ 

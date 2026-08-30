@@ -1,0 +1,16 @@
+%9823.0@1(HP160)(Daten Huelsenwechsel)
+(DATA_PCES.xpi)
+(V1.0a / 21.01.14)
+
+N1000
+[X1SlFrei] = 335		(X1 Parkposition Huelse)
+[FrHueX2]  = 2.5		(Freifahren in X2 Huelse)
+[FrHueY2]  = 2.5		(Freifahren in Y2 Huelse)
+[F_IN]    = 1000
+[F_OUT] = 1000
+[F_A1] =3000
+N2000
+
+
+
+ 

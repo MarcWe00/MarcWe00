@@ -1,0 +1,2629 @@
+%10165.0@2(Abrichtzyklen VGrind 340S)
+VAR
+[XAnf][XEnde][YAnf][YEnde][AbtrX][AbtrY]
+[XStart][YStart][WegHub]
+[a][b][c][d][e][f][g][h][i] 
+[k][l][m][n][o][p][r][s][t]
+[M99x]=998-[.BM997]+[.BM999]
+
+	[XGrPos]=E40062
+	[YGrPos]=E40063
+	[ZGrPos]=E40064
+	[CGrPos]=E40065
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[SpindNr]        =E40066          (Spindelnummer 1=unten, 2=oben)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[MaschPos]       =E40067	     (0=Abrichten 3Uhr Abrichtscheibe, 1=Abrichten 9Uhr Abrichtscheibe)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Abr_Pos]        =E40068  	     (0=Umfang radial, 1=Stirn vorne, 2=Stirn hinten)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Abr_W]          =E40069  	     (0=Umfang radial, 1=Stirn vorne, 2=Stirn hinten)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Abtrag]         =E40072	     (0=Zust. innen, 1=Zust. aussen, 2=Zust. aussen/innen, 3=Zust. bei Bearbeitung)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Kuehlm]         =1  	     (0=Kuehlmittel aus, 1= Kuelmittel ein)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[FreiFa]         =E40070 	     (Sicherheitsposition)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Abtr_1]         =E40075	     (Abtrag pro Hub Schruppen)
+	[Anz_1]          =E40078	     (Anzahl Huebe Schruppen)
+            [F_1]        =E40081      (Vorschub Schruppen)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Abtr_2]         =E40076      (Abtrag pro Hub Schlichten)
+	[Anz_2]          =E40079         (Anzahl Huebe Schlichten)
+            [F_2]        =E40082	  (Vorschub Schlichten)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Abtr_3]          =E40077      (Abtrag pro Hub Feinschlichten)
+            [Anz_3]       =E40080          (Anzahl Huebe Feinschlichten)
+            [F_3]         =E40083	  (Vorschub Feinschlichten)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[F_Pos]           =E40071	  (Vorschub anfahren)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Weg_I]	          =E40073        (Weg innen)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+            [Weg_A]       =E40074      (Weg aussen)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Dreh_Sp]         =E40085		(1=Spindel Rechtslauf, 2=Spindel Linkslauf)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Dreh_Abr]        =E40087		(1=Abrichtspindel Rechtslauf, 2=Abrichtspindel Linkslauf)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[rpm_Sp]          =E40084      (Drehzahl Spindel)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[rpm_Abr]         =E40086      (Drehzahl Abrichtspindel)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+        [Ausw_Sp]         =E40095      (Auswahl Spindel, 1=Abrichtscheibe in A-Achse, 2=separate Abrichteinheity)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Vorw_Gr]         =E40061      (Vorwahl Abrichten Schruppen)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+	[Vorw_Sch]        =E40096      (Vorwahl Abrichten Schlichten)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+  	[Vorw_Fei]        =E40097       (Vorwahl Abrichten Feinschlichten)
+(----------------------------------------------------------------------------------------------------------------------------------------------)
+        [M51]         =E40088    (Kuehlmittel Ventil 1)
+ 	[M52]             =E40089    (Kuehlmittel Ventil 2)
+	[M53]             =E40090    (Kuehlmittel Ventil 3)
+	[M54]             =E40091    (Kuehlmittel Ventil 4)
+	[M55]             =E40092    (Kuehlmittel Ventil 5)
+	[M56]             =E40093    (Kuehlmittel Ventil 6)
+ (----------------------------------------------------------------------------------------------------------------------------------------------)
+ENDV
+M997
+G997
+G71		(metrisch) 
+N2000
+L2=1
+L3=2
+L4=3
+
+(**************Abrichten auf Position 3Uhr*******************)
+G79 [MaschPos]=0 N6000
+(**************Abrichten auf Position 9Uhr*******************)
+G79 [MaschPos]=1 N6500
+G79 N20000
+N6000
+G79 [Abr_Pos]=0 N7000 (**************Abrichten radial 3Uhr*******************)
+G79 [Abr_Pos]=1 N7000 (**************Abrichten radial 3Uhr*******************)
+G79 [Abr_Pos]=3 N8000 (**************Abrichten axial vorne 3Uhr*******************)
+G79 [Abr_Pos]=4 N8000 (**************Abrichten axial vorne 3Uhr*******************)
+G79 [Abr_Pos]=2 N9000 (**************Abrichten axial hinten 3Uhr*******************)
+G79 [Abr_Pos]=5 N9000 (**************Abrichten axial hinten 3Uhr*******************)
+G79 N20000
+N6500
+G79 [Abr_Pos]=0 N10000 (**************Abrichten radial 9Uhr*******************)
+G79 [Abr_Pos]=1 N10000 (**************Abrichten radial 9Uhr*******************)
+G79 [Abr_Pos]=3 N11000 (**************Abrichten axial vorne 9Uhr*******************)
+G79 [Abr_Pos]=4 N11000 (**************Abrichten axial vorne 9Uhr*******************)
+G79 [Abr_Pos]=2 N12000 (**************Abrichten axial hinten 9Uhr*******************)
+G79 [Abr_Pos]=5 N12000 (**************Abrichten axial hinten 9Uhr*******************)
+G79 N20000
+N7000
+G79 [Abtrag]=0 N7100 N7200
+G79 [Abtrag]=1 N7300 N7400
+G79 [Abtrag]=2 N7500 N7600
+G79 [Abtrag]=3 N7700 N7800
+G79 N20000
+
+(**************Zustellung nur Innen-radial 3Uhr*******************)
+N7100
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]+[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+  G77 N13000 N14000
+  G77 N14000 N15000
+
+  
+  G01 G91 F[F_1] X-[Weg_I]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+N7110   G79 [Vorw_Gr]=0 N7120
+        FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1] Y-[Abtr_1]
+        G77 N16000 N16100
+	   X[WegHub]
+	   X-[WegHub]
+        G77 N16000 N16100
+      ENDF
+N7120 G79 [Vorw_Sch]=0 N7130
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+        G77 N16100 N16200
+	   G01 G91 F[F_2] Y-[Abtr_2]
+	   X[WegHub]
+	   X-[WegHub]
+        G77 N16100 N16200
+      ENDF
+N7130 G79 [Vorw_Fei]=0 N7140
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+        G77 N16200 N16300
+	   G01 G91 F[F_3] Y-[Abtr_3]
+	   X[WegHub]
+	   X-[WegHub]
+        G77 N16200 N16300
+      ENDF
+N7140
+    E30055=UE70000+[Weg_I]
+    E30056=UE71000
+    E30057=UE72000
+    E30058=ME78000
+   M92
+   G01 G91 F[F_1] Y[FreiFa]
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N7200
+
+(**************Zustellung nur Aussen-radial 3 Uhr*******************)
+N7300
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]+[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  G01 G91 F[F_1] X[Weg_A]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+N7310 G79 [Vorw_Gr]=0 N7320
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+        G77 N16000 N16100
+	   G01 G91 F[F_1] Y-[Abtr_1]
+	   X-[WegHub]
+	   X[WegHub]
+        G77 N16000 N16100
+      ENDF
+N7320 G79 [Vorw_Sch]=0 N7330
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+        G77 N16100 N16200
+	   G01 G91 F[F_2] Y-[Abtr_2]
+	   X-[WegHub]
+	   X[WegHub]
+        G77 N16100 N16200
+      ENDF
+N7330 G79 [Vorw_Fei]=0 N7340
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+        G77 N16200 N16300
+	   G01 G91 F[F_3] Y-[Abtr_3]
+	   X-[WegHub]
+	   X[WegHub]
+        G77 N16200 N16300
+      ENDF
+N7340
+    E30055=UE70000-[Weg_A]
+    E30056=UE71000
+    E30057=UE72000
+    E30058=ME78000
+    M92
+   G01 G91 F[F_1] Y[FreiFa]
+
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N7400
+
+(**************Zustellung Innen und Aussen-radial 3 Uhr*******************)
+N7500
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]+[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  G01 G91 F[F_1] X[Weg_A]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+      G77 N16300 N16400
+N7510 G79 [Vorw_Gr]=0 N7520
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_1] Y-[Abtr_1]
+	   X-[WegHub]
+	   G77 N16600 N16700
+	   G01 G91 F[F_1] Y-[Abtr_1]
+	   X[WegHub]
+	   G77 N16700 N16800
+      ENDF
+N7520 G79 [Vorw_Sch]=0 N7530
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	  G01 G91 F[F_2] Y-[Abtr_2]
+	  X-[WegHub]
+	   G77 N16800 N16900
+	  G01 G91 F[F_2] Y-[Abtr_2]
+	  X[WegHub]
+	   G77 N16900 N17000
+      ENDF
+N7530 G79 [Vorw_Fei]=0 N7540
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	  G01 G91 F[F_3] Y-[Abtr_3]
+	  X-[WegHub]
+	   G77 N17000 N17100
+	  G01 G91 F[F_3] Y-[Abtr_3]
+	  X[WegHub]
+	   G77 N17100 N17200
+      ENDF
+N7540
+    E30055=UE70000-[Weg_A]
+    E30056=UE71000
+    E30057=UE72000
+    E30058=ME78000
+   M92
+   G01 G91 F[F_1] Y[FreiFa]
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N7600
+
+(**************Zustellung waehrend Bearbeitung-radial 3 Uhr*******************)
+N7700
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]+[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  G01 G91 F[F_1] X[Weg_A]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+      G77 N16300 N16400
+N7710 G79 [Vorw_Gr]=0 N7720
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+           G01 G91 F[F_1]
+	   X-[WegHub] Y-[Abtr_1]
+	   G77 N16600 N16700
+	   X[WegHub] Y-[Abtr_1]
+	   G77 N16700 N16800
+      ENDF
+N7720 G79 [Vorw_Sch]=0 N7730
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+          G01 G91 F[F_2]
+	  X-[WegHub] Y-[Abtr_2]
+	   G77 N16800 N16900
+	  X[WegHub] Y-[Abtr_2]
+	   G77 N16900 N17000
+      ENDF
+N7730 G79 [Vorw_Fei]=0 N7740
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+               G01 G91 F[F_3]
+	  X-[WegHub] Y-[Abtr_3]
+	   G77 N17000 N17100
+	  X[WegHub] Y-[Abtr_3]
+	   G77 N17100 N17200
+      ENDF
+N7740
+    E30055=UE70000-[Weg_A]
+    E30056=UE71000
+    E30057=UE72000
+    E30058=ME78000
+    M92
+   G01 G91 F[F_1] Y[FreiFa]
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N7800
+
+N8000
+G79 [Abtrag]=0 N8100 N8200
+G79 [Abtrag]=1 N8300 N8400
+G79 [Abtrag]=2 N8500 N8600
+G79 [Abtrag]=3 N8700 N8800
+G79 N20000
+(**************Zustellung nur Innen-axial vorne 3 Uhr*******************)
+
+N8100
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+  IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_I]*S[c]
+  [e]=[Weg_I]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=-[g]
+  [XEnde]=-[f]
+  [YEnde]=[g]
+  
+  IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N8110 G79 [Vorw_Gr]=0 N8120
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X-[AbtrX] Y-[AbtrY]
+	   G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]  
+           G77 N16000 N16100 
+      ENDF
+N8120 G79 [Vorw_Sch]=0 N8130
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X-[AbtrX] Y-[AbtrY]
+	   G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16100 N16200   
+      ENDF
+N8130 G79 [Vorw_Fei]=0 N8140
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X-[AbtrX] Y-[AbtrY]
+	   G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16200 N16300   
+      ENDF
+N8140
+   [m]=[Weg_I]*S[c]
+   [n]=[Weg_I]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N8200
+
+(**************Zustellung nur Aussen-axial vorne 3 Uhr*******************)
+N8300
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+  IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=[g]
+  [XEnde]=[f]
+  [YEnde]=-[g]
+
+  IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N8310 G79 [Vorw_Gr]=0 N8320
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16000 N16100   
+      ENDF
+N8320 G79 [Vorw_Sch]=0 N8330 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart] 
+           G77 N16100 N16200  
+      ENDF
+N8330 G79 [Vorw_Fei]=0 N8340
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16200 N16300   
+      ENDF
+N8340
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N8400
+(**************Zustellung Innen und Aussen-axial vorne 3 Uhr*******************)
+N8500
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+  IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=[g]
+  [XEnde]=[f]
+  [YEnde]=-[g]
+
+  IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N8510 G79 [Vorw_Gr]=0 N8520
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_1]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_1]
+	   X[XEnde] Y[YEnde]
+	   G77 N16600 N16700
+           G01 G91 F[F_1]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_1]
+           X[XStart] Y[YStart]
+	   G77 N16700 N16800   
+      ENDF
+N8520 G79 [Vorw_Sch]=0 N8530 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_2]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_2]
+	   X[XEnde] Y[YEnde]
+	   G77 N16800 N16900
+           G01 G91 F[F_2]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_2]
+           X[XStart] Y[YStart]
+	   G77 N16900 N17000   
+      ENDF
+N8530 G79 [Vorw_Fei]=0 N8540
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_3]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_3]
+	   X[XEnde] Y[YEnde]
+	   G77 N17000 N17100
+           G01 G91 F[F_3]
+           X-[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_3]
+           X[XStart] Y[YStart]
+	   G77 N17100 N17200   
+      ENDF
+N8540
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N8600
+
+(**************Zustellung waehrend Bearbeitung-axial vorne 3 Uhr*******************)
+N8700
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+   IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=[g]
+  [XEnde]=[f]
+  [YEnde]=-[g]
+
+  IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N8710 G79 [Vorw_Gr]=0 N8720
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+           'X=[XEnde]-[AbtrX]
+           'Y=[YEnde]-[AbtrY]
+           G01 G91 F[F_1]
+	   XL923 YL924
+	   G77 N16600 N16700
+           'X=[XStart]-[AbtrX]
+           'Y=[YStart]-[AbtrY]
+           XL923 YL924
+	   G77 N16700 N16800
+      ENDF
+N8720 G79 [Vorw_Sch]=0 N8730 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]-[AbtrX]
+           'Y=[YEnde]-[AbtrY]
+           G01 G91 F[F_2]
+	   XL923 YL924
+	   G77 N16800 N16900
+           'X=[XStart]-[AbtrX]
+           'Y=[YStart]-[AbtrY]
+           XL923 YL924
+	   G77 N16900 N17000
+      ENDF
+N8730 G79 [Vorw_Fei]=0 N8740 
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]-[AbtrX]
+           'Y=[YEnde]-[AbtrY]
+           G01 G91 F[F_1]
+	   XL923 YL924
+	   G77 N17000 N17100
+           'X=[XStart]-[AbtrX]
+           'Y=[YStart]-[AbtrY]
+           XL923 YL924
+	   G77 N17100 N17200
+      ENDF
+N8740
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N8800
+
+N9000
+G79 [Abtrag]=0 N9100 N9200
+G79 [Abtrag]=1 N9300 N9400
+G79 [Abtrag]=2 N9500 N9600
+G79 [Abtrag]=3 N9700 N9800
+G79 N20000
+(**************Zustellung nur Innen-axial hinten 3 Uhr*******************)
+
+N9100
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+  IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_I]*S[c]
+  [e]=[Weg_I]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=-[g]
+  [XEnde]=[f]
+  [YEnde]=[g]
+  
+
+  IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N9110 G79 [Vorw_Gr]=0 N9120
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X[AbtrX] Y-[AbtrY]
+	   G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart] 
+           G77 N16000 N16100  
+      ENDF
+N9120 G79 [Vorw_Sch]=0 N9130
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X[AbtrX] Y-[AbtrY]
+	   G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16100 N16200   
+      ENDF
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+N9130 G79 [Vorw_Fei]=0 N9140
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X[AbtrX] Y-[AbtrY]
+	   G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16200 N16300   
+      ENDF
+N9140
+   [m]=[Weg_I]*S[c]
+   [n]=[Weg_I]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N9200
+
+(**************Zustellung nur Aussen-axial hinten 3 Uhr*******************)
+N9300
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+   IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=[g]
+  [XEnde]=-[f]
+  [YEnde]=-[g]
+
+  IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N9310 G79 [Vorw_Gr]=0 N9320
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16000 N16100   
+      ENDF
+N9320 G79 [Vorw_Sch]=0 N9330 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16100 N16200   
+      ENDF
+N9330 G79 [Vorw_Fei]=0 N9340
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart] 
+           G77 N16200 N16300  
+      ENDF
+N9340
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+  IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N9400
+(**************Zustellung Innen und Aussen-axial hinten 3 Uhr*******************)
+N9500
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+  IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=[g]
+  [XEnde]=-[f]
+  [YEnde]=-[g]
+
+ IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N9510 G79 [Vorw_Gr]=0 N9520
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_1]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_1]
+	   X[XEnde] Y[YEnde]
+	   G77 N16600 N16700
+           G01 G91 F[F_1]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_1]
+           X[XStart] Y[YStart]
+	   G77 N16700 N16800   
+      ENDF
+N9520 G79 [Vorw_Sch]=0 N9530 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_2]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_2]
+	   X[XEnde] Y[YEnde]
+	   G77 N16800 N16900
+           G01 G91 F[F_2]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_2]
+           X[XStart] Y[YStart]
+	   G77 N16900 N17000   
+      ENDF
+N9530 G79 [Vorw_Fei]=0 N9540 
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_3]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_3]
+	   X[XEnde] Y[YEnde]
+	   G77 N17000 N17100
+           G01 G91 F[F_3]
+           X[AbtrX] Y-[AbtrY]
+           G01 G91 F[F_3]
+           X[XStart] Y[YStart] 
+	   G77 N17100 N17200  
+      ENDF
+N9540
+    [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N9600
+
+(**************Zustellung waehrend Bearbeitung-axial hinten 3 Uhr*******************)
+N9700
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+ IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=[g]
+  [XEnde]=-[f]
+  [YEnde]=-[g]
+
+ IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]+[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N9710 G79 [Vorw_Gr]=0 N9720
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+           'X=[XEnde]+[AbtrX]
+           'Y=[YEnde]-[AbtrY]
+           G01 G91 F[F_1]
+	   XL923 YL924
+	   G77 N16600 N16700
+           'X=[XStart]+[AbtrX]
+           'Y=[YStart]-[AbtrY]
+           XL923 YL924
+	   G77 N16700 N16800
+      ENDF
+N9720 G79 [Vorw_Sch]=0 N9730 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]+[AbtrX]
+           'Y=[YEnde]-[AbtrY]
+           G01 G91 F[F_2]
+	   XL923 YL924
+	   G77 N16800 N16900
+           'X=[XStart]+[AbtrX]
+           'Y=[YStart]-[AbtrY]
+           XL923 YL924
+	   G77 N16900 N17000
+      ENDF
+N9730 G79 [Vorw_Fei]=0 N9740  
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]+[AbtrX]
+           'Y=[YEnde]-[AbtrY]
+           G01 G91 F[F_3]
+	   XL923 YL924
+	   G77 N17000 N17100
+           'X=[XStart]+[AbtrX]
+           'Y=[YStart]-[AbtrY]
+           XL923 YL924
+	   G77 N17100 N17200
+      ENDF
+N9740
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N9800
+
+N10000
+G79 [Abtrag]=0 N10100 N10200
+G79 [Abtrag]=1 N10300 N10400
+G79 [Abtrag]=2 N10500 N10600
+G79 [Abtrag]=3 N10700 N10800
+G79 N20000
+(**************Zustellung nur Innen-radial 9 Uhr*******************)
+N10100
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]-[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+ G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  G01 G91 F[F_1] X-[Weg_I]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+N10110 G79 [Vorw_Gr]=0 N10120
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1] Y[Abtr_1]
+           G77 N16000 N16100
+	   X[WegHub]
+	   X-[WegHub]
+           G77 N16000 N16100
+      ENDF
+N10120 G79 [Vorw_Sch]=0 N10130
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2] Y[Abtr_2]
+           G77 N16100 N16200
+	   X[WegHub]
+	   X-[WegHub]
+           G77 N16100 N16200
+      ENDF
+N10130 G79 [Vorw_Fei]=0 N10140
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3] Y[Abtr_3]
+           G77 N16200 N16300
+	   X[WegHub]
+	   X-[WegHub]
+           G77 N16200 N16300
+      ENDF
+N10140
+   E30055=UE70000+[Weg_I]
+   E30056=UE71000
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   G01 G91 F[F_1] Y-[FreiFa]
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N10200
+
+(**************Zustellung nur Aussen-radial 9 Uhr*******************)
+N10300
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]-[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  G01 G91 F[F_1] X[Weg_A]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+N10310 G79 [Vorw_Gr]=0 N10320
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1] Y[Abtr_1]
+           G77 N16000 N16100
+	   X-[WegHub]
+	   X[WegHub]
+           G77 N16000 N16100
+      ENDF
+N10320 G79 [Vorw_Sch]=0 N10330
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2] Y[Abtr_2]
+           G77 N16100 N16200
+	   X-[WegHub]
+	   X[WegHub]
+           G77 N16100 N16200
+      ENDF
+N10330 G79 [Vorw_Fei]=0 N10340
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3] Y[Abtr_3]
+           G77 N16200 N16300
+	   X-[WegHub]
+	   X[WegHub]
+           G77 N16200 N16300
+      ENDF
+N10340
+   E30055=UE70000-[Weg_A]
+   E30056=UE71000
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   G01 G91 F[F_1] Y-[FreiFa]
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N10400
+
+(**************Zustellung Innen und Aussen-radial 9 Uhr*******************)
+N10500
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]-[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  G01 G91 F[F_1] X[Weg_A]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+      G77 N16300 N16400
+N10510 G79 [Vorw_Gr]=0 N10520
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_1] Y[Abtr_1]
+	   X-[WegHub]
+	   G77 N16600 N16700
+	   G01 G91 F[F_1] Y[Abtr_1]
+	   X[WegHub]
+	   G77 N16700 N16800
+      ENDF
+N10520 G79 [Vorw_Sch]=0 N10530
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	  G01 G91 F[F_2] Y[Abtr_2]
+	  X-[WegHub]
+	   G77 N16800 N16900
+	  G01 G91 F[F_2] Y[Abtr_2]
+	  X[WegHub]
+	   G77 N16900 N17000
+      ENDF
+N10530 G79 [Vorw_Fei]=0 N10540
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	  G01 G91 F[F_3] Y[Abtr_3]
+	  X-[WegHub]
+	   G77 N17000 N17100
+	  G01 G91 F[F_3] Y[Abtr_3]
+	  X[WegHub]
+	   G77 N17100 N17200
+      ENDF
+N10540
+   E30055=UE70000-[Weg_A]
+   E30056=UE71000
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   G01 G91 F[F_1] Y-[FreiFa]
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N10600
+
+(**************Zustellung waehrend Bearbeitung-radial 9 Uhr*******************)
+N10700
+  G01 G90 F[F_Pos]
+  'Y=[YGrPos]-[FreiFa]
+  YL924
+  X[XGrPos] Z[ZGrPos] C[CGrPos]
+  [WegHub]=[Weg_I]+[Weg_A]
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  G01 G91 F[F_1] X[Weg_A]
+  G01 G90 F[F_Pos]
+  Y[YGrPos]
+      G77 N16300 N16400
+N10710 G79 [Vorw_Gr]=0 N10720
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+           G01 G91 F[F_1]
+	   X-[WegHub] Y[Abtr_1]
+	   G77 N16600 N16700
+	   X[WegHub] Y[Abtr_1]
+	   G77 N16700 N16800
+      ENDF
+N10720 G79 [Vorw_Sch]=0 N10730
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+          G01 G91 F[F_2]
+	  X-[WegHub] Y[Abtr_2]
+	   G77 N16800 N16900
+	  X[WegHub] Y[Abtr_2]
+	   G77 N16900 N17000
+      ENDF
+N10730 G79 [Vorw_Fei]=0 N10740
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+          G01 G91 F[F_3]
+	  X-[WegHub] Y[Abtr_3]
+	   G77 N17000 N17100
+	  X[WegHub] Y[Abtr_3]
+	   G77 N17100 N17200
+      ENDF
+N10740
+   E30055=UE70000-[Weg_A]
+   E30056=UE71000
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   G01 G91 F[F_1] Y-[FreiFa]
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N10800
+
+N11000
+G79 [Abtrag]=0 N11100 N11200
+G79 [Abtrag]=1 N11300 N11400
+G79 [Abtrag]=2 N11500 N11600
+G79 [Abtrag]=3 N11700 N11800
+G79 N20000
+(**************Zustellung nur Innen-axial vorne 9 Uhr*******************)
+
+N11100
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+ IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_I]*S[c]
+  [e]=[Weg_I]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=[g]
+  [XEnde]=-[f]
+  [YEnde]=-[g]
+  
+
+  IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+ G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N11110 G79 [Vorw_Gr]=0 N11120
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X-[AbtrX] Y[AbtrY]
+	   G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart] 
+           G77 N16000 N16100  
+      ENDF
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+N11120 G79 [Vorw_Sch]=0 N11130
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X-[AbtrX] Y[AbtrY]
+	   G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16100 N16200   
+      ENDF
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+N11130 G79 [Vorw_Fei]=0 N11140
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X-[AbtrX] Y[AbtrY]
+	   G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart] 
+           G77 N16200 N16300  
+      ENDF
+N11140
+   [m]=[Weg_I]*S[c]
+   [n]=[Weg_I]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N11200
+
+(**************Zustellung nur Aussen-axial vorne 9 Uhr*******************)
+N11300
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+ IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=-[g]
+  [XEnde]=[f]
+  [YEnde]=[g]
+
+  IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+ G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N11310 G79 [Vorw_Gr]=0 N11320
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart] 
+           G77 N16000 N16100  
+      ENDF
+N11320 G79 [Vorw_Sch]=0 N11330
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart] 
+           G77 N16100 N16200  
+      ENDF
+N11330 G79 [Vorw_Fei]=0 N11340
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16200 N16300   
+      ENDF
+N11340
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+    IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N11400
+(**************Zustellung Innen und Aussen-axial vorne 9 Uhr*******************)
+N11500
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+ IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=-[g]
+  [XEnde]=[f]
+  [YEnde]=[g]
+
+ IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N11510 G79 [Vorw_Gr]=0 N11520
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_1]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_1]
+	   X[XEnde] Y[YEnde]
+	   G77 N16600 N16700
+           G01 G91 F[F_1]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_1]
+           X[XStart] Y[YStart]
+	   G77 N16700 N16800   
+      ENDF
+N11520 G79 [Vorw_Sch]=0 N11530 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_2]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_2]
+	   X[XEnde] Y[YEnde]
+	   G77 N16800 N16900
+           G01 G91 F[F_2]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_2]
+           X[XStart] Y[YStart]
+	   G77 N16900 N17000   
+      ENDF
+N11530 G79 [Vorw_Fei]=0 N11540
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_3]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_3]
+	   X[XEnde] Y[YEnde]
+	   G77 N17000 N17100
+           G01 G91 F[F_3]
+           X-[AbtrX] Y[AbtrY]
+           G01 G91 F[F_3]
+           X[XStart] Y[YStart]
+ 	   G77 N17100 N17200  
+      ENDF
+N11540
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+    IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N11600
+
+(**************Zustellung waehrend Bearbeitung-axial vorne 9 Uhr*******************)
+N11700
+  [a]=ME78000
+  [b]=-90
+  [c]=[b]-[a]
+  IF [Abr_Pos]=4 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=-[g]
+  [XEnde]=[f]
+  [YEnde]=[g]
+
+  IF [Abr_Pos]=4 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]+[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]+[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+ G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]+[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N11710 G79 [Vorw_Gr]=0 N11720
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+           'X=[XEnde]-[AbtrX]
+           'Y=[YEnde]+[AbtrY]
+           G01 G91 F[F_1]
+	   XL923 YL924
+	   G77 N16600 N16700
+           'X=[XStart]-[AbtrX]
+           'Y=[YStart]+[AbtrY]
+           XL923 YL924
+	   G77 N16700 N16800
+      ENDF
+N11720 G79 [Vorw_Sch]=0 N11730 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]-[AbtrX]
+           'Y=[YEnde]+[AbtrY]
+           G01 G91 F[F_2]
+	   XL923 YL924
+	   G77 N16800 N16900
+           'X=[XStart]-[AbtrX]
+           'Y=[YStart]+[AbtrY]
+           XL923 YL924
+	   G77 N16900 N17000
+      ENDF
+N11730 G79 [Vorw_Fei]=0 N11740 
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]-[AbtrX]
+           'Y=[YEnde]+[AbtrY]
+           G01 G91 F[F_3]
+	   XL923 YL924
+	   G77 N17000 N17100
+           'X=[XStart]-[AbtrX]
+           'Y=[YStart]+[AbtrY]
+           XL923 YL924
+	   G77 N17100 N17200
+      ENDF
+N11740
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+    IF [Abr_Pos]=4 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N11800
+
+N12000
+G79 [Abtrag]=0 N12100 N12200
+G79 [Abtrag]=1 N12300 N12400
+G79 [Abtrag]=2 N12500 N12600
+G79 [Abtrag]=3 N12700 N12800
+G79 N20000
+(**************Zustellung nur Innen-axial hinten 9 Uhr*******************)
+
+N12100
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+  IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_I]*S[c]
+  [e]=[Weg_I]*C[c]
+  [XAnf]=[XGrPos]-[d]
+  [YAnf]=[YGrPos]+[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=-[f]
+  [YStart]=[g]
+  [XEnde]=[f]
+  [YEnde]=-[g]
+  
+
+  IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+ G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N12110 G79 [Vorw_Gr]=0 N12120
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X[AbtrX] Y[AbtrY]
+	   G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16000 N16100   
+      ENDF
+N12120 G79 [Vorw_Sch]=0 N12130
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X[AbtrX] Y[AbtrY]
+	   G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16100 N16200   
+      ENDF
+N12130 G79 [Vorw_Fei]=0 N12140
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X[AbtrX] Y[AbtrY]
+	   G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16200 N16300   
+      ENDF
+N12140
+   [m]=[Weg_I]*S[c]
+   [n]=[Weg_I]*C[c]
+   E30055=UE70000+[m]
+   E30056=UE71000-[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+   IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N12200
+
+(**************Zustellung nur Aussen-axial hinten 9 Uhr*******************)
+N12300
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+  IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=-[g]
+  [XEnde]=-[f]
+  [YEnde]=[g]
+
+ IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+ G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+N12310 G79 [Vorw_Gr]=0 N12320
+      FOR L1=[Anz_1] DOWNTO 1
+	DO
+	   G01 G91 F[F_1]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_1]
+           G77 N16000 N16100
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16000 N16100   
+      ENDF
+N12320 G79 [Vorw_Sch]=0 N12330 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      FOR L1=[Anz_2] DOWNTO 1
+	DO
+	   G01 G91 F[F_2]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_2]
+           G77 N16100 N16200
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16100 N16200   
+      ENDF
+N12330 G79 [Vorw_Fei]=0 N12340
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+      FOR L1=[Anz_3] DOWNTO 1
+	DO
+	   G01 G91 F[F_3]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_3]
+           G77 N16200 N16300
+	   X[XEnde] Y[YEnde]
+           X[XStart] Y[YStart]
+           G77 N16200 N16300   
+      ENDF
+N12340
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+    IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N12400
+(**************Zustellung Innen und Aussen-axial hinten 9 Uhr*******************)
+N12500
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+  IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=-[g]
+  [XEnde]=-[f]
+  [YEnde]=[g]
+
+  IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N12510 G79 [Vorw_Gr]=0 N12520
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_1]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_1]
+	   X[XEnde] Y[YEnde]
+	   G77 N16600 N16700
+           G01 G91 F[F_1]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_1]
+           X[XStart] Y[YStart]
+	   G77 N16700 N16800   
+      ENDF
+N12520 G79 [Vorw_Sch]=0 N12530 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_2]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_2]
+	   X[XEnde] Y[YEnde]
+	   G77 N16800 N16900
+           G01 G91 F[F_2]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_2]
+           X[XStart] Y[YStart]
+	   G77 N16900 N17000   
+      ENDF
+N12530 G79 [Vorw_Fei]=0 N12540
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+     G77 N16500 N16600
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   G01 G91 F[F_3]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_3]
+	   X[XEnde] Y[YEnde]
+	   G77 N17000 N17100
+           G01 G91 F[F_3]
+           X[AbtrX] Y[AbtrY]
+           G01 G91 F[F_3]
+           X[XStart] Y[YStart] 
+	   G77 N17100 N17200  
+      ENDF
+N12540
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+    IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N12600
+
+(**************Zustellung waehrend Bearbeitung-axial hinten 9 Uhr*******************)
+N12700
+  [a]=ME78000
+  [b]=-90
+  [c]=[a]-[b]
+  IF [Abr_Pos]=5 THEN
+     G79 [Abr_W]=0 N18000
+     G79 [Abr_W]=90 N18000
+     [c]=90-[Abr_W]   
+  ENDI   
+
+  [d]=[Weg_A]*S[c]
+  [e]=[Weg_A]*C[c]
+  [XAnf]=[XGrPos]+[d]
+  [YAnf]=[YGrPos]-[e]
+  [WegHub]=[Weg_I]+[Weg_A]
+  [f]=[WegHub]*S[c]
+  [g]=[WegHub]*C[c]
+  [XStart]=[f]
+  [YStart]=-[g]
+  [XEnde]=-[f]
+  [YEnde]=[g]
+
+  IF [Abr_Pos]=5 THEN
+     IF [Abr_W]<45 THEN
+        G01 G90 F[F_Pos]
+       'Y=[YGrPos]-[FreiFa]
+        YL924
+        X[XGrPos] Z[ZGrPos] C[CGrPos]
+     ELSE
+        G01 G90 F[F_Pos]
+       'X=[XGrPos]-[FreiFa]
+        XL923
+       Y[YGrPos] Z[ZGrPos] C[CGrPos]
+     ENDI
+  ELSE
+     G01 G90 F[F_Pos]
+     'X=[XGrPos]-[FreiFa]
+      XL923
+      Y[YGrPos] Z[ZGrPos] C[CGrPos]
+  ENDI
+  G77 N13000 N14000
+  G77 N14000 N14500
+  G77 N14500 N15000
+  
+  'X=[XAnf]-[FreiFa]
+  G01 G90 F[F_1] XL923 Y[YAnf]
+  X[XAnf]
+  [AbtrX]=[Abtr_1]*C[c]
+  [AbtrY]=[Abtr_1]*S[c]
+      G77 N16300 N16400
+N12710 G79 [Vorw_Gr]=0 N12720
+      FOR L1=[Anz_1] DOWNTO 1 BY 2
+	DO
+           'X=[XEnde]+[AbtrX]
+           'Y=[YEnde]+[AbtrY]
+           G01 G91 F[F_1]
+	   XL923 YL924
+	   G77 N16600 N16700
+           'X=[XStart]+[AbtrX]
+           'Y=[YStart]-[AbtrY]
+           XL923 YL924
+	   G77 N16700 N16800
+      ENDF
+N12720 G79 [Vorw_Sch]=0 N12730 
+  [AbtrX]=[Abtr_2]*C[c]
+  [AbtrY]=[Abtr_2]*S[c]
+      G77 N16400 N16500
+      FOR L1=[Anz_2] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]+[AbtrX]
+           'Y=[YEnde]+[AbtrY]
+           G01 G91 F[F_2]
+	   XL923 YL924
+	   G77 N16800 N16900
+           'X=[XStart]+[AbtrX]
+           'Y=[YStart]+[AbtrY]
+           XL923 YL924
+	   G77 N16900 N17000
+      ENDF
+N12730 G79 [Vorw_Fei]=0 N12740
+       G77 N16500 N16600 
+  [AbtrX]=[Abtr_3]*C[c]
+  [AbtrY]=[Abtr_3]*S[c]
+
+      FOR L1=[Anz_3] DOWNTO 1 BY 2
+	DO
+	   'X=[XEnde]+[AbtrX]
+           'Y=[YEnde]+[AbtrY]
+           G01 G91 F[F_3]
+	   XL923 YL924
+	   G77 N17000 N17100
+           'X=[XStart]+[AbtrX]
+           'Y=[YStart]+[AbtrY]
+           XL923 YL924
+	   G77 N17100 N17200
+      ENDF
+N12740
+   [m]=[Weg_A]*S[c]
+   [n]=[Weg_A]*C[c]
+   E30055=UE70000-[m]
+   E30056=UE71000+[n]
+   E30057=UE72000
+   E30058=ME78000
+   M92
+    IF [Abr_Pos]=5 THEN
+      IF [Abr_W]<45 THEN
+         G01 G91 F[F_1] Y-[FreiFa]
+      ELSE
+         G01 G91 F[F_1] X-[FreiFa]
+      ENDI
+   ELSE
+     G01 G91 F[F_1] X-[FreiFa]
+   ENDI
+   G77 N15000 N16000
+   M50
+   G79 N20000
+N12800
+
+N13000
+  IF [M51]=1 THEN
+   M51
+  ENDI
+  IF [M52]=1 THEN
+   M52
+  ENDI
+  IF [M53]=1 THEN
+   M53
+  ENDI
+  IF [M54]=1 THEN
+   M54
+  ENDI
+  IF [M55]=1 THEN
+   M55
+  ENDI
+  IF [M56]=1 THEN
+   M56
+  ENDI
+N14000
+IF [SpindNr]=1 THEN 
+  IF [Dreh_Sp]=1 THEN
+     M62:1 M3 S[rpm_Sp]
+  ELSE
+     M62:1 M4 S[rpm_Sp]
+  ENDI
+ENDI
+IF [SpindNr]=2 THEN 
+  IF [Dreh_Sp]=1 THEN
+     M62:2 M3 S[rpm_Sp]
+  ELSE
+     M62:2 M4 S[rpm_Sp]
+  ENDI
+ENDI
+N14500    (E30228=[rpm_Abr] M103)
+IF [Ausw_Sp]=1 THEN
+   IF [Dreh_Abr]=1 THEN
+      M91
+      M62:3  M4 S[rpm_Abr]
+   ELSE
+      M91
+      M62:3  M3 S[rpm_Abr]
+   ENDI	
+ENDI
+IF [Ausw_Sp]=2 THEN
+   IF [Dreh_Abr]=1 THEN
+      E30206=[rpm_Abr]
+      M103
+   ELSE
+      E30206=[rpm_Abr]
+      M104
+   ENDI	
+ENDI
+N15000
+IF [SpindNr]=1 THEN
+      M62:1 M5 S0
+      IF [Ausw_Sp]=1 THEN
+         M62:3 M5 S0
+      ENDI
+      IF [Ausw_Sp]=2 THEN
+         M105
+      ENDI    
+ENDI
+IF [SpindNr]=2 THEN
+      M62:2 M5 S0  
+      IF [Ausw_Sp]=1 THEN
+         M62:3 M5 S0
+      ENDI
+      IF [Ausw_Sp]=2 THEN
+         M105
+      ENDI        
+ENDI
+N16000
+$# 
+$=L1  
+$+  @ 
+$=L2
+N16100
+$# 
+$=L1  
+$+  @ 
+$=L3
+N16200
+$# 
+$=L1  
+$+  @ 
+$=L4
+N16300
+$# 
+$=[Anz_1]  
+$+  @ 
+$=L2
+N16400
+$# 
+$=[Anz_2]  
+$+  @ 
+$=L3
+N16500
+$# 
+$=[Anz_3]  
+$+  @ 
+$=L4
+N16600
+$# 
+$=L1-1  
+$+  @ 
+$=L2
+N16700
+$# 
+$=L1-2  
+$+  @ 
+$=L2
+N16800
+$# 
+$=L1-1  
+$+  @ 
+$=L3
+N16900
+$# 
+$=L1-2  
+$+  @ 
+$=L3
+N17000
+$# 
+$=L1-1  
+$+  @ 
+$=L4
+N17100
+$# 
+$=L1-2  
+$+  @ 
+$=L4
+N17200
+$0
+N18000
+$Eingabe Winkel nicht moeglich, >0,<90
+M0
+N18100
+N20000
+
+
+N20500
+M[M99x]
+M2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               

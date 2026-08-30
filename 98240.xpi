@@ -1,0 +1,83 @@
+%9824.0@1(HP160)(Greifertypen)
+	
+N1000	(Greifertyp 0)
+	[GrZVerA]=0
+	[GrZVerB]=0
+	[GrZVerC]=0
+	
+	[Dur_Null]=3
+	[Gr_m]=2.211
+N1999
+N2000	(Greifertyp 1)
+	[GrZVerA]=0
+	[GrZVerB]=0
+	[GrZVerC]=0
+	
+	[Dur_Null]=14
+	[Gr_m]=2.515
+N2999
+N3000	(Greifertyp 2)
+	[GrZVerA]=0
+	[GrZVerB]=0
+	[GrZVerC]=0
+	
+	[Dur_Null]=6
+	[Gr_m]=2.557
+N3999
+N4000	(Greifertyp 3)
+	[GrZVerA]=-0.0001
+	[GrZVerB]=0.2631
+	[GrZVerC]=-0.5258
+	
+	[Dur_Null]=0
+	[Gr_m]=0
+N4999
+N5000	(Greifertyp 4)
+	[GrZVerA]=0.0012
+	[GrZVerB]=0.0776
+	[GrZVerC]=-0.5091
+	
+	[Dur_Null]=0
+	[Gr_m]=0
+N5999
+N6000	(Greifertyp 5)
+	[GrZVerA]=0.0013
+	[GrZVerB]=0.0693
+	[GrZVerC]=0.7794
+	
+	[Dur_Null]=0
+	[Gr_m]=0
+N6999
+N7000	(Greifertyp 6)
+	[GrZVerA]=0.0011
+	[GrZVerB]=0.1629
+	[GrZVerC]=2.8201
+	
+	[Dur_Null]=0
+	[Gr_m]=0
+N7999
+N8000	(Greifertyp 7)
+	[GrZVerA]=0
+	[GrZVerB]=0
+	[GrZVerC]=0
+N8999
+N9000	(Greifertyp 8)
+	[GrZVerA]=0
+	[GrZVerB]=0
+	[GrZVerC]=0
+N9999
+N10000	(Greifertyp 9)
+	[GrZVerA]=0
+	[GrZVerB]=0
+	[GrZVerC]=0
+N10999
+N11000	(Greifertyp 10)
+	[GrZVerA]=0
+	[GrZVerB]=0
+	[GrZVerC]=0
+N11999
+
+
+
+ 
+ 

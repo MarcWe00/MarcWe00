@@ -1,0 +1,70 @@
+%9990.0@2(Referenzprog)
+(Referenzprog.xpi)
+
+(Maschinenkonfiguration einlesen)
+VAR H9501.0 N1000 N2000
+
+G71		(metrisch)
+
+G79 [Pol]=1 N100	(Polfindungsfahrt)
+
+(Bestueckung einlesen)
+E30224=1 (Wzg-Automation)
+E30222=1 (Wkst-Automation)
+G4F0.3
+E30224=0
+E30222=0
+
+(WkstAutomation)
+IF [WkstM] = 1 THEN
+$Freifahren Wkst-Automation
+(M230)
+ENDI
+
+(WzgAutomation)
+IF [WzgM] <> 0 THEN
+$Freifahren Wzg-/Magazin
+M265
+
+$Referenzieren Wzg-Magazin
+E30217 = 0
+M355
+(Bestueckung Magazin einlesen nach dem Referenzieren)
+IF E40117 =1 THEN
+E30208 = E40108
+E30209 = E40109
+E30210 = E40110
+E30211 = E40111
+E30212 = E40112
+E30213 = E40113
+E30214 = E40114
+E30215 = E40115
+E30217 = 1
+ENDI
+ENDI
+
+$Freifahren XY
+G01 G90 F1000 X500 
+Y125
+M161
+
+N100
+$Referenzierung
+E92304=0 (SSB-C OFF)
+E10000=1
+L0=8 F200 G77 H9990.9
+E10000=0
+E92304=1 (SSB-C ON)
+$
+IF E40103=1 OR E40103=3 THEN
+	M62:2 M270
+ENDI
+IF E40103=2 THEN
+	M62:1 M270
+	M62:2 M270
+ENDI
+
+M255
+
+M02
+ 

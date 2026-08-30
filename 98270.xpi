@@ -1,0 +1,16 @@
+%9827.0@1(DATA_MASCHREF)
+(DATA_MASCHREF.xpi)
+
+N1000
+[XPos]=300			(Startposition X Spindel Referenz)			
+[YPos]=198			(Startposition Y Spindel Referenz)
+[ZPos]=-330			(Startposition Z Spindel Referenz)	
+[Gew_RefX]=E40221
+[Gew_RefY]=E40222
+[Gew_RefZ]=E40223
+N2000
+
+
+
+
+

@@ -1,0 +1,9 @@
+%9501.0@1(Konfiguration Maschine)
+(MaschKonf.xpi)
+
+N1000
+[WzgM] 	= E40217		(Wzg-Magazin)
+[WkstM]	= E40218		(Wkst-Magazin)
+[Pol]	= E40219		(Polfindungsfahrt)
+N2000
+

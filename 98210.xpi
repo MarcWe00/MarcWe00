@@ -1,0 +1,58 @@
+%9821.0@1(HP160)(Daten Paletten)
+(DATA_PAL.xpi) (V1.0a / 21.01.14)
+
+N1000 (Daten Palette: RT)
+[NbPce_X2]	= E40150       	(Anzahl WS, Richtung X2)
+[NbPce_Y2]	= E40151	(Anzahl WS, Richtung Y2)
+[sPce_X2]	= E40152        (Abstand WS [mm], Richtung X2)
+[sPce_Y2]	= E40153      	(Abstand WS [mm], Richtung Y2)
+
+[xPalRT_1]	= E40154       	(Palette RT, Position WS 1 [mm], Achse X2)
+[yPalRT_1] 	= E40155       	(Palette RT, Position WS 1 [mm], Achse Y2)
+([xPalRT_2]  = E40156)       (Palette RT, P osition WS 2 [mm], Achse X2)
+([yPalRT_2] 	= E40157)       (Palette RT, Position WS 2 [mm], Achse Y2)
+[alphaYRT]	= E40156
+[alphaXRT]	= E40157
+
+[GrpH_RT]	= E40158      	(Greifhoehe RT Greifer [mm])
+[GrpH_FT]	= E40168      	(Greifhoehe FT Greifer [mm])
+[Dur_Pal]	= E40159       	(Rohlingsdurchmesser Palette)
+N1999
+N2000 (Daten Palette: FT)
+[NbPce_X2]	= E40160	(Anzahl WS, Richtung X2)
+[NbPce_Y2]	= E40161        (Anzahl WS, Richtung Y2)
+[sPce_X2]	= E40162        (Abstand WS [mm], Richtung X2)
+[sPce_Y2]	= E40163        (Abstand WS [mm], Richtung Y2)
+
+[xPalFT_1]	=E40164     	(Palette RT, Position WS 1 [mm], Achse X2)
+[yPalFT_1]	= E40165      	(Palette RT, Position WS 1 [mm], Achse Y2)
+([xPalFT_2]	= E40166)      	(Palette RT, Position WS 2 [mm], Achse X2)
+([yPalFT_2]	= E40167)      	(Palette RT, Position WS 2 [mm], Achse Y2)
+[alphaYFT]	= E40166
+[alphaXFT]	= E40167
+
+[GrpH_RT]	= E40158      	(Greifhoehe RT Greifer [mm])
+[GrpH_FT]	= E40168      	(Greifhoehe FT Greifer [mm])
+[Dur_Pal]	= E40170       	(Rohlingsdurchmesser Palette)
+N2999
+N3000
+[Dur_Pal]	= E40159      	(Rohlingsdurchmesser Palette)
+[GrpH_RT]	= E40158      	(Greifhoehe RT Greifer [mm])
+[GrpH_FT]	= E40168      	(Greifhoehe FT Greifer [mm])
+N3099
+N3100
+[Dur_Pal]	= E40170       	(Rohlingsdurchmesser Palette)
+[GrpH_RT]	= E40158      	(Greifhoehe RT Greifer [mm])
+[GrpH_FT]	= E40168      	(Greifhoehe FT Greifer [mm])
+N3199
+N9000 (Daten Palette: Palette Vermessen)
+[NbPce_X2]	= E40150       	(Anzahl WS, Richtung X2)
+[NbPce_Y2]	= E40151        	(Anzahl WS, Richtung Y2)
+[sPce_X2]	= E40152        	(Abstand WS [mm], Richtung X2)
+[sPce_Y2]	= E40153        	(Abstand WS [mm], Richtung Y2)
+
+[Dur_Pal]	= E40170       	(Rohlingsdurchmesser Palette)
+N9999
+
+
+ 

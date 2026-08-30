@@ -1,0 +1,848 @@
+%9940.0@2(HPR250)
+(Aufruf ueber G120 und 10120.0@2)
+E30070=2
+E30071=3
+VAR
+[JobNr]
+[JobArg(4)]
+[eJobAkt]=40060
+[eJobSet]=30060
+[eSubJob]=80080
+[eLdGet]=80081			
+[eJobArg1]=80082		
+[eJobArg2]=80083
+[eJobArg3]=80084
+[eJobArg4]=80085
+[Arg1]=30061			
+[Arg2]=30062
+[Arg3]=30063
+[Arg4]=30064
+[Arg5]=30065
+[Arg6]=30066
+[Arg7]=30067
+[Arg8]=30068
+[Arg9]=30069
+[Arg10]=30070
+[Arg11]=30071
+[Arg12]=30072
+[Arg13]=30073
+[Arg14]=30074
+[Arg15]=30075
+[eJobRes]=80086			
+[ePceGrRT]=80088		
+[ePceGrFT]=80089		
+[eGrZ_RT]=40011
+[eGrZ_FT]=40012
+[eGr_Akt]=40013
+[eSpZust]=40014
+[ePceNr0]=80090			(Platznummer aktuelles Wkst)
+[ePceCL0]=80091			(Einspannlaenge aktuelles Wkst)
+[ePceRL0]=80092			(Rohlingslaenge aktuelles Wkst)
+[ePceCHL0]=80093		(Spannzangenlaenge aktuelles Wkst)
+[ePceSL0]=80094			(Schaftdurchmesser aktuelles Wkst)
+[ePceRD0]=80095			(Rohlingsdurchmesser aktuelles Wkst)
+[ePceID0]=80096			(Einstecktiefe aktuelles Wkst)
+[eNachsR0]=80098		(Naschiebelaenge RT)
+[eNachsF0]=80099		(Nachschiebelaenge FT)
+[eNrCntrl]=20030
+[ePceNr1]=80100
+[ePceCL1]=80101
+[ePceRL1]=80102
+[ePceCHL1]=80103
+[ePceSL1]=80104
+[ePceRD1]=80105
+[ePceID1]=80106
+[ePceNr2]=80110
+[ePceCL2]=80111
+[ePceRL2]=80112
+[ePceCHL2]=80113
+[ePceSL2]=80114
+[ePceRD2]=80115
+[ePceID2]=80116
+[eDurNr0]=80120
+[eDurRT]=80121
+[eDurFT]=80122
+[eHueNr0]=80140
+[eHueNr1]=80141
+[eHueGet]=80142
+[eHueGrRT]=80143
+[eHueGrFT]=80144
+[eHueDur]=80145
+[eXoffsRT]=80150
+[eXoffsFT]=80151
+[KFlag]=84100
+[GrH_Pal]=40171
+[GrHRob]
+[GrpH_RT]
+[GrpH_FT]
+[PosX_RT]
+[PosX_FT]
+[PZA_RT0]
+[PYA_RT0]
+[PZA_FT0]
+[PYA_FT0]
+[PZA_RT1]
+[PYA_RT1]
+[PZA_FT1]
+[PYA_FT1]
+[PZA_RT2]
+[PYA_RT2]
+[PZA_FT2]
+[PYA_FT2]
+[T]
+[N]
+[N1][N2][N3][t1]
+[HN1][HN2]
+[HT]
+[HN]
+[k][l][m]
+[n][o][p]
+[r][s][t]
+[Offs_Ref]
+[Offs_Kor]
+[FreiY2] [FreiX1]
+[sAufn] [sEinsp]
+[maxP]
+[tSchiebR][tSchiebF]
+[tSchRR][tSchRF]
+[XoffsRT]
+[XoffsFT]
+[tempR][tempF]
+[tZHubR] [tZHubF]
+[Get][Back][Next]
+[Dur_Back][Dur_Get][Dur_Next]
+[HGet][HBack] [Dur_Job]
+[Ktemp1] [Ktemp2]
+[keinRT]=0
+[PrkPosX]=UE70000
+[PrkPosY]=UE71000
+[PrkPosZ]=UE72000
+[PrkPosC]=ME74000
+[M99x]=998-[.BM997]+[.BM999]
+[E11009]=E11009
+[E11010]=E11010
+[StartX] [StartZ] [StartY2]
+[Ebene] [Greifer] [APos]
+ENDV
+E30222=1
+E30241=1
+VAR H9840:1
+E30241=0
+G53
+G59X0Y0Z0A0C0
+G94F[F_0]
+E11009=0
+M261
+$+
+M997
+G997
+G79[.IBE1(12)]=1N3000
+G79[.IBE1(8)]=1N5000
+G79N9000
+(*********************Roboter Fanuc********************)
+N1200		(***********ER************)
+IF 'ER>0 THEN
+IF [.IBE1(18)]=1 THEN
+$Job-Manager: Warten auf Roboter bereit
+ENDI
+M261
+ENDI
+IF 'ER=132 THEN
+E[Arg1]=1
+E[Arg2]='EP
+IF [GrpH_RT]<0 THEN
+[GrpH_RT]=30
+ENDI
+E[Arg3]=[GrpH_RT]*1000
+ENDI
+IF 'ER=142 THEN
+E[Arg1]=2
+E[Arg2]='EP
+IF [GrpH_FT]<0 THEN
+[GrpH_FT]=30
+ENDI
+E[Arg3]=[GrpH_FT]*1000
+ENDI
+IF 'EA=1 THEN
+'ER=620
+ENDI
+IF 'EA=2 THEN
+'ER=612
+ENDI
+IF 'EA=3 THEN
+'ER=634
+ENDI
+IF 'EA=4 THEN
+'ER=605
+ENDI
+IF 'ER=120 OR 'ER=121 THEN
+E[Arg1]=E[eLdGet]
+E[Arg2]=[GrHRob]
+E[Arg3]=[Dur_Job]
+ENDI
+IF 'ER=140 THEN
+E[Arg1]=E[eHueGet]
+E[Arg2]=E[eHueNr0]
+ENDI
+IF 'ER=600 THEN
+M200
+G4F1
+ENDI
+IF 'ER=610 THEN
+E[Arg1]=E[ePceNr0]
+E[Arg2]=[GrHRob]
+E[Arg3]=E[ePceSL0]
+ENDI
+IF 'ER=670 THEN
+E[Arg1]=E[eHueNr0]
+ENDI
+(*********************Huelse********************)
+IF 'ER=160 THEN
+E[Arg1]=E[eHueNr0]
+E[Arg2]=E[eHueGet]
+ENDI
+(********************Huelse*********************)
+E[eJobSet]='ER
+IF [.IBE1(18)]=1 THEN
+$Job-Manager: Job 
+$= 'ER
+$+ aktiv
+ENDI
+IF 'ER=121 OR 'ER=1240 THEN
+M264
+ELSE
+M263
+ENDI
+IF [.IBE1(18)]=1 THEN
+$
+ENDI
+N1299
+G79N9000
+(*********************Roboter Fanuc********************)
+(*********************Roboter Fanuc ER ********************)
+N2200
+G77N1200N1299
+N2300
+G79N9000
+(*********************Roboter Fanuc********************)
+N3000			(***********EL************)
+G0X400
+G77H21000N1102
+IF E[eSpZust]=2 AND E[ePceNr0]=0 THEN
+E30225=15
+G79 N9000
+ENDI
+IF E[eSpZust]=1 AND E[ePceNr0]<>0 THEN
+E30225=15
+G79 N9000
+ENDI
+(******************************************************)
+IF E[eSpZust]=2 AND E[ePceNr0]>'EL AND 'EL<>0 THEN
+E[ePceNr0]='EL-1
+ENDI
+(******************************************************)
+IF [Chg_Hue]=1 AND 'EL<>0 THEN
+	[Dur_Get]=E[ePceSL1]/1000
+	E30130=[Dur_Get]
+	M86
+
+	(keine Hulse in Futter->Hulse laden)
+	IF E[eHueNr0]=0 THEN
+		'EH=E40025 G77N5000N6000
+		G79N3100
+	ENDI
+	
+	(Hulse im Futter->Hulse raus)
+	IF E[eHueNr0]<>0 THEN
+		(Hulse gleich Anforderung->fertig)
+		IF E[eHueNr0]=E40025 THEN
+			G79N3100
+		ELSE
+			(Wkst im Futter->Wkst raus)
+			IF E[ePceNr0]<>0 THEN
+				'EL=0 G77N3100N3999
+				'EL=E[ePceNr1]
+				G79N3000
+			ENDI
+			'EH=E40025 G77N5000N6000
+			G79N3100
+		ENDI
+	ENDI	
+ENDI
+(**************************************************)
+N3100		
+IF 'EL<>E[ePceNr0] THEN			
+[Back]=E[ePceNr0]			
+[Get]='EL				
+ELSE
+[Back]=0				
+[Get]=0					
+ENDI
+[Next]=E[ePceNr2]
+IF 'EL=0 THEN
+[Next]=0
+ENDI			
+(****Entladen - Laden - Vorbereiten******)
+IF [Back]>0 OR [Get]>0 THEN		
+G77N8140N8149				
+G79[keinRT]=1N3990
+E[eLdGet]=[Get]	
+[Dur_Job]=E[ePceSL1]
+IF E[ePceID1]<E[GrH_Pal] THEN
+[GrHRob]=E[GrH_Pal]+2000
+ELSE
+[GrHRob]=E[ePceID1]+2000
+ENDI
+'ER=121G77N1200N1299			
+(Vorposition Hauptachsen)
+G90G1F[F_0]X[PosX_0]
+IF UE71000>160 THEN
+  Y160
+ENDI			
+G9G1F[F_0]C[PosC_0]			
+G1F[F_0]Y[PosY_0]			
+M261
+G77N8140N8149				
+G79[keinRT]=1N3990
+(Einfahren Laderachsen)
+G90G1F[F_0]Z[PosZ_FT]
+'ER=600 G77N1200N1299			
+G77N8030N8040				
+G90G1F[F_0]X[FreiX1]			
+M170
+M261
+$+
+(WHILE E[eJobRes]<>2 DO)			
+(G4F.1)
+(ENDW)
+N3200
+(Spannzange => Greifer FT)		
+IF [Back]>0 THEN			
+G77H21000N1104
+$=[Back]
+G77H21000N1106
+[N1]=[PalTypFT]*1000
+[N2]=[N1]+999
+(VAR H9841:1N[N1]N[N2])			
+VAR H9840:1				
+G77N8050N8060				
+'Z=[PosZ_FT]+[tZHubF]		
+G90G1F[F_0]ZL925			
+'ER=605 G77N1200N1299			
+'ER=406 G77N1200N1299			
+(Hauptachsen Wkst in Spannfutter)
+G77N8045N8050				
+'X=[Pos2X_FT]-[tSchRF]			
+G9G90G1F[F_0]XL923			
+'Z=[PosZ_FT]	
+G9G90G1F[F_0]ZL925			
+(ENDI)
+M110					
+'ER=612 G77N1200N1299			
+'ER=408 G77N1200N1299			
+(IF E[eGrZ_FT]=2 THEN)			
+(E30225=18)
+(G79 N9000)
+(ENDI)							
+(M110)
+IF E[ePceID0]<E[GrH_Pal] THEN
+[GrpH_FT]=E[GrH_Pal]/1000
+([GrpH_RT]=[GrpH_FT])
+[GrHRob]=E[GrH_Pal]+2000
+ELSE
+[GrpH_FT]=E[ePceID0]/1000
+([GrpH_RT]=[GrpH_FT])
+[GrHRob]=E[ePceID0]+2000
+ENDI				
+'ER=610 G77N1200N1299
+G77N8120N8129
+'X=[Pos2X_FT]+[GrpH_FT]+1
+G90G1F[F_1]XL923			
+G77N8130N8139				
+G90G1F[F_0]X[FreiX1]			
+E[ePceNr0]=0				
+E[ePceGrFT]=[Back]			
+ENDI
+(Greifer RT => Spannzange)		
+IF [Get]>0 THEN				
+G77H21000N1104
+$=[Get]
+G77H21000N1105
+[N1]=[PalTypRT]*1000
+[N2]=[N1]+999
+(VAR H9841:1N[N1]N[N2])
+VAR H9840:1
+IF [Ausbl]>0 THEN
+'ER=840 G77N1200N1299
+G0 G90 Z0
+M112
+ENDI
+IF E[KFlag]=1 THEN
+G77N8200N8250
+ENDI
+'ER=620 G77N1200N1299						
+(ENDI)
+'Z=[PosZ_RT]			
+G90G1F[F_0]ZL925
+M110
+IF E[ePceID1]<E[GrH_Pal] THEN
+[GrpH_RT]=E[GrH_Pal]/1000
+[GrpH_FT]=[GrpH_RT]
+[GrHRob]=E[GrH_Pal]+2000
+ELSE
+[GrpH_RT]=E[ePceID1]/1000
+[GrpH_FT]=[GrpH_RT]
+[GrHRob]=E[ePceID1]+2000
+ENDI				
+G77N8040N8045					
+'X=[Pos2X_RT]+[GrpH_RT]+1			
+G9G90G1F[F_0]XL923
+G77N8120N8129				
+'X=[Pos2X_RT]-[tSchRR]			
+G9G90G1F[F_1]XL923			
+G77N8130N8139
+IF [S_TurnA]>0 THEN
+G90G1F[F_0]A0
+ENDI				
+(M111)
+M111	
+'ER=630 G77N1200N1299				
+(Ausfahren)
+IF [oSpWdh]=1 THEN
+M110					
+(G4F0.5)
+M111					
+ENDI
+G77N8050N8060				
+'Z=[PosZ_RT]+[tZHubR]
+G90G1F[F_0]ZL925
+IF E[ePceID1]<E[GrH_Pal] THEN
+[GrpH_RT]=E[GrH_Pal]/1000
+[GrpH_FT]=[GrpH_RT]
+[GrHRob]=E[GrH_Pal]+2000
+ELSE
+[GrpH_RT]=E[ePceID1]/1000
+[GrpH_FT]=[GrpH_RT]
+[GrHRob]=E[ePceID1]+2000
+ENDI			
+'X=[Pos2X_RT]+[GrpH_RT]+1			
+G90G1F[F_0]XL923
+G90G1F[F_0]X[FreiX1]			
+E[ePceNr0]=[Get]
+E[ePceID0]=E[ePceID1]
+E[ePceSL0]=E[ePceSL1]			
+(E[ePceGrRT]=0)				
+ENDI
+(Ausfahren Laderachsen)
+'ER=650 G77N1200N1299
+M201		
+IF [Support]=1 THEN
+M171
+ENDI
+M261
+G90 G1 F[F_0] X[PosX_0]	
+ENDI
+N3990
+IF [Next]>0 OR [Get]>0 THEN		
+IF E[ePceSL1]<>E[ePceSL2] THEN
+[Dur_Job]=0
+E[eLdGet]=0
+[GrHRob]=0
+ELSE
+[Dur_Job]=E[ePceSL2]					
+E[eLdGet]=[Next]
+IF E[ePceID2]<E[GrH_Pal] THEN
+[GrHRob]=E[GrH_Pal]+2000
+ELSE
+[GrHRob]=E[ePceID2]+2000
+ENDI
+ENDI                                    
+'ER=121G77N1200N1299			
+ELSE
+E[eLdGet]=0				
+'ER=120G77N1200N1299			
+ENDI
+IF 'EL=0 THEN
+(IF E[ePceGrRT]>0 OR E[ePceGrFT]>0 THEN)
+E[eLdGet]=0
+IF E[ePceID0]<E[GrH_Pal] THEN
+[GrHRob]=E[GrH_Pal]+2000
+ELSE
+[GrHRob]=E[ePceID0]+2000
+ENDI
+'ER=120G77N1200N1299			
+(ENDI)
+ENDI
+G79N3999
+G0G52X[PrkPosX]Y[PrkPosY]Z[PrkPosZ]
+G0G52C[PrkPosC]
+$
+N3999
+G79N9000
+
+(************************EH*******************************)
+N5000
+VAR H9840:1
+G79N5200
+(Zustnde Spannfutter und Greifer prfen)
+IF E[eGrZ_RT]=2 AND E[ePceGrRT]=0 THEN
+E30225=13
+G79 N9000
+ENDI
+IF E[eGrZ_FT]=2 AND E[ePceGrFT]=0 THEN
+E30225=14
+G79 N9000
+ENDI
+IF E[ePceGrRT]<>0 AND E[ePceGrFT]<>0 THEN
+E30225=16
+G79 N9000
+ENDI
+N5200
+IF E[ePceNr0]<>0 THEN
+E30225=15
+G79 N9000
+ENDI
+IF 'EH<>E[eHueNr0] THEN
+[HBack]=E[eHueNr0]
+[HGet]='EH
+ELSE
+[HBack]=0
+[HGet]=0
+ENDI
+IF [HBack]>0 OR [HGet]>0 THEN
+E[eHueGet]=[HGet]
+'ER=140 G77N1200N1299
+(Vorposition Hauptachsen)
+G90G1F[F_0]X[X1SlFrei]
+G9G1F[F_0]C[PosC_0]
+G1F[F_0]Y[PosY_0]
+(M112)
+M261
+G77N8140N8149
+(Einfahren Laderachsen)
+'ER=600G77N1200N1299
+(G90G1F[F_0]X[X1Sl1])
+M170
+M261
+$+
+(WHILE E[eJobRes]<>2 DO)
+(G4F.1)
+(ENDW)
+(Spannzange => Huelse FT)
+IF [HBack]>0 THEN
+G77H21000N1104
+$=[HBack]
+G77H21000N1106
+'Z=[Z1Sl_FT]+30
+G90G1F[F_0]ZL925
+'A=[A1Sl_FT]+[A1Dreh]
+G90G1F[F_0]AL900
+'ER=665 G77N1200N1299
+'ER=424 G77N1200N1299
+'X=[X1SlFT]
+G9G90G1F[F_0]XL923
+'Z=[Z1Sl_FT]+2
+G90G1F[F_0]ZL925
+'Z=[Z1Sl_FT]
+G90G1F200ZL925
+M110
+'ER=670 G77N1200N1299
+'F=0
+G91G1F[F_A1]A-[A1Dreh]
+'X=[X1Sl1]
+G90G1F[F_OUT]XL923
+'X=[X1Sl1]
+G90G1F[F_0]XL923
+'X=[X1SlFrei]
+G90G1F[F_0]XL923
+E[eHueNr0]=0
+E[eHueDur]=0
+E[eHueGrFT]=[HBack]
+ENDI
+(Greifer RT => Huelse in Aufnahme)
+IF [HGet]>0 THEN
+(G77H21000N1104)
+$=[HGet]
+G77H21000N1105
+IF E84101=1 THEN
+G77N8250N8300
+ENDI
+'ER=680 G77N1200N1299
+'Z=[Z1Sl_RT]
+G90G1F[F_0]ZL925
+(G90G1F[F_0]A[A1Sl_RT])
+M110
+G90G1F[F_0]X[X1Sl1]
+G90G1F[F_A1]A[A1Sl_RT]
+G9G90G1F[F_IN]X[X1SlRT]
+G1G91G1F[F_A1]A[A1Dreh]
+
+(M111)
+'ER=690 G77N1200N1299
+'Z=[Z1Sl_RT]+30
+G90G1F[F_0]ZL925
+G1G90G1F[F_0]X[X1SlFrei]
+E[eHueNr0]=[HGet]
+E[eHueGrRT]=0
+IF 'EH=1 THEN
+E[eHueDur]=[Dur_Hue1]
+ENDI
+IF 'EH=2 THEN
+E[eHueDur]=[Dur_Hue2]
+ENDI
+IF 'EH=3 THEN
+E[eHueDur]=[Dur_Hue3]
+ENDI
+IF 'EH=4 THEN
+E[eHueDur]=[Dur_Hue4]
+ENDI
+ENDI
+(Ausfahren Laderachsen)
+'ER=650 G77N1200N1299
+M261
+$+
+(WHILE E[eJobRes]<>2 DO)
+(G4F.1)
+(ENDW)
+M201
+E[eHueGet]=0
+'ER=140 G77N1200N1299
+ENDI
+IF 'EH=0 THEN
+IF E[eHueGrRT]>0 OR E[eHueGrFT]>0 THEN
+E[eLdGet]=0
+'ER=140 G77N1200N1299
+ENDI
+ENDI
+N6000
+G79N9000
+N8020
+[tSchiebR]=0
+[tSchiebF]=0
+IF [oSchieb]=1 THEN
+[tSchiebR]=[sSchieb]
+[tSchiebF]=[sSchieb]
+ENDI
+IF [oSchieb]=2 AND E[ePceID1]>-99999999 THEN
+[tSchiebR]=E[ePceID1]/1000-[GrpH_RT]
+[tSchiebF]=E[ePceID1]/1000-[GrpH_FT]
+ENDI
+IF [tSchiebR]<0 OR [tSchiebF]<0 THEN
+[tSchiebR]=0
+[tSchiebF]=0
+ENDI
+E[eNachsR0]=[tSchiebR]*1000
+E[eNachsF0]=[tSchiebF]*1000
+N8025
+[tSchiebR]=0
+[tSchiebF]=0
+IF [oSchieb]=1 THEN
+[tSchiebR]=[sSchieb]
+[tSchiebF]=[sSchieb]
+ENDI
+IF [oSchieb]=2 THEN
+[tSchiebR]=E[eNachsR0]/1000
+[tSchiebF]=E[eNachsF0]/1000
+ENDI
+IF [tSchiebR]<0 OR [tSchiebF]<0 THEN
+[tSchiebR]=0
+[tSchiebF]=0
+ENDI
+N8029
+N8030
+IF [FreiFa_X]=0 THEN
+[FreiX1]=[Pos1X]
+ELSE
+IF E[ePceCL1]>-99999999 AND E[ePceCHL1]>-99999999 THEN
+[sAufn]=E[ePceCHL1]/1000
+[sEinsp]=E[ePceCL1]/1000
+[FreiX1]=[Pos2X_RT]+[sEinsp]-[sAufn]+[GrpH_RT]
+ELSE
+[FreiX1]=[Pos1X]
+ENDI
+ENDI
+N8040
+[tSchRR]=0
+[tSchRF]=0
+IF [oSchieb]=2 AND E[ePceID1]>-99999999 THEN
+[tempR]=E[ePceID1]/1000-[GrpH_RT]
+[tempF]=E[ePceID1]/1000-[GrpH_FT]
+IF [tempR]<0 OR [tempF]<0 THEN
+[tSchRR]=[tempR]
+[tSchRF]=[tempF]
+ELSE
+[tSchRR]=0
+[tSchRF]=0
+ENDI
+ENDI
+E84155=[tSchRR]*1000
+E84156=[tSchRF]*1000
+N8045
+IF [oSchieb]=2 THEN
+[tSchRR]=E84155/1000
+[tSchRF]=E84156/1000
+ENDI
+N8050
+[tZHubR]=0
+[tZHubF]=0
+IF [oZHub]=1 THEN
+[tZHubR]=[sZHub]
+[tZHubF]=[sZHub]
+ENDI
+N8060
+N8120
+IF [S_TurnA]>0 THEN
+E91003=0
+E94203=35
+E35303=11
+M62:3
+M4S[S_TurnA]
+ENDI
+N8129
+N8130
+IF [S_TurnA]>0 THEN
+M62:3M5
+E94203=3
+E91003=1
+E35303=0
+[t1]=[S_TurnA]*360
+(G90G1F[t1]A0)
+ENDI
+N8139
+(??????????????????????????????????)
+N8140
+G79 N8149
+$+
+IF E[eJobRes]=10 THEN
+IF E[eNrCntrl]=1 THEN
+E[eJobRes]=0
+[keinRT]=1
+ELSE
+$Wechsler Rohteil nicht gefunden
+E30225=30
+G79 N9000
+ENDI
+ENDI
+N8149
+(????????????????????????????????????)
+N8150
+'ER=402 G77N1200N1299
+IF E[eGrZ_RT]=2 THEN
+(E[ePceGrRT]=0)
+E30225=17
+G79 N9000
+ENDI
+N8155
+'ER=408 G77N1200N1299
+IF E[eGrZ_FT]=2 THEN
+(E[ePceGrFT]=0)
+E30225=18
+G79 N9000
+ENDI
+N8159
+N8170
+IF [Chg_Hue]=1 THEN
+IF E[eHueNr0]<>0 THEN
+IF E[eHueNr0]=1 THEN
+[Dur_Job]=[Dur_Hue1]
+ENDI
+IF E[eHueNr0]=2 THEN
+[Dur_Job]=[Dur_Hue2]
+ENDI
+IF E[eHueNr0]=3 THEN
+[Dur_Job]=[Dur_Hue3]
+ENDI
+IF E[eHueNr0]=4 THEN
+[Dur_Job]=[Dur_Hue4]
+ENDI
+IF E[eHueNr0]=5 THEN
+[Dur_Job]=[Dur_Hue5]
+ENDI
+IF E[eHueNr0]=6 THEN
+[Dur_Job]=[Dur_Hue6]
+ENDI
+ELSE
+[Dur_Job]=[Dur_Pal]
+ENDI
+ENDI
+N8180
+N8200
+VAR H9840:1
+G0 G90
+X[Pos1X]
+C0
+Y220
+Z[ZPos1]
+'ER=820 G77N1200N1299
+M195
+M198
+G0 G90 X[XPos1]
+'ER=550 G77N1200N1299
+E[KFlag]=0
+M196
+M199
+G0 G90 X[Pos1X]
+N8250
+VAR H9840:1
+G0 G90
+X[Pos1X]
+C0
+Y220
+Z[ZPos1]
+'ER=820 G77N1200N1299
+M195
+M198
+G0 G90 X[XPos1]
+'ER=550 G77N1200N1299
+M196
+G0 G90 X[Pos1X]
+E84101=0
+M199
+N8300
+N8400
+N8500  
+N8600
+N8800
+N8920
+$Messfehler
+G79 N10000
+N9000
+E11009=[E11009]
+E11010=[E11010]
+G54
+'EA=0
+'EL=0
+'EP=0
+'EQ=0
+'ES=0
+'EF=0
+'EN=0
+'F=0
+E[ePceCL1]=-99999999
+E[ePceRL1]=-99999999
+E[ePceCHL1]=-99999999
+(E[ePceSL1]=-99999999)
+E[ePceRD1]=-99999999
+(E[ePceID1]=-99999999)
+E[ePceCL2]=-99999999
+E[ePceRL2]=-99999999
+E[ePceCHL2]=-99999999
+(E[ePceSL2]=-99999999)
+E[ePceRD2]=-99999999
+E[ePceID2]=-99999999
+N10000
+E30222=0
+M[M99x]
+IF [keinRT]=1 THEN
+G77H21000N1107
+E80021=3
+WHILE E80021<>0 DO
+G4F.1
+ENDW
+$
+ENDI
+G80
+
+
+
+  

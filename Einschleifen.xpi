@@ -1,0 +1,1795 @@
+%10145.0@2(Maschine Einschleifen)
+
+(************************************************************************************************************************************************************************)
+(Grundeinstellungen)
+VAR
+(Definition Scheiben & Rohling)
+[Dur_A]=E40234	
+[Lae_A]= E40235
+[Lae_A_X] = [Lae_A] 	
+[Dur_Umfa]=E40236
+[Flan_Umfa]= E40237		 (Hier wird das Flanschmaß von vone an der Scheibe bis hinten gemessen) 
+[Breit_Umfa] =E40238
+[Dur_Topf]=E40239
+[Flan_Topf]=E40240
+[Pos_Umfa]=E40242
+[Pos_Topf]=E40241
+
+(Angabe Schleifparameter)
+[Schnittgesch_Umfangscheibe] = E40125
+[Schnittgesch_Topfscheibe] = E40123
+[Drehz_Umfa]		
+[Drehz_Topf]	
+[Abtrag_Flaeche1] 
+[Abtrag_Flaeche2]  
+[Abtrag_Flaeche3]  
+[Abtrag_Flaeche4] = 0.1	(Diese 0.1mm dürfen nie! verändert werden)
+[F_langsam] = 800
+[F_schleifen_Topf1]= 75			(Vorschub schleifen Topfscheibe Fläche 1)
+[F_schleifen_Topf2]= 20			(Vorschub schleifen Topfscheibe Stirnfläche)
+[F_schleifen_Umfa] = 100		(Vorschub schleifen Umfangsscheibe)
+[F_messen] = 200
+
+(Referenzen der Messtaster)
+[Ref_WzgMess_X] 
+[Ref_WzgMess_Y] 
+[Ref_WzgMess_Z]
+[Ref_WstMess_X]
+[Ref_WstMess_Y]
+[Ref_WstMess_Z] 
+[Breit_Messgabel] 
+
+(Korrekturen der Eingestellten werte)
+[Korr_X]
+[Korr_Y]
+[Korr_Z]
+[Korr_Z2]
+[Korr_Abstand_Sp1]
+[Korr_Abstand_Sp2]
+[Korr_Laengen_Sp1]
+[Korr_Laengen_Sp2]
+
+(Werte NumRoto -> Eingabe Vollmer-HMI)
+[Laenge_Sp1] = E40001		
+[Laenge_Sp2] = E40002		
+[Abstand_Sp1] = E40003		
+[Abstand_Sp2] = E40004		
+[Korrektur_Z] = E40005
+[Korrektur_Winkel] = E40243
+
+(Hier werden die Gesamtkorrekturen gespeichert)
+[X][Y][Z][Z2][Ab1][Ab2][Lae1][Lae2]		
+
+[Toleranz] = 0.003
+[Auswahl] = E40121
+[Erfolg(9)]
+
+ENDV
+
+M997
+G997
+
+(Abträge am Rohling Nullsetzen) 
+IF E40122 = 1 THEN
+	E83000	= 0
+	E83001	= 0
+	E83002	= 0
+	E83003	= 0
+ENDI
+
+
+IF [Dur_A] = 0 OR [Lae_A] = 0 OR [Lae_A_X] = 0 OR [Dur_Umfa] = 0 OR [Flan_Umfa] = 0 OR [Breit_Umfa] = 0 OR [Dur_Topf] = 0 OR [Flan_Topf] = 0 OR [Pos_Topf] = 0 OR [Pos_Umfa] = 0 THEN
+	G79 N8001
+ENDI
+
+[Lae_A_X] = [Lae_A_X] - E83000
+[Abtrag_Flaeche1] = [Abtrag_Flaeche1] + E83001
+[Abtrag_Flaeche2] = [Abtrag_Flaeche2] + E83002
+[Abtrag_Flaeche3] = [Abtrag_Flaeche3] + E83003
+(Abfrage Konfigurationswerte Messtaster)
+G77 H288.0 N400 N400
+[Ref_WzgMess_X] = 'K
+[Ref_WzgMess_Y] = 'I
+[Ref_WzgMess_Z] = 'J
+G77 H288.0 N100 N100
+[Ref_WstMess_X] = 'K
+[Ref_WstMess_Y] = 'I
+[Ref_WstMess_Z] = 'J
+G77 H288.0 N103 N103
+[Breit_Messgabel] = 'I
+
+(Berechnung Drehzahlen Schleifscheiben)
+L1 = [Schnittgesch_Umfangscheibe]/ [Dur_Umfa]
+L2 = L1 / 3.14
+L3 = L2 * 60000
+[Drehz_Umfa] = L3
+L1 = [Schnittgesch_Topfscheibe]/ [Dur_Topf]
+L2 = L1 / 3.14
+L3 = L2 * 60000
+[Drehz_Topf] = L3
+
+(*********************************************)
+(Programmauswahl / 0 = Gesamtvermessung / 1-8 = Einzelvermessung)
+IF [Auswahl] = 0 THEN
+	G79 N1000
+ENDI
+IF [Auswahl] = 1 THEN
+	G79 N1000
+ENDI
+IF [Auswahl] = 2 THEN
+	G79 N2000
+ENDI
+IF [Auswahl] = 3 THEN
+	G79 N3000
+ENDI
+IF [Auswahl] = 4 THEN
+	G79 N2000
+ENDI
+IF [Auswahl] = 5 THEN
+	G79 N4000
+ENDI
+IF [Auswahl] = 6 THEN
+	G79 N5000
+ENDI
+IF [Auswahl] = 7 THEN
+	G79 N6000
+ENDI
+IF [Auswahl] = 8 THEN
+	G79 N7000
+ENDI
+IF [Auswahl] > 8 OR [Auswahl] < 0 THEN
+	G79 N8040
+ENDI
+
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N1000 (Einschleifen Nullpunkt Z-Achse Spindel unten)
+
+IF [Erfolg(1)] = 1 THEN
+	G79 N2000
+ENDI
+
+(*********************************************)
+(Umfangsscheibe in Spindel 1 einsetzen und Spindel 2 auch besetzen)
+
+G59X0Y0Z0
+
+IF E80062 = [Pos_Umfa] THEN
+	E30224 = 1
+	T0
+	G4F0.3
+	E30011 = 2
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+IF E80061 <>[Pos_Umfa] THEN 
+	E30224 = 1			
+	T[Pos_Umfa]						
+	G04 F0.3					
+	E30011 = 1 						
+	M6								
+	G4F1							
+	E30224 = 0
+ENDI
+
+IF E80062 <> [Pos_Topf] THEN
+	E30224 = 1						 	
+	T[Pos_Topf]						
+	G04 F0.3					
+	E30011 = 2 				
+	M6						
+	G4F1						
+	E30224 = 0		
+ENDI		
+
+(*********************************************)
+
+(*********************************************)
+(Grundposition anfahren)
+G59 X[X] Y[Y] Z[Z]
+G0 G90
+X400
+Y120
+C0Z0A0
+(*********************************************)
+
+(*********************************************)
+(Vorposition anfahren)
+[Abtrag_Flaeche2] = [Abtrag_Flaeche2] + 0.1
+L1 = [Dur_Umfa]/2	
+L2 = [Dur_A]/2				
+G0 G90
+YL1C-90
+L4 =[Lae_A]-32					
+L5 = [Flan_Umfa]+[Laenge_Sp1]
+L6 = 2 * [Breit_Umfa]		
+L7 =L4+L5-L6				  
+L8 = [Dur_Umfa]/2
+L9 = [Dur_A]/2
+L10 = L8+L9-[Abtrag_Flaeche2]
+XL7ZL10
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe im rechtslauf starten)
+M40 M62:1 S[Drehz_Umfa] M3 				
+M53								
+G04 F1						
+(*********************************************)
+
+(*********************************************)
+(Schluesselflaeche schleifen)
+G01 F[F_schleifen_Umfa] G91					
+L11 = L1 + L2 		
+Y-L11								
+YL11
+G01 G91 F[F_langsam]
+Y[Dur_A]
+G90Z-L10A90
+G91Y-[Dur_A]
+G01 F[F_schleifen_Umfa]
+Y-L11								
+YL11
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe anhalten)
+M40 M62:1 S0 M5
+M50
+E83002 = E83002 + 0.1	(Speicherung des Abtrags an der Flaeche 2)
+E30186 = E83002 
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N1500(Schluesselflaeche ausmessen)
+
+(**********************************************)
+(Vorpositionierung)
+L1 = [Dur_A]/2
+L2 = [Ref_WstMess_Y] +[Breit_Messgabel] + L1 + 5
+YL2
+L3 = [Ref_WstMess_Z]-5
+ZL3
+L4 = [Breit_Umfa]/2
+L5 = [Ref_WstMess_X] + [Lae_A]-32-[Breit_Umfa]-L4
+XL5
+
+(**********************************************)
+
+(*********************************************)
+(Schlüsselflächen messen )
+
+M191
+(Messen A0 Seite 1)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N1600
+G79 N8030
+N1600
+L6=UE71001
+G01 F[F_langsam] Y5
+
+(Messen A90 Seite 1)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N1700
+G79 N8030
+N1700
+L7 = UE71001
+G01 F[F_langsam]Y5
+
+(Verfahren auf Seite 2)
+G01G91F[F_langsam]			 
+L8 = [Dur_A]/2
+L9 = L8 + 10
+L10 = 10 + [Dur_A] + [Breit_Messgabel]	
+ZL9
+Y-L10
+Z-L9
+
+(Messen A0 Seite 2)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N1800
+G79 N8030
+N1800
+L11=UE71001
+G01 F[F_langsam]Y-5
+
+(Messen A90 Seite 2)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N1900
+G79 N8030
+N1900
+L12 = UE71001
+G01 F[F_langsam]Y-5		
+
+L13 = L6 - L11-[Breit_Messgabel]	
+L14 = L7 - L12-[Breit_Messgabel]	
+
+M193
+
+(*********************************************)
+(Berechnung Korrektur Nullpunkt)			
+L15 = L14 - L13
+L16 =-L15/2				
+[Korr_Z] = L16
+(*********************************************)
+
+(*********************************************)
+(Berechnung neuer Durchmesser Umfangsscheibe)
+L17 = L13+L14
+L18 = L17/2	
+L19 = L18 + [Abtrag_Flaeche2] - [Dur_A]
+L20 = -L19 * 2
+[Dur_Umfa] = [Dur_Umfa] + L20 
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+
+(*********************************************)
+(Programmauswahl)
+IF [Auswahl] = 0 THEN
+	IF [Korr_Z] < [Toleranz] AND [Korr_Z] > -[Toleranz] THEN				
+		[Erfolg(1)] = 1
+		E30195 = [Z]
+		G79 N2000
+	ELSE
+		[Z] = [Z] + [Korr_Z]
+		G79N1000
+	ENDI
+	
+ENDI
+IF [Auswahl] = 1 THEN
+	IF [Korr_Z] < [Toleranz] AND [Korr_Z] > - [Toleranz] THEN				
+		[Erfolg(1)] = 1
+		E30195 = [Z]
+		G79 N9000
+	ELSE
+		[Z] = [Z] + [Korr_Z]
+		G79 N1000
+	ENDI
+	
+ENDI
+
+(*********************************************)
+N1999
+
+
+
+(************************************************************************************************************************************************************************)
+N2000(Einschleifen Nullpunkt Y-Achse Spindel unten / Einschleifen NumRoto Laenge Spindel 1)
+
+IF [Erfolg(2)] = 1 AND [Erfolg(4)] = 1 AND [Erfolg(9)] = 1 THEN
+	G79 N3000
+ENDI
+
+(*********************************************)
+(Topfscheibe in Spindel 1 und Umfangsscheibe in Spindel 2 einsetzen)
+
+G59 X0 Y0 Z0
+IF E80062 = [Pos_Topf] THEN		
+	E30224 = 1
+	T0
+	G4F0.3
+	E30011 = 2
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+IF E80061 <> [Pos_Topf] THEN
+	E30224 = 1					
+	T[Pos_Topf]					
+	G04 F0.3					
+	E30011 = 1 					
+	M6						
+	G4F1						
+	E30224 = 0
+ENDI
+
+IF E80062 <> [Pos_Umfa] THEN
+	E30224 = 1
+	T[Pos_Umfa]					
+	G04 F0.3					
+	E30011 = 2 					
+	M6						
+	G4F1						
+	E30224 = 0					
+ENDI
+(*********************************************)
+
+(*********************************************)
+G59 X[X] Y[Y] Z[Z]
+(Grundposition anfahren)
+G0 G90
+X400
+Y120
+C0
+Z0
+A90
+(*********************************************)
+
+(*********************************************)
+(Vorposition anfahren)
+[Abtrag_Flaeche1] = [Abtrag_Flaeche1] + 0.1
+G0 G90 A90
+L1 = [Dur_Topf]/2
+L2= [Dur_A]/2
+Z-L1
+L4 = [Dur_A]/2					  
+L5 = [Flan_Topf] + [Laenge_Sp1]	
+L6 = L5 + L4 - [Abtrag_Flaeche1]
+YL6
+L7 =[Lae_A]-32						
+L8 = [Dur_Topf]/2				
+L9 =L7 + L8 - [Breit_Umfa]											
+XL9
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe im rechtslauf starten)
+M40 M62:1 S[Drehz_Topf] M3 				
+M53							
+G04 F1						
+(*********************************************)
+
+(*********************************************)
+(Schluesselflaeche schleifen)
+G01 F[F_schleifen_Topf1] G91						
+L10 = L1 + L2					
+ZL10
+Z-L10
+M50
+G0G90 X350
+C-180Y-L6	
+XL9A180	
+M53				
+G01 F[F_schleifen_Topf1] G91						
+ZL10
+Z-L10
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe anhalten)
+M40 M62:1 S0 M5
+M50
+E83001 = E83001 + 0.1	(Speicherung des Gesamtabtrags an der Flaeche 1)
+E30185 = E83001
+(*********************************************)
+
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N2500(Schluesselflaeche ausmessen)
+
+(*********************************************)
+(Grundposition anfahren)
+G0 G90
+X400
+Y120 C0
+Z0
+A0
+(*********************************************)
+
+
+(*********************************************)
+(Hier soll zum Ende gesprungen werden, wenn das Programm bereits vollständig durchgelaufen ist und dieser Schritt nur noch zur Begradigung des Rohlings dient)
+IF [Erfolg(8)] = 1 THEN
+	[Erfolg(9)] = 1
+	G79 N7999
+ENDI
+(*********************************************)
+
+(**********************************************)
+(Vorpositionierung)
+G90
+L1 = [Breit_Umfa]/2
+L2 = [Ref_WstMess_X] + [Lae_A]-32-L1 				
+XL2
+L3 = [Dur_A]/2
+L4 = [Ref_WstMess_Y] + [Breit_Messgabel] + L3 + 5 
+YL4
+L5 = [Ref_WstMess_Z]-5
+ZL5
+(**********************************************)
+
+(*********************************************)
+(Schlüsselflächen messen )
+M191
+
+(Messen A0 Seite 1)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N2600
+G79 N8030
+N2600
+L6=UE71001
+G01 F[F_langsam]Y5
+
+(Messen A90 Seite 1)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N2700
+G79 N8030
+N2700
+L7 = UE71001
+G01 F[F_langsam]Y5
+
+(Verfahren auf Seite 2)
+G01G91F[F_langsam]		 
+L8 = [Dur_A]/2
+L9 = L8 + 10
+L10 = 10 + [Dur_A] + [Breit_Messgabel]	
+ZL9
+Y-L10
+Z-L9
+
+(Messen A0 Seite 2)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N2800
+G79 N8030
+N2800
+L11=UE71001
+G01 F[F_langsam]Y-5
+
+(Messen A90 Seite 2)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N2900
+G79 N8030
+N2900
+L12 = UE71001
+G01 F[F_langsam]Y-5		
+
+L13 = L6 - L11-[Breit_Messgabel]	
+L14 = L7 - L12-[Breit_Messgabel]	
+
+M193
+(*********************************************)
+(Berechnung Korrektur Nullpunkt)			
+L15 = L14 - L13
+L16 = -L15/2												
+[Korr_Y] = L16
+(*********************************************)
+
+(*********************************************)
+(Berechnung Korrektur NumRoto)
+L17 = L13 + L14		
+L18 = L17/2			
+L19 = L18 - [Dur_A] + [Abtrag_Flaeche1]												
+[Korr_Laengen_Sp1] = -L19
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+(Programmauswahl)
+
+IF [Auswahl] = 0 AND [Erfolg(2)] = 0 THEN
+	IF [Korr_Y] < [Toleranz] AND [Korr_Y] > - [Toleranz] THEN				
+		[Erfolg(2)] = 1
+		E30194 = [Y]
+		G79 N2910
+	ELSE
+		[Y] = [Y] + [Korr_Y]
+		G79 N2000
+	ENDI
+
+ENDI
+IF [Auswahl] = 2 THEN
+	IF [Korr_Y] < [Toleranz] AND [Korr_Y] > - [Toleranz] THEN				
+		[Erfolg(2)] = 1
+		E30194 = [Y]
+		G79 N9000
+	ELSE
+		[Y] = [Y] + [Korr_Y]
+		G79 N2000
+	ENDI
+ENDI
+
+(*********************************************)
+
+
+(*********************************************)
+(Programmauswahl)
+N2910
+
+IF [Auswahl] = 0 AND [Erfolg(2)] = 1 THEN
+	E83001 = [Abtrag_Flaeche1]
+	IF [Korr_Laengen_Sp1] < [Toleranz] AND [Korr_Laengen_Sp1] > - [Toleranz] THEN				
+		[Erfolg(4)] = 1
+		E30188 = [Laenge_Sp1]
+		G79 N3000
+	ELSE
+		[Lae1] = [Lae1] + [Korr_Laengen_Sp1]
+		[Laenge_Sp1] = [Laenge_Sp1] + [Korr_Laengen_Sp1]
+		G79 N2000
+	ENDI
+
+ENDI
+IF [Auswahl] = 4 THEN
+	E83001 = [Abtrag_Flaeche1]
+	IF [Korr_Laengen_Sp1] < [Toleranz] AND [Korr_Laengen_Sp1] > - [Toleranz] THEN				
+		[Erfolg(4)] = 1
+		E30188 = [Laenge_Sp1]
+		G79 N9000
+	ELSE
+		[Lae1] = [Lae1] + [Korr_Laengen_Sp1]
+		[Laenge_Sp1] = [Laenge_Sp1] + [Korr_Laengen_Sp1]
+		G79 N2000
+	ENDI
+ENDI
+
+(*********************************************)
+
+
+(************************************************************************************************************************************************************************)
+
+
+(************************************************************************************************************************************************************************)
+N3000(Einschleifen Nullpunkt X-Achse Spindel unten)
+
+IF [Erfolg(3)] = 1 THEN
+	G79 N4000
+ENDI
+
+(*********************************************)
+(Topfscheibe in Spindel 1 einsetzen)
+
+G59X0Y0Z0
+
+IF E80062 = [Pos_Topf] THEN
+	E30224 = 1
+	T0
+	G4F0.3
+	E30011 = 2
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+IF E80061 <>[Pos_Topf] THEN 
+	E30224 = 1					
+	T[Pos_Topf]					
+	G04 F0.3					
+	E30011 = 1 					
+	M6						
+	G4F1						
+	E30224 = 0
+ENDI
+
+IF E80062 <>[Pos_Umfa] THEN 
+	E30224 = 1
+	T[Pos_Umfa]					
+	G04 F0.3					
+	E30011 = 2 					
+	M6						
+	G4F1						
+	E30224 = 0					
+ENDI
+
+G59X[X]Y[Y]Z[Z]
+
+(*********************************************)
+
+(*********************************************)
+(Grundposition anfahren)
+G0 G90
+X400
+Y120
+C0
+Z0
+A0
+(*********************************************)
+
+(*********************************************)
+(Stirnfläche ausmessen)
+M191
+G0G90
+Z[Ref_WstMess_Z]
+Y[Ref_WstMess_Y]
+L1 = [Ref_WstMess_X] + [Lae_A_X]-32 +5
+XL1
+G79 E20100=0 N8020
+G01 F[F_messen] G91 X-20 G10 N3100
+G79 N8030
+
+N3100
+L2 = UE70001
+G01G91X5
+M193
+(*********************************************)
+
+(*********************************************)
+(Grundposition anfahren)
+G0 G90
+X400
+Y120
+C0
+Z0
+A0
+(*********************************************)
+
+(*********************************************)
+(Vorposition anfahren)
+C-90Z0
+L3 = [Dur_Topf]/2
+L4 = [Dur_A]/2 
+L5 = L3 + L4 + 5
+YL5
+L6 = [Lae_A_X]-32
+L7 = [Flan_Topf] + [Laenge_Sp1]
+L8 = L6 + L7 - [Abtrag_Flaeche4]
+XL8	
+
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe im rechtslauf starten)
+M40 M62:1 S[Drehz_Topf] M3 				
+M53							
+G04 F1						
+(*********************************************)
+
+(*********************************************)
+(Stirnfläche schleifen)
+G01 F[F_schleifen_Topf2] G91	
+L8 = [Dur_A] + 10				
+Y-L8								
+YL8
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe anhalten)
+M40 M62:1 S0 M5
+M50
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N3500(Abtrag ausmessen)
+
+(**********************************************)
+(Vorpositionierung)
+M191
+G0G90
+Z[Ref_WstMess_Z]
+Y[Ref_WstMess_Y]
+L10 = [Ref_WstMess_X] +[Lae_A_X]-32 +5
+XL10
+
+G79 E20100=0 N8020
+G01 F[F_messen] G91 X-20 G10 N3600
+G79 N8030
+
+N3600
+L11 = UE70001
+G01G91X5
+M193
+(**********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+
+(*********************************************)
+(Berechnung Korrektur)
+L14 = L2 - L11			(Berechnung Ist-Abtrag)
+L15 = L14 - 0.1		(Ist-Abtrag - Soll-Abtrag)
+[Korr_X] = L15			(Korrektur des X-Nullpunkt)
+[Lae_A_X] = [Lae_A_X] - L14	(Korrektur der tatsächlichen Ausspannlänge des Rohlings)
+E83000 = E83000 +L14	(Speicherung des Abtrags an der Strinfläche)
+E30184 = E83000
+(*********************************************)
+
+IF [Auswahl] = 0 THEN
+	IF [Korr_X] < [Toleranz] AND [Korr_X] > - [Toleranz] THEN				
+		[Erfolg(3)] = 1
+		E30193 = [X]
+		G79 N4000
+	ELSE
+		[X] = [X] + [Korr_X]
+		G79 N3000
+	ENDI
+	
+ENDI
+IF [Auswahl] = 3 THEN
+	IF [Korr_X] < [Toleranz] AND [Korr_X] > - [Toleranz] THEN				
+		[Erfolg(3)] = 1
+		E30193 = [X]
+		G79 N9000
+	ELSE
+		[X] = [X] + [Korr_X]
+		G79 N3000
+	ENDI
+	
+ENDI
+
+(*********************************************************************************************)
+
+
+(************************************************************************************************************************************************************************)
+N4000(Einschleifen Z-Korrektur Spindel oben)
+
+IF [Erfolg(5)] = 1 THEN
+	G79 N5000
+ENDI 
+(*********************************************)
+(Umfangsscheibe in Spindel 2 einsetzen)
+G59 X0 Y0 Z0
+IF E80061 = [Pos_Umfa] THEN
+	E30224 = 1
+	T0
+	G4F0.3
+	E30011 = 1
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+IF E80062 <> [Pos_Umfa] THEN
+	E30224 = 1
+	T[Pos_Umfa]				
+	G04 F0.3				
+	E30011 = 2 			
+	M6					
+	G4F1	
+	E30224 = 0				
+ENDI
+
+IF E80061 <> [Pos_Topf] THEN
+	E30224 = 1
+	T[Pos_Topf]			
+	G04 F0.3					
+	E30011 = 1			
+	M6					
+	G4F1						
+	E30224 = 0				
+ENDI
+
+(*********************************************)
+
+(*********************************************)
+(Grundposition anfahren)
+G59 X[X] Y[Y] Z[Z]
+G0 G90
+X400
+Y120
+C0
+Z-250
+(*********************************************)
+
+(*********************************************)
+(Vorposition anfahren)
+[Abtrag_Flaeche2] = [Abtrag_Flaeche2] + 0.1
+L1 = [Dur_Umfa]/2
+L2 = [Dur_A]/2
+G0 G90
+YL1
+L20 = -90 + [Korrektur_Winkel] 
+CL20
+L7 = [Dur_Umfa]/2
+L8 = [Dur_A]/2
+L9 = L7+L8-[Abtrag_Flaeche2]
+L10 = L9 -[Korrektur_Z]					
+ZL10 A0
+L4 =[Lae_A]-32
+L5 = [Flan_Umfa]+[Laenge_Sp2]	
+L6 = 2 * [Breit_Umfa]			
+L7 =L4+L5-L6
+XL7
+
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe im rechtslauf starten)
+M40 M62:2 S[Drehz_Umfa] M3 				
+M53							
+G04 F1						
+(*********************************************)
+
+(*********************************************)
+(Schluesselflaeche schleifen)
+G01 F[F_schleifen_Umfa] G91						
+L11 = L1 + L2
+Y-L11								
+YL11
+G01 F[F_langsam]
+Y[Dur_A]
+L13 = -L9 - [Korrektur_Z]
+G90ZL13A90
+G91Y-[Dur_A]
+G01 F[F_schleifen_Umfa]
+Y-L11								
+YL11
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe anhalten)
+M40 M62:2 S0 M5
+M50
+E83002 = E83002 + 0.1	(Speicherung des Gesamtabtrags an der Flaeche 2)
+E30186 = E83002 
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z-250
+C0
+(*********************************************)
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+(Schluesselflaeche ausmessen)
+
+(**********************************************)
+(Vorpositionierung)
+L1 = [Dur_A]/2
+L2 = [Ref_WstMess_Y] +[Breit_Messgabel] + L1 + 5 
+YL2
+L3 = [Ref_WstMess_Z]-5
+ZL3
+L4 = [Breit_Umfa]/2
+L5 = [Ref_WstMess_X] + [Lae_A]-32-[Breit_Umfa]-L4
+XL5
+(**********************************************)
+
+(*********************************************)
+(Schlüsselflächen messen )
+M191
+
+(Messen A0 Seite 1)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N4600
+G79 N8030
+N4600
+L6=UE71001
+G01 F[F_langsam]Y5
+
+(Messen A90 Seite 1)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N4700
+G79 N8030
+N4700
+L7 = UE71001
+G01 F[F_langsam]Y5
+
+(Verfahren auf Seite 2)
+G01G91F[F_langsam]	 
+L8 = [Dur_A]/2
+L9 = L8 + 10
+L10 = 10 + [Dur_A] + [Breit_Messgabel]	
+ZL9
+Y-L10
+Z-L9
+
+(Messen A0 Seite 2)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N4800
+G79 N8030
+N4800
+L11=UE71001
+G01 F[F_langsam]Y-5
+
+(Messen A90 Seite 2)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N4900
+G79 N8030
+N4900
+L12 = UE71001
+G01 F[F_langsam]Y-5		
+
+L13 = L6 - L11-[Breit_Messgabel]	
+L14 = L7 - L12-[Breit_Messgabel]	
+
+M193
+
+(*********************************************)
+(Berechnung Korrektur Nullpunkt)			
+L15 = L14 - L13
+L16 = L15/2												
+[Korr_Z2] = L16
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z-250
+C0
+(*********************************************)
+(*********************************************)
+(Programmauswahl)
+
+IF [Auswahl] = 0 THEN
+	IF [Korr_Z2] < [Toleranz] AND [Korr_Z2] > - [Toleranz] THEN				
+		[Erfolg(5)] = 1
+		E30192 = [Korrektur_Z]
+		G79 N5000
+	ELSE
+		[Z2] = [Z2] + [Korr_Z2]
+		[Korrektur_Z] = [Korrektur_Z] + [Korr_Z2]
+ 		G79 N4000
+	ENDI
+	G79 N5000
+ENDI
+IF [Auswahl] = 5 THEN
+	IF [Korr_Z2] < [Toleranz] AND [Korr_Z2] > -[Toleranz] THEN				
+		[Erfolg(5)] = 1
+		E30192 = [Korrektur_Z]
+		G79 N9000
+	ELSE
+		[Z2] = [Z2] + [Korr_Z2]
+		[Korrektur_Z] = [Korrektur_Z] + [Korr_Z2]
+		G79 N4000
+	ENDI
+ENDI
+
+(*********************************************)
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N5000(Einschleifen NumRoto Abstand Spindel 2)
+
+IF [Erfolg(6)] = 1 THEN
+	G79 N6000
+ENDI
+
+(*********************************************)
+(Umfangsscheibe in Spindel 2 einsetzen)
+G59 X0 Y0 Z0
+IF E80061 = [Pos_Umfa] THEN
+	E30224 = 1
+	T0
+	G4F0.3
+	E30011 = 1
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+IF E80062 <> [Pos_Umfa] THEN
+	E30224 = 1					
+	T[Pos_Umfa]					
+	G04 F0.3					
+	E30011 = 2 					
+	M6						
+	G4F1						
+	E30224 = 0
+ENDI
+
+IF E80061 <> [Pos_Topf] THEN
+	E30224 = 1
+	T[Pos_Topf]
+	G4F0.3
+	E30011 = 1
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+(*********************************************)
+
+(*********************************************)
+(Grundposition anfahren)
+G59 X[X] Y[Y] Z[Z]
+G0 G90
+X400
+Y120
+C0
+Z-250
+A0
+(*********************************************)
+
+(*********************************************)
+(Vorposition anfahren)
+[Abtrag_Flaeche3] = [Abtrag_Flaeche3] + 0.1
+L20 = -90 + [Korrektur_Winkel]
+CL20
+L1 = [Dur_Umfa]/2
+L2 = [Dur_A]/2
+L3 = L1 - [Korrektur_Z]				
+ZL3
+L4 = [Dur_Umfa]/2
+L5 = [Dur_A]/2
+L6 = L4+L5-[Abtrag_Flaeche3]
+L17 = L6 + [Abstand_Sp2]
+YL17
+L7 = [Lae_A]-32					
+L8 = [Flan_Umfa]+[Laenge_Sp2] 			
+L9 = 3* [Breit_Umfa]
+L10 = L7 + L8 -L9
+XL10 A90
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe im rechtslauf starten)
+M40 M62:2 S[Drehz_Umfa] M3 				
+M53								
+G04 F1						
+(*********************************************)
+
+(*********************************************)
+(Schluesselflaeche schleifen)
+G01 F[F_schleifen_Umfa] G91					
+L13 = L1+L2
+Z-L13								
+ZL13
+G01 F[F_langsam] Z[Dur_A]
+L14 = -L 6 +  [Abstand_Sp2]
+G90YL14A180
+G91Z-[Dur_A]
+G01 F[F_schleifen_Umfa] G91 
+Z-L13								
+ZL13
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe anhalten)
+M40 M62:2 S0 M5
+M50
+E83003 = E83003 + 0.1	(Speicherung des Gesamtabtrags an der Flaeche 3)
+E30187 = E83003 
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z-250
+C0
+(*********************************************)
+
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N5500(Schluesselflaeche ausmessen)
+
+(**********************************************)
+(Vorpositionierung)
+L1 = [Dur_A]/2
+L2 = [Ref_WstMess_Y] +  [Breit_Messgabel]+ L1 + 5 
+YL2
+L3 = [Ref_WstMess_Z]-5
+ZL3
+L4 = [Breit_Umfa]/2
+L5 = [Ref_WstMess_X] + [Lae_A]-32-[Breit_Umfa]-[Breit_Umfa]-L4
+XL5
+(**********************************************)
+
+(*********************************************)
+(Schlüsselflächen messen )
+M191
+
+(Messen A0 Seite 1)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N5600
+G79 N8030
+N5600
+L6=UE71001
+G01 F[F_langsam]Y5
+
+(Messen A90 Seite 1)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N5700
+G79 N8030
+N5700
+L7 = UE71001
+G01 F[F_langsam]Y5
+
+(Verfahren auf Seite 2)
+G01G91F[F_langsam]		 
+L8 = [Dur_A]/2
+L9 = L8 + 10
+L10 = 10 + [Dur_A] + [Breit_Messgabel]	
+ZL9
+Y-L10
+Z-L9
+
+(Messen A0 Seite 2)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N5800
+G79 N8030
+N5800
+L11=UE71001
+G01 F[F_langsam]Y-5
+
+(Messen A90 Seite 2)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N5900
+G79 N8030
+N5900
+L12 = UE71001
+G01 F[F_langsam]Y-5		
+
+L13 = L6 - L11-[Breit_Messgabel]	
+L14 = L7 - L12-[Breit_Messgabel]	
+
+M193
+
+(*********************************************)
+(Berechnung Korrektur Nullpunkt)			
+L15 = L14 - L13
+L16 = -L15/2												
+[Korr_Abstand_Sp2] = L16
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z-250
+C0
+(*********************************************)
+(*********************************************)
+(Programmauswahl)
+
+IF [Auswahl] = 0 THEN
+	IF [Korr_Abstand_Sp2] < [Toleranz] AND [Korr_Abstand_Sp2] > -[Toleranz] THEN				
+		[Erfolg(6)] = 1
+		E30191 = -[Abstand_Sp2]
+		G79 N6000
+	ELSE
+		[Ab2] = [Ab2] + [Korr_Abstand_Sp2]
+		[Abstand_Sp2] = [Abstand_Sp2] + [Korr_Abstand_Sp2]
+		G79 N5000
+	ENDI
+	G79 N6000
+ENDI
+IF [Auswahl] = 6 THEN
+	IF [Korr_Abstand_Sp2] < [Toleranz] AND [Korr_Abstand_Sp2] > -[Toleranz] THEN				
+		[Erfolg(6)] = 1
+		E30191 = -[Abstand_Sp2]
+		G79 N9000
+	ELSE
+		[Ab2] = [Ab2] + [Korr_Abstand_Sp2]
+		[Abstand_Sp2] = [Abstand_Sp2] + [Korr_Abstand_Sp2]
+		G79 N5000
+	ENDI
+ENDI
+(*********************************************)
+
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N6000(Einschleifen NumRoto Abstand Spindel 1)
+
+IF [Erfolg(7)] = 1 THEN
+	G79 N7000
+ENDI
+
+(*********************************************)
+(Umfangsscheibe in Spindel 1 einsetzen)
+G59 X0 Y0 Z0
+IF E80062 = [Pos_Umfa] THEN
+	E30224 = 1
+	T0
+	G4F0.3
+	E30011 = 2
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+IF E80061 <> [Pos_Umfa] THEN
+	E30224 = 1					
+	T[Pos_Umfa]					
+	G04 F0.3					
+	E30011 = 1 					
+	M6						
+	G4F1			
+	E30224 = 0
+ENDI				
+
+IF E80062 <> [Pos_Topf] THEN
+	E30224 = 1
+	T[Pos_Topf]
+	G4F0.3
+	E30011 = 2
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+(*********************************************)
+
+(*********************************************)
+(Grundposition anfahren)
+G59 X[X] Y[Y] Z[Z]
+G0 G90
+X400
+Y120
+C0
+Z0
+A0
+(*********************************************)
+
+(*********************************************)
+(Vorposition anfahren)
+[Abtrag_Flaeche3] = [Abtrag_Flaeche3] + 0.1
+C-90 
+L1 = [Dur_Umfa]/2
+L2 = [Dur_A]/2
+ZL1
+L4 = [Dur_Umfa]/2
+L5 = [Dur_A]/2
+L6 = L4+L5-[Abtrag_Flaeche3] 
+L17 = L6 + [Abstand_Sp1]
+YL17
+L7 = [Lae_A]-32	
+L8 = [Flan_Umfa]+[Laenge_Sp1]				
+L9 = 3 * [Breit_Umfa]
+L10 = L7 + L8 -L9
+XL10 A90
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe im rechtslauf starten)
+M40 M62:1 S[Drehz_Umfa] M3 				
+M53								
+G04 F1						
+(*********************************************)
+
+(*********************************************)
+(Schluesselflaeche schleifen)
+G01 F[F_schleifen_Umfa] G91					
+L3 = L1+L2
+Z-L3								
+ZL3
+G01 F[F_langsam] Z[Dur_A]
+L14 = -L6 + [Abstand_Sp1]
+G90YL14A180
+G91 Z-[Dur_A]
+G01 F[F_schleifen_Umfa] G91 	
+Z-L3								
+ZL3
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe anhalten)
+M40 M62:1 S0 M5
+M50
+E83003 = E83003 + 0.1	(Speicherung des Gesamtabtrags an der Flaeche 3)
+E30187 = E83003 
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N6500(Schluesselflaeche ausmessen)
+
+(**********************************************)
+(Vorpositionierung)
+L1 = [Dur_A]/2
+L2 = [Ref_WstMess_Y] + [Breit_Messgabel] + L1 + 5 
+YL2
+L3 = [Ref_WstMess_Z]-5
+ZL3
+L4 = [Breit_Umfa]/2
+L5 = [Ref_WstMess_X] + [Lae_A]-32-[Breit_Umfa]-[Breit_Umfa]-L4
+XL5
+(**********************************************)
+
+(*********************************************)
+(Schlüsselflächen messen )
+M191
+
+(Messen A0 Seite 1)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N6600
+G79 N8030
+N6600
+L6=UE71001
+G01 F[F_langsam]Y5
+
+(Messen A90 Seite 1)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N6700
+G79 N8030
+N6700
+L7 = UE71001
+G01 F[F_langsam]Y5
+
+(Verfahren auf Seite 2)
+G01G91F[F_langsam]			 
+L8 = [Dur_A]/2
+L9 = L8 + 10
+L10 = 10 + [Dur_A] + [Breit_Messgabel]	
+ZL9
+Y-L10
+Z-L9
+
+(Messen A0 Seite 2)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N6800
+G79 N8030
+N6800
+L11=UE71001
+G01 F[F_langsam]Y-5
+
+(Messen A90 Seite 2)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N6900
+G79 N8030
+N6900
+L12 = UE71001
+G01 F[F_langsam]Y-5		
+
+L13 = L6 - L11-[Breit_Messgabel]	
+L14 = L7 - L12-[Breit_Messgabel]	
+
+M193
+(*********************************************)
+
+(*********************************************)
+(Berechnung Korrektur Nullpunkt)			
+L15 = L14 - L13
+L16 = -L15/2												
+[Korr_Abstand_Sp1] = L16
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+(*********************************************)
+(Programmauswahl)
+
+IF [Auswahl] = 0 THEN
+	IF [Korr_Abstand_Sp1] < [Toleranz] AND [Korr_Abstand_Sp1] > -[Toleranz] THEN				
+		[Erfolg(7)] = 1
+		E30190 = -[Abstand_Sp1]
+		G79 N7000
+	ELSE
+		[Ab1] = [Ab1] + [Korr_Abstand_Sp1]
+		[Abstand_Sp1] = [Abstand_Sp1] + [Korr_Abstand_Sp1]
+		G79 N6000
+	ENDI
+	G79 N7000
+ENDI
+IF [Auswahl] = 7 THEN
+	IF [Korr_Abstand_Sp1] < [Toleranz] AND [Korr_Abstand_Sp1] > -[Toleranz] THEN				
+		[Erfolg(7)] = 1
+		E30190 = -[Abstand_Sp1]
+		G79 N9000
+	ELSE
+		[Ab1] = [Ab1] + [Korr_Abstand_Sp1]
+		[Abstand_Sp1] = [Abstand_Sp1] + [Korr_Abstand_Sp1]
+		G79 N6000
+	ENDI
+ENDI
+
+(*********************************************)
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N7000(Einschleifen NumRoto Laenge Spindel 2)
+
+IF [Erfolg(8)] = 1 THEN
+	G79 N9000
+ENDI
+
+(*********************************************)
+(Topfscheibe in Spindel 2 einsetzen)
+G59 X0 Y0 Z0
+IF E80061 = [Pos_Topf] THEN
+	E30224 = 1
+	T0
+	G4F0.3
+	E30011 = 1
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+IF E80062 <> [Pos_Topf] THEN
+	E30224 = 1					
+	T[Pos_Topf]					
+	G04 F0.3					
+	E30011 = 2 					
+	M6						
+	G4F1						
+	E30224 = 0
+ENDI
+
+IF E80061 <> [Pos_Topf] THEN
+	E30224 = 1
+	T[Pos_Umfa]
+	G4F0.3
+	E30011 = 1
+	M6
+	G4F1
+	E30224 = 0
+ENDI
+
+(*********************************************)
+
+(*********************************************)
+(Grundposition anfahren)
+G59 X[X] Y[Y] Z[Z]
+G0 G90
+X400
+Y120
+L20 = 0 + [Korrektur_Winkel]
+CL20
+Z-250
+A0
+(*********************************************)
+
+(*********************************************)
+(Vorposition anfahren)
+[Abtrag_Flaeche1] = [Abtrag_Flaeche1] + 0.1
+G0 G90
+L1 = [Dur_Topf]/2
+L2= [Dur_A]/2
+L3 = -[Korrektur_Z] + L1 						
+ZL3
+L4 = [Dur_A]/2					  
+L5 = [Flan_Topf] + [Laenge_Sp2]					
+L6 = L5 + L4 - [Abtrag_Flaeche1]
+YL6
+L7 =[Lae_A]-32						
+L8 = [Dur_Topf]/2				
+L9 =L7 + L8 - [Breit_Umfa]											
+XL9 A90
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe im rechtslauf starten)
+M40 M62:2 S[Drehz_Topf] M3 				
+M53								
+G04 F1						
+(*********************************************)
+
+(*********************************************)
+(Schluesselflaeche schleifen)
+G01 F[F_schleifen_Topf1] G91						
+L10 = L1 + L2					
+Z-L10
+ZL10
+M50
+G0G90 X350
+L20 = -180 + [Korrektur_Winkel]
+CL20Y-L6	
+XL9A180					
+G01 F[F_schleifen_Topf1] G91
+M53					
+Z-L10
+ZL10
+(*********************************************)
+
+(*********************************************)
+(Schleifscheibe anhalten)
+M40 M62:2 S0 M5
+M50
+E83001 = E83001 + 0.1	(Speicherung des Gesamtabtrags an der Flaeche 1)
+E30185 = E83001 
+(*********************************************)
+(************************************************************************************************************************************************************************)
+
+(************************************************************************************************************************************************************************)
+N7500(Schluesselflaeche ausmessen)
+
+(*********************************************)
+(Grundposition anfahren)
+G0 G90
+X400
+Y120C0
+Z-250
+A0
+(*********************************************)
+
+(**********************************************)
+(Vorpositionierung)
+G90
+L1 = [Breit_Umfa]/2
+L2 = [Ref_WstMess_X] + [Lae_A]-32-L1 				
+XL2
+L3 = [Dur_A]/2
+L4 = [Ref_WstMess_Y] + [Breit_Messgabel] + L3 + 5 
+YL4
+L5 = [Ref_WstMess_Z]-5
+ZL5
+(**********************************************)
+
+(*********************************************)
+(Schlüsselflächen messen )
+M191
+
+(Messen A0 Seite 1)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N7600
+G79 N8030
+N7600
+L6=UE71001
+G01 F[F_langsam]Y5
+
+(Messen A90 Seite 1)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y-20 G10 N7700
+G79 N8030
+N7700
+L7 = UE71001
+G01 F[F_langsam]Y5
+
+(Verfahren auf Seite 2)
+G01G91F[F_langsam]		 
+L8 = [Dur_A]/2
+L9 = L8 + 10
+L10 = 10 + [Dur_A] + [Breit_Messgabel]	
+ZL9
+Y-L10
+Z-L9
+
+(Messen A0 Seite 2)
+G0G90A0
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N7800
+G79 N8030
+N7800
+L11=UE71001
+G01 F[F_langsam]Y-5
+
+(Messen A90 Seite 2)
+G0G90A90
+G79 E20100=0 N8020
+G01 F[F_messen] G91 Y20 G10 N7900
+G79 N8030
+N7900
+L12 = UE71001
+G01 F[F_langsam]Y-5		
+
+L13 = L6 - L11-[Breit_Messgabel]	
+L14 = L7 - L12-[Breit_Messgabel]	
+
+M193
+(*********************************************)
+
+(*********************************************)
+(Berechnung Korrektur Nullpunkt)			
+L15 = L14 + L13
+L16 = L15/2
+L17 = L16 - [Dur_A] + [Abtrag_Flaeche1]												
+[Korr_Laengen_Sp2] = -L17
+(*********************************************)
+
+(*********************************************)
+(Freifahren)
+G0 G90
+X400
+Y120
+Z0
+C0
+(*********************************************)
+
+IF [Auswahl] = 0 THEN
+	E83001 = [Abtrag_Flaeche1]
+	IF [Korr_Laengen_Sp2] < [Toleranz] AND [Korr_Laengen_Sp2] > -[Toleranz] THEN				
+		[Erfolg(8)] = 1
+		E30189 = [Laenge_Sp2]
+		G79 N2000
+	ELSE
+		[Lae2] = [Lae2] + [Korr_Laengen_Sp2]
+		[Laenge_Sp2] = [Laenge_Sp2] + [Korr_Laengen_Sp2]
+		G79 N7000
+	ENDI
+ENDI
+IF [Auswahl] = 8 THEN
+	E83001 = [Abtrag_Flaeche1]
+	IF [Korr_Laengen_Sp2] < [Toleranz] AND [Korr_Laengen_Sp2] > -[Toleranz] THEN				
+		[Erfolg(8)] = 1
+		E30189 = [Laenge_Sp2]
+		G79 N9000
+	ELSE
+		[Lae2] = [Lae2] + [Korr_Laengen_Sp2]
+		[Laenge_Sp2] = [Laenge_Sp2] + [Korr_Laengen_Sp2]
+		G79 N7000
+	ENDI
+ENDI
+
+
+N7999
+IF [Erfolg(1)] = 1 AND [Erfolg(2)] = 1 AND [Erfolg(3)] = 1 AND [Erfolg(4)] = 1 AND [Erfolg(5)] = 1 AND [Erfolg(6)] = 1 AND [Erfolg(7)] =1 AND  [Erfolg(8)] =1 AND [Erfolg(9)] = 1 THEN
+	E30155 = [Laenge_Sp1]
+	E30156 = [Laenge_Sp2] 
+	E30157 = [Abstand_Sp1]  
+	E30158 = [Abstand_Sp2] 
+	E30159 = [Korrektur_Z] 
+	G79 N9000
+ELSE
+	G79 N1000
+ENDI
+
+(************************************************************************************************************************************************************************)
+N8000
+$Aufruf G140: Parameter EMxx nicht oder falsch programmiert
+G79 N9000
+N8001
+$Eingabe ueberpruefen
+G79 N9000
+N8020
+$Messtaster bereits angefahren
+G79 N9000
+N8030
+$ Messfehler - Messposition nicht erreicht
+G79 N9000
+N8040
+$ Programmauswahl Fehlerhaft
+G79 N9000
+N9000
+M02

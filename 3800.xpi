@@ -1,0 +1,542 @@
+%380.0@2(Messung Durchmesser mit Lasermessbruecke)
+VAR
+[F_Vorp]=16000
+[F_Mess]=120
+[F_MessDur1]=10
+[F_MessDur2]=1
+[F_MessDur3]=0.2
+[F_Blas]=300
+[T_Blas]=E40136
+[MessET][MessET1][MessET2][MessET3]
+[DurAkt]
+[EinspL]=E84600
+[EinrL]=E84601
+[MessL]=E84602
+[DrallR]=E84604
+[Kugel]=E84610
+[SchneidR]=E84605
+[DrallW]=E84606
+[Steig]=E84607
+[Stirnform]=E84611
+[SchneidL]=E84612
+[SchnAnz]=E84621
+[Rueck]=E84623
+[TastFW]=E84643
+[ParkPosX]=450
+[ParkPosY]=160
+[ParkPosZ]=-250
+[ParkPosA]=0
+[ParkPosC]=0
+[Teil]=E84609
+[TeilDurch]
+[MessPA(20)][MessPZ(20)]
+[RefX_WT]
+[RefY_WT]
+[RefZ_WT]
+[AnfX_WT]
+[AnfY_WT]
+[AnfZ_WT]
+[AnfA_WT]
+[AnfC_WT]
+[Vorw_B]=E40135
+[Vorw_BSL]=1
+[Vorw_ED]=E40139
+[Tast_VersZ]=E40145
+[AnfX_LMB]
+[AnfY_LMB]
+[AnfZ_LMB]
+[Dur_Komp]=E40009
+[RefX_LMB]=E40006
+[RefY_LMB]=E40007
+[RefZ_LMB]=E40008
+[Sp_DZ]=1000
+[Rachl]=1
+[tol]=0.008
+[TolDurch]=0.12
+[PendelA1][PendelA2]
+[Grenze_X]=E40137
+[PosX] 
+[Support]=E40104
+[a][b][c][d][e][f][g][h][i][x][y][z][l][m][index][sum]
+[D1(10)] [D2(10)][D3(10)][large][small][TolP][TolM]
+ENDV
+[l]=0
+[m]=0
+N1000
+N4000
+G79 [EinspL]=0 N11000
+G79 [SchneidL]=0 N11000
+G79[RefX_LMB]=0 N11000
+G79[RefY_LMB]=0 N11000
+G79[RefZ_LMB]=0 N11000
+IF [RefX_LMB]<130 OR [RefX_LMB]>150 THEN
+	G79 N10000
+ENDI
+IF [RefY_LMB]<302 OR [RefY_LMB]>310 THEN
+	G79 N11000
+ENDI
+IF [RefZ_LMB]<-385 OR [RefZ_LMB]>375 THEN
+	G79 N11000
+	ENDI
+G0 G90
+X[ParkPosX]
+Y[ParkPosY]
+Z[ParkPosZ]
+A[ParkPosA] C[ParkPosC]
+G0 G90
+IF UE71000>160 THEN
+		Y160
+		C-120
+ELSE
+	C-120
+ENDI
+[AnfX_LMB]=[RefX_LMB]+[EinspL]+{E80022/10000}-[Rueck]-[NRM_L]
+[PosX]=[AnfX_LMB]
+G77 N10500 N10600
+[AnfY_LMB]=[RefY_LMB]
+[AnfZ_LMB]=[RefZ_LMB]+{[NRM_DM]/2}+2
+G0 G90
+Y[AnfY_LMB] Z[AnfZ_LMB] 
+'X=[AnfX_LMB]+[NRM_L]+5
+XL923
+IF [Support]=4 OR [Support]=5 THEN
+	G79 N19200	
+ENDI
+IF [Support]=1 OR [Support]=3 THEN
+	M170	
+ENDI
+IF [Vorw_BSL]=1 THEN
+	IF [Support]=2 OR [Support]=3 THEN
+		M173	
+	ENDI
+	'Z=[RefZ_LMB]+{[NRM_DM]/2}
+	G01 G90 F[F_Vorp] ZL925
+	M62:3
+	M91 M3 S[Sp_DZ]
+	'X=[RefX_LMB]+[EinspL]-[SchneidL]
+	[PosX]='X
+	G77 N10500 N10600
+	M116
+	F[F_Blas] XL923
+	G77 N10500 N10600
+	'X=[AnfX_LMB]+[EinrL]+5
+	[PosX]='X
+	G77 N10500 N10600
+	F[F_Blas] XL923
+	'Z=[RefZ_LMB]+{[NRM_DM]/2}+2
+	G01 G90 F[F_Vorp] ZL925
+	M117
+	M62:3 M5 S0
+	M90
+	IF [Support]=2 OR [Support]=3 THEN
+		M172	
+	ENDI
+ENDI
+M187
+G04F1
+IF [Vorw_ED]=1 THEN	
+	'X=[RefX_LMB]+[EinspL]+5
+	'Z=[RefZ_LMB]+[Tast_VersZ]
+	G01 G90 F[F_Vorp] XL923 ZL925 
+	IF [Support]=2 OR [Support]=3 THEN
+		M173	
+	ENDI
+	M62:3
+	M91 M3 S[Sp_DZ]
+	G77 N8000 N8100
+	'X=[RefX_LMB]+[EinspL]-10
+	F[F_Mess] XL923 G10 N4002
+	G79 N10000
+	N4002
+	'X=UE70001+0.2
+	G01 G90 F[F_Vorp] XL923
+	G77 N8000 N8100
+	'X=[RefX_LMB]+[EinspL]-10
+	F[F_MessDur1] XL923 G10 N4003
+	G79 N10000
+	N4003
+	'Z=[AnfZ_LMB]
+	'X=UE70001-0.1
+	G01 G90 F[F_Vorp] XL923 ZL925
+	'Z=[RefZ_LMB]
+	F[F_Mess] ZL925 G10 N4004
+	G79 N10000
+	N4004
+	'Z=UE72001+0.2
+	F[F_Vorp] ZL925
+	'Z=[RefZ_LMB]
+	G77 N8000 N8100
+	F[F_MessDur1] ZL925 G10 N4005
+	G79 N10000
+	N4005
+	M62:3 M5 S0
+	M90
+	IF [Support]=2 OR [Support]=3 THEN
+		M172	
+	ENDI
+	'X=UE70001+2
+	'A=ME76001
+	'Z=[RefZ_LMB]+[Tast_VersZ]	
+	G01 G90 F[F_Vorp] XL923 ZL925 AL900
+	'X=[RefX_LMB]+[EinspL]-10
+	G77 N8000 N8100
+	F[F_Mess] XL923 G10 N4006
+	G79 N10000
+	N4006
+	[b]=UE70001-[RefX_LMB]
+	[AnfX_LMB]=[RefX_LMB]+[b]-[NRM_L]
+	[PosX]=[AnfX_LMB]
+	G77 N10500 N10600
+	M62:3 M5 S0
+	M90
+	G01 G90 F[F_Vorp] Z[AnfZ_LMB]
+ENDI	
+G01 G90
+(IF [Support]=2 OR [Support]=3 THEN)
+	(M173)	
+(ENDI)
+F[F_Vorp] Z[AnfZ_LMB]
+F[F_Vorp] X[AnfX_LMB] G10 N10000
+M62:3
+M91 M3 S[Sp_DZ]
+IF [Vorw_B]=0 AND [T_Blas]=10  THEN
+	M116
+ENDI
+G77 N8000 N8100
+F[F_Mess] Z[RefZ_LMB] G10 N4010
+G79 N10000
+N4010
+'Z=UE72001+0.2
+G04 F1
+G01 G90 ZL925
+IF [Vorw_B]=1 THEN
+	M116
+ENDI
+F[F_MessDur1] Z[RefZ_LMB] G10 N4020
+G79 N10000
+N4020
+[MessET]=ME76001
+[g]=[NRM_DM]/2
+IF [NRM_DM]<2 THEN
+	[h]={[NRM_DM]/2}-0.04
+ELSE
+	[h]={[NRM_DM]/2}-0.2
+ENDI
+IF [NRM_DM]<1 THEN
+	[h]={[NRM_DM]/2}-0.02
+ELSE
+	[h]={[NRM_DM]/2}-0.2
+ENDI
+[i]=[h]/[g]
+[PendelA1]=_ACOS[i]
+[PendelA2]=[PendelA1]*2
+M62:3 M5 S0
+M90
+IF [Support]=2 OR [Support]=3 THEN
+	M172	
+ENDI
+E11009=0
+E11010=0
+'Z=UE72001+0.03
+'A=[MessET]
+G04 F1
+G01 G90 F[F_Vorp] ZL925 AL900
+N4050
+(G77 N8000 N8100)
+G01 G91 F[F_Vorp]
+A[PendelA1]
+N4060
+G01 G91
+F[F_Vorp]  A-[PendelA2] G10 N4070
+F[F_Vorp] A[PendelA2]
+'Z=UE72000-0.002
+G01 G90 F[F_Vorp] ZL925
+G79 N4060
+N4070
+[MessET1]=ME76001
+G0 G90  A[MessET1]
+G01
+[e]=[NRM_NBR]
+M62:3 M5 S0
+M90
+IF [Support]=2 OR [Support]=3 THEN
+    M172	
+ENDI
+N4100
+'Z=[RefZ_LMB]+{[NRM_DM]/2}+2
+G01 G90 F[F_Vorp] ZL925 A[MessET1]
+(G77 N8000 N8100)
+F[F_Mess] Z[RefZ_LMB] G10 N4110
+G79 N10000
+N4110
+M117
+[D1(e)]=UE72001
+[MessPZ(1)]=UE72001
+[MessPA(1)]=ME76001
+IF [NRM_DM]>25 THEN
+	G79 N7000
+ENDI
+L10=180|[Teil]
+[TeilDurch]=L10
+IF [SchneidR]=1 THEN
+	'A=[MessET1]-[TeilDurch]
+	[MessET2]=L900
+ELSE
+	'A=[MessET1]+[TeilDurch]
+	[MessET2]=L900
+ENDI
+	
+G01
+'Z=[RefZ_LMB]-{[NRM_DM]/2}-2
+F[F_Vorp] ZL925
+M62:3
+M91 M3 S[Sp_DZ]
+G04F0.5
+M62:3 M5 S0
+M90
+F[F_Vorp] AL900
+(G77 N8000 N8100)
+F[F_Mess] Z[RefZ_LMB] G10 N4180
+G79 N10000
+N4180
+'Z=UE72001-0.2
+G04 F1
+G01 G90 ZL925
+F[F_MessDur1] Z[RefZ_LMB] G10 N4190
+G79 N10000
+N4190
+'Z=UE72001-0.02
+G04 F1
+G01 G90 F[F_Vorp] ZL925 
+G01 G91 F[F_Vorp]
+A-[PendelA1]
+N4194
+G01 G91
+F[F_Vorp]  A[PendelA2] G10 N4195
+F[F_Vorp] A-[PendelA2]
+'Z=UE72000+0.002
+G01 G90 F[F_Vorp] ZL925
+G79 N4194
+N4195
+[MessET2]=ME76001
+G0 G90  A[MessET2]
+'Z=[RefZ_LMB]-{[NRM_DM]/2}-2
+G01 G90 F[F_Vorp] ZL925 A[MessET2]
+(G77 N8000 N8100)
+F[F_Mess] Z[RefZ_LMB] G10 N4196
+G79 N10000
+N4196
+
+
+
+[D2(e)]=UE72001
+[D3(e)]=[D1(e)]-[D2(e)]
+N4200
+IF [NRM_NBR]=1 THEN
+	G79 N4250
+ENDI	
+[e]=[e]-1
+[d]=[e]+1
+'Z=[RefZ_LMB]+{[NRM_DM]/2}+2
+G01 G90 F[F_Vorp] ZL925 A[MessET1]
+G77 N8000 N8100
+F[F_Mess] Z[RefZ_LMB] G10 N4210
+G79 N10000
+N4210
+[D1(e)]=UE72001
+'Z=[RefZ_LMB]-{[NRM_DM]/2}-2
+F[F_Vorp] ZL925 
+M62:3
+M91 M3 S[Sp_DZ]
+G04F0.5
+M62:3 M5 S0
+M90
+F[F_Vorp] ZL925 A[MessET2]
+(G77 N8000 N8100)
+F[F_Mess] Z[RefZ_LMB] G10 N4220
+G79 N10000
+N4220
+[D2(e)]=UE72001
+[D3(e)]=[D1(e)]-[D2(e)]
+[TolP]=[D3(d)]+[tol]
+[TolM]=[D3(d)]-[tol]
+IF [D3(e)]>[TolP] OR [D3(e)]<[TolM] THEN
+	[l]=[l]+1
+	G79 [l]=3 N10000
+	G79 N1000
+ENDI
+G79 [e]<>1 N4200
+N4250
+IF [Vorw_B]=0 AND [T_Blas]=10  THEN
+	M117
+ENDI
+[index]=1
+[sum]=0
+N4300
+[sum]=[sum]+[D3(index)]
+[index]=[index]+1
+G79 [index]<=[NRM_NBR] N4300
+[NRM_RES]=[sum]/[NRM_NBR]
+[NRM_RES]=[NRM_RES]-[Dur_Komp]
+E84701=[NRM_RES]
+[TolP]=[NRM_DM]+[TolDurch]
+[TolM]=[NRM_DM]-[TolDurch]
+IF [NRM_NBR]>1 THEN
+	IF [NRM_RES]>[TolP] OR [NRM_RES]<[TolM] THEN
+		[m]=[m]+1
+		G79 [m]=3 N10000
+		G79 N1000
+	ENDI
+ENDI
+N5000
+G0 G90 Z[AnfZ_LMB]
+X[AnfX_LMB]
+N6000
+IF [Support]=1 OR [Support]=3 THEN
+	M171	
+ENDI
+G0 G90
+X[ParkPosX]
+Y[ParkPosY]
+Z[ParkPosZ]
+A[ParkPosA] C[ParkPosC]
+G79 N20000
+
+N7000
+[D2(e)]={[D1(e)]-[RefZ_LMB]}*2
+[D2(e)]=[D2(e)]+[Dur_Komp]
+IF [NRM_NBR]=1 THEN
+	[NRM_RES]=[D2(e)]
+	G79 N5000
+ENDI
+N7050	
+[e]=[e]-1
+[d]=[e]+1
+'Z=[RefZ_LMB]+{[NRM_DM]/2}+2
+G01 G90 F[F_Vorp] ZL925 A[MessET1]
+G77 N8000 N8100
+F[F_Mess] Z[RefZ_LMB] G10 N7100
+G79 N10000
+N7100
+[D1(e)]=UE72001
+[D2(e)]={[D1(e)]-[RefZ_LMB]}*2
+[D2(e)]=[D2(e)]+[Dur_Komp]
+[TolP]=[D2(d)]+[tol]
+[TolM]=[D2(d)]-[tol]
+IF [D2(e)]>[TolP] OR [D2(e)]<[TolM] THEN
+	E84980=1
+	[l]=[l]+1
+	G79 [l]=3 N10000
+	G79 N1000
+ENDI
+G79 [e]<>1 N7050
+[index]=1
+[sum]=0
+N7200
+[sum]=[sum]+[D2(index)]
+[index]=[index]+1
+G79 [index]<=[NRM_NBR] N7200
+[NRM_RES]=[sum]/[NRM_NBR]
+[NRM_RES]=[NRM_RES]-[Dur_Komp]
+E84701=[NRM_RES]
+[TolP]=[NRM_DM]+[TolDurch]
+[TolM]=[NRM_DM]-[TolDurch]
+IF [NRM_RES]>[TolP] OR [NRM_RES]<[TolM] THEN
+	[m]=[m]+1
+	G79 [m]=3 N10000
+	G79 N1000
+ENDI
+G79 N5000
+N8000
+	IF [Vorw_B]=1 THEN
+		M116
+		G04 F[T_Blas]
+		M117
+		G04 F0.5
+	ENDI
+N8100
+N9000
+N10000
+	M62:3 M5 S0
+	M90
+	G0 G90
+	X510
+	Y160
+	C0
+	$ Messposition nicht erreicht
+	IF E80021=0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N11000
+	M62:3 M5 S0
+	M90
+	G0 G90
+	X510
+	Y160
+	C0
+	$ Werkzeugdaten nicht vorhanden
+	IF E80021=0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N10500 
+	IF [PosX]<[Grenze_X] THEN
+		$Err: Kollision X-Achse
+		G0 G90
+		X510
+		Y160
+		C0
+		M0
+		M02
+	ENDI
+N10600
+N18000
+N19000
+N19200
+	M90
+	$Konfiguration Luenette nicht moeglich
+	IF E80021=0 THEN
+		G4F1
+		E80021=3
+		REPEAT G4F0.1
+		UNTIL E80021=0
+		$
+	ELSE
+		M0
+		M02
+	ENDI
+	G79 N20000
+N20000
+M179
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+               
+     
